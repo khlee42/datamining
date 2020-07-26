@@ -11,13 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(fontawesome)
-# library(kableExtra)
 
-addLink <- function(link, img) {
-  paste0("<a href=\"", link, "\">", as.character(fa(name = img, fill = "lightblue")), "</a>")
-}
-# color: steelbule
-
+# try height option
 ```
 
 
@@ -115,7 +110,7 @@ To appeal to a grade, you must write a letter explaining your position within se
 ## Course schedule
 The below shows the topics, course activities, and assignments of each module. Each module starts at 6:00 pm on the date shown in the schedule, and all the course materials will be available by the time. All the assignments and quizzes must be submitted by 5:59 pm on their due dates before the next week schedule starts. The schedule is subject to change, and the changes, if any, will be announced on the Canvas page. 
 
-```{r table, echo=FALSE}
+```{r schedule, echo=FALSE}
 n = 1:16
 date = week_after(n)
 topic = c(
@@ -136,22 +131,115 @@ topic = c(
   'Tidytext and sentiment analysis',
   'Intro to machine (and deep) learning'
 )
-link <- "www.google.com"
-img <- ""
+
+# URL must include https or http
+slide_links <- c(
+  "https://www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com"
+)
+
+lab_links <- c(
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com"
+)
+
+hw_links <- c(
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  NA,
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com",
+  "www.google.com"
+)
+
+exam_links <- c(
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  "www.google.com",
+  NA,
+  NA,
+  NA,
+  NA,
+  NA,
+  "www.google.com"
+)
+
+addLink <- function(link, img, color) {
+  paste0("<a href=\"", link, "\">", as.character(fa(name = img, fill = color)), "</a>")
+}
+noLink <- function(img, color) {
+  fa(name = img, fill = color)
+}
+
+addicon <- function(i, img){
+  if (is.na(i)==FALSE) {
+    addLink(i, img, 'steelblue')
+  }
+  else {
+    noLink(img, 'lightblue')
+  }
+}
+
+slide <- sapply(slide_links, addicon, img='folder')
+lab <- sapply(lab_links, addicon, img='flask')
+hw <- sapply(lab_links, addicon, img='code')
+exam <- sapply(lab_links, addicon, img='edit')
 
 df <- tibble(
   Date=date,
   Topic=topic,
-  Slide=addLink(link, 'folder'),
-  Lab=addLink(link, 'flask'),
-  HW=addLink(link, 'code'),
-  Exam=addLink(link, 'edit')
+  Slide=slide,
+  Lab=lab,
+  HW=hw,
+  Exam=exam
 )
 knitr::kable(df)
-# knitr::kable(df, booktabs=TRUE)
-
 ```
-
 
 #### `r week_after(1)`Intro to data mining and toolkit
 * Lab1 (due: `r due_in(1,1)`)
