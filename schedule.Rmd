@@ -72,7 +72,7 @@ slide_links <- c(
 )
 
 lab_links <- c(
-  "www.google.com",
+  "lab1.html",
   "www.google.com",
   "www.google.com",
   "www.google.com",
