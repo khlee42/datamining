@@ -81,8 +81,8 @@ slide_links <- c(
 )
 
 dc_links <- c(
+  "dc1.html",
   "lab1.html",
-  "www.google.com",
   "www.google.com",
   "www.google.com",
   "www.google.com",
@@ -100,7 +100,7 @@ dc_links <- c(
 )
 
 hw_links <- c(
-  "www.google.com",
+  "hw1.html",
   "www.google.com",
   "www.google.com",
   "www.google.com",
@@ -128,13 +128,13 @@ exam_links <- c(
   NA,
   NA,
   NA,
-  "www.google.com",
+  "midterm_instruction.html",
   NA,
   NA,
   NA,
   NA,
   NA,
-  "www.google.com"
+  "final_instruction.html"
 )
 
 addLink <- function(link, img, color) {
