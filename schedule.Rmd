@@ -1,6 +1,8 @@
 ---
 title: "Course Schedule"
-output: html_document
+output: 
+  html_document:
+    theme: cosmo
 ---
 
 Each module starts at 6:00 pm on the date shown in the schedule. All the evaluations (exercise, homework, exam) must be submitted by 5:59 pm on their due dates before the next week module starts. The schedule is subject to change, and when it does, you will be notified through the Canvas course page. 
@@ -9,6 +11,13 @@ Each module starts at 6:00 pm on the date shown in the schedule. All the evaluat
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(fontawesome)
+library(kableExtra)
+```
+
+```{css, echo=FALSE}
+p {
+ font-size: 18px;
+}
 ```
 
 ```{r dates, echo=FALSE}
@@ -71,7 +80,7 @@ slide_links <- c(
   "www.google.com"
 )
 
-lab_links <- c(
+dc_links <- c(
   "lab1.html",
   "www.google.com",
   "www.google.com",
@@ -145,7 +154,7 @@ addicon <- function(i, img){
 }
 
 slide <- sapply(slide_links, addicon, img='folder')
-lab <- sapply(lab_links, addicon, img='flask')
+dc <- sapply(dc_links, addicon, img='flask')
 hw <- sapply(hw_links, addicon, img='code')
 exam <- sapply(exam_links, addicon, img='edit')
 
@@ -153,9 +162,11 @@ df <- tibble(
   Date=date,
   Topic=topic,
   Slide=slide,
-  Lab=lab,
+  Lab=dc,
   HW=hw,
   Exam=exam
 )
-knitr::kable(df)
+# knitr::kable(df) 
+knitr::kable(df, escape = F) %>%
+  kable_styling(bootstrap_options = "striped", font_size = 18)
 ```

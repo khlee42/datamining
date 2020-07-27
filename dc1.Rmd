@@ -1,0 +1,17 @@
+---
+title: "Datacamp Exercise 1"
+subtitle: "Introduction to R"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In Introduction to R, you will master the basics of this widely used open source language, including factors, lists, and data frames. With the knowledge gained in this course, you will be ready to undertake your first very own data analysis.
+
+* Go here to start: https://learn.datacamp.com/courses/free-introduction-to-r
+* Sign up with your Wayne State email address if you haven't done yet
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to complete it in time!
