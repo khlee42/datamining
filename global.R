@@ -119,11 +119,11 @@ exam_links <- c(
 
 due_dc <- list(
   release=sapply(which(is.na(dc_links) %in% c(FALSE)), week_after),
-  due=sapply(which(is.na(dc_links) %in% c(FALSE)), due_in, due=7)
+  due=sapply(which(is.na(dc_links) %in% c(FALSE)), due_in, due=1)
 )
 due_hw <- list(
   release=sapply(which(is.na(hw_links) %in% c(FALSE)), week_after),
-  due=sapply(which(is.na(hw_links) %in% c(FALSE)), due_in, due=14)
+  due=sapply(which(is.na(hw_links) %in% c(FALSE)), due_in, due=2)
 )
 
 exam_on_sat=1+(7*(which(is.na(exam_links) %in% c(FALSE))-1)+3)/7
