@@ -1,0 +1,27 @@
+---
+title: "Datacamp Exercise 4"
+subtitle: "Data wrangling"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_dc$release[3]`**  
+**Due: `r due_dc$due[3]`**
+
+In this chapter, you'll learn to do three things with a table: filter for particular observations, arrange the observations in a desired order, and mutate to add or change a column. You'll see how each of these steps allows you to answer questions about your data.
+
+* Go here to start: https://campus.datacamp.com/courses/introduction-to-the-tidyverse/data-wrangling-1
+* Sign up with your Wayne State email address if you haven't done yet
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

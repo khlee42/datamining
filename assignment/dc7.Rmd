@@ -1,0 +1,28 @@
+---
+title: "Datacamp Exercise 7"
+subtitle: "Case study: Exploratory data anslysis"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_dc$release[7]`**  
+**Due: `r due_dc$due[7]`**
+
+Once you've started learning tools for data manipulation and visualization like dplyr and ggplot2, this course gives you a chance to use them in action on a real dataset. You'll explore the historical voting of the United Nations General Assembly, including analyzing differences in voting between countries, across time, and among international issues. In the process you'll gain more practice with the dplyr and ggplot2 packages, learn about the broom package for tidying model output, and experience the kind of start-to-finish exploratory analysis common in data science.
+
+* Go here to start: https://learn.datacamp.com/courses/case-study-exploratory-data-analysis-in-r
+
+* Sign up with your Wayne State email address if you haven't done yet
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

@@ -1,8 +1,8 @@
 ---
-title: "ISM 5570 Data Mining and Analytics"
-subtitle: "Fall 2020"
+title: "Policies"
 output: 
   html_document:
+    theme: cosmo
     toc: TRUE
     toc_float: TRUE
 ---
@@ -11,49 +11,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(fontawesome)
-
-# try height option
+library(kableExtra)
 ```
 
-
-```{r dates, echo=FALSE}
-start <- as.Date("2020-09-02")
-
-week_after <- function(adv){
-  wdate <- start + 7*(adv-1)
-  wdate <- format(wdate, format="%m/%d")
-  zadv <- sprintf("%02d", adv)
-  wstr <- paste0("Week ",zadv,sep='',' (', wdate, ')')
-  wstr
-}
-
-due_in <- function(week, due){
-  tmp2 <- start + 7*(week-1+due)
-  tmp2 <- format(tmp2, format="%m/%d")
-  tmp2
-}
-```
-
-Course Description
-
-
-
-## Course Objectives
-
-## Course Materials
-
-## Course Requirements
-### Class Participation
-Students are expected to follow the class schedule and diligently go through weekly course materials. Student’s participation will be evaluated based on individual activity reports generated on Canvas, which contain detailed logs of student’s activities on the course page, like whether a student has gone through a particular lecture. It is also strongly encouraged to follow up on the relevant chapters of the textbooks, integral to understanding the full spectrum of the topics covered in the lectures. Any details that might have been left out in the course materials be available in the textbooks. 
+## Evaluation
+### Exercise
+For each topic, students will be given access to exercises for practicing skills taught in class. These exercises are developed by DataCamp, an online education platform for coding, and consist of tutorials and coding questions built on the interactive learning environment. You can take as many times to finish an exercise until its due, and pass/fail will be given based on whether you have completed it. Each exercise accounts for 5% of your total grade, and there are 10 exercises in total.
 
 ### Assignment
-The assignments are designed to help students go through the major step of data mining – from tidying up data to building models for analysis. Students are expected to write a script for performing necessary tasks and answer questions with empirical evidence. Each assignment accounts for 10% of your final grade.
-
-### Exercise (DataCamp, RStudio primer)
-For each topic, students will be given access to exercises so as to practice skills taught in class. These exercises are developed by DataCamp, an online education platform for coding, and consist of tutorials and coding questions built on the interactive learning environment. You can take many times to finish an exercise until its due, and pass/fail will be given based on whether you have completed it. Each exercise accounts for 5% of your total grade, and there are 10 exercises in total.
+The assignments are designed to help build capabilities of applying what is taught in class to real-world problems. Students are expected to write a script for performing necessary tasks and answer questions with empirical results generated from their codes. Each assignment accounts for 10% of your final grade.
 
 ### Exam
-There will be two exams: mid‐term and final exam. Both exams will consist of two parts – multiple choice questions and practical exercises. The final exam is non-cumulative: the topics covered in the midterm will not be questioned in the final exam.
+There will be two exams: midterm and final. The exams are non-cumulative: the topics covered in the midterm will not be questioned in the final exam. Questions will be about testing whether 1) students understand the concepts of essential components of data analytics and 2) implement what is needed to answer questions using R.
 
 ## Grading Policies
 Each unit of work assigned is graded, either by the instructor or the TA. Every effort will be made to complete grading in one week, although schedule conflicts may cause delays sometimes. The final grade for the course will be determined based on the following weights for each item. Students will be given a grade solely based on the stated requirements. There will be no extra-credit assignment in this course. 
@@ -98,201 +67,13 @@ F 	           Below 73
 --------------------------------
 
 ### Late submission penalty
-The score for quizzes and assignments that are submitted late will be deducted 5% per day.
+A late submission will be deducted 5% per day.
 
 ### Deferring exam
-Deferring exam will only be provided for **extraordinary circumstances** such as accidents, surgery, etc. When it happens, the student must contact the instructor **in advance** of the due date and should be able to provide supporting documentation. 
+Deferring exam will only be provided for **extraordinary circumstances** such as accidents, medical surgery, etc. When it happens, the student must contact the instructor **in advance** of the due date and should be able to provide supporting documentation. 
 
 ### Appealing Grade
-To appeal to a grade, you must write a letter explaining your position within seven days after receiving your graded assignment. Document your points with the appropriate course material. After reviewing your explanation, we will either award you additional points or schedule a meeting with you to discuss the disputed issue(s). 
-
-
-## Course schedule
-The below shows the topics, course activities, and assignments of each module. Each module starts at 6:00 pm on the date shown in the schedule, and all the course materials will be available by the time. All the assignments and quizzes must be submitted by 5:59 pm on their due dates before the next week schedule starts. The schedule is subject to change, and the changes, if any, will be announced on the Canvas page. 
-
-```{r schedule, echo=FALSE}
-n = 1:16
-date = week_after(n)
-topic = c(
-  'Intro to data mining and toolkit',
-  'R basics',
-  'Workflow: R markdown and Git/Github',
-  'Data visualization 1 (ggplot2)',
-  'Exploratory data analysis (dplyr)',
-  'Data transformation (dplyr)',
-  'Data visualization 2 (ggplot2)',
-  'Data import and export',
-  'Tidy data (tidyr)',
-  'Joining data (dplyr)',
-  'Regression 1 (Univariate)',
-  'Regression 2 (Multivariate, model selection)',
-  'Decision tree',
-  'Clustering',
-  'Tidytext and sentiment analysis',
-  'Intro to machine (and deep) learning'
-)
-
-# URL must include https or http
-slide_links <- c(
-  "https://www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com"
-)
-
-lab_links <- c(
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com"
-)
-
-hw_links <- c(
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  NA,
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com",
-  "www.google.com"
-)
-
-exam_links <- c(
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  "www.google.com",
-  NA,
-  NA,
-  NA,
-  NA,
-  NA,
-  "www.google.com"
-)
-
-addLink <- function(link, img, color) {
-  paste0("<a href=\"", link, "\">", as.character(fa(name = img, fill = color)), "</a>")
-}
-noLink <- function(img, color) {
-  fa(name = img, fill = color)
-}
-
-addicon <- function(i, img){
-  if (is.na(i)==FALSE) {
-    addLink(i, img, 'steelblue')
-  }
-  else {
-    noLink(img, 'lightblue')
-  }
-}
-
-slide <- sapply(slide_links, addicon, img='folder')
-lab <- sapply(lab_links, addicon, img='flask')
-hw <- sapply(lab_links, addicon, img='code')
-exam <- sapply(lab_links, addicon, img='edit')
-
-df <- tibble(
-  Date=date,
-  Topic=topic,
-  Slide=slide,
-  Lab=lab,
-  HW=hw,
-  Exam=exam
-)
-knitr::kable(df)
-```
-
-#### `r week_after(1)`Intro to data mining and toolkit
-* Lab1 (due: `r due_in(1,1)`)
-* DC1 - Intro to R (due: `r due_in(1,1)`)
-
-#### `r week_after(2)`R basics
-* DC2 - Intermediate R (due: `r due_in(2,1)`)
-
-#### `r week_after(3)`Workflow: R markdown and Git/Github
-
-#### `r week_after(4)`Data visualization 1 (ggplot2)
-* DC3 - Intro to Data Visualization with ggplot2 (due: `r due_in(4,1)`)
-* Assignment 1 - Data visualization (due: `r due_in(4,2)`)
-
-#### `r week_after(5)`Exploratory data analysis (dplyr)
-* DC4 - Exploratory Data Analysis in R
-
-#### `r week_after(6)`Data transformation (dplyr)
-* DC5 - Data manipulation with dplyr
-
-#### `r week_after(7)`Data visualization 2 (ggplot2)
-
-#### `r week_after(8)`Data import and export
-* DC6 - Introduction to Importing Data in R
-
-#### `r week_after(9)`Tidy data (tidyr)
-
-#### `r week_after(10)`Joining data (dplyr)
-
-#### `r week_after(11)`Regression 1 (Univariate)
-
-#### `r week_after(12)`Regression 2 (Multivariate, model selection)
-* DC8 - Introduction to regression in R
-* Assignment 2 - Regression analysis (due: `r due_in(11,2)`)
-
-#### `r week_after(13)`Decision tree
-
-#### `r week_after(14)`Clustering
-* DC9 - Unsupervised learning in R
-* Assignment 3 - Clustering (due: `r due_in(13,2)`)
-
-#### `r week_after(15)`Tidytext and sentiment analysis
-* DC10 - ML in R with caret
-
-#### `r week_after(15)`Intro to machine (and deep) learning
-
-#### extra
-Predictive vs. confirmatory analysis
-Causation vs. correlation
-Hypothesis testing
-Overfitting and cross-validation
-Coding style
-More on R data type: factor/String/Date
+To appeal to a grade, the student must write a letter explaining your position within seven days after receiving your graded assignment. Document your points with the appropriate course material. After reviewing your explanation, I will either award you additional points or schedule a meeting with you to discuss the disputed issue(s). 
 
 ## Lockdown Browser
 This course requires the use of LockDown Browser for taking online exams (midterm and final exams only). The computer used for taking exams must also have a built-in or external webcam. The LockDown Browser software prevents a user from accessing other applications or going to other websites during an exam. The webcam (Respondus Monitor) records you during the exam to ensure you're only using resources that are permitted. Together, these tools make it possible for students to take online exams from any location, and at times that are convenient. It also creates a fair testing environment for everyone in the course. You will need to download and install LockDown Browser ([click here](https://www.respondus.com/lockdown/download.php?id=451214388)) to your computer and use it to take tests (instead of using your normal browser). Note: Do not download a copy of LockDown Browser from elsewhere on the Internet; those versions won't work at our institution.
