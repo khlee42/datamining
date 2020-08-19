@@ -53,10 +53,20 @@ addicon <- function(i, img){
   }
 }
 
-slide <- sapply(slide_links, addicon, img='folder')
-dc <- sapply(dc_links, addicon, img='flask')
-hw <- sapply(hw_links, addicon, img='code')
-exam <- sapply(exam_links, addicon, img='edit')
+week <- 0
+publish <- function(list){
+  for(i in 1:15){
+    if(i > week){
+      list[i] <- NA
+    }
+  }
+  list
+}
+
+slide <- sapply(publish(slide_links), addicon, img='folder')
+dc <- sapply(publish(dc_links), addicon, img='flask')
+hw <- sapply(publish(hw_links), addicon, img='code')
+exam <- sapply(publish(exam_links), addicon, img='edit')
 
 df <- tibble(
   Date=date,
