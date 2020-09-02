@@ -4,8 +4,6 @@ author: "Kyunghee Lee"
 output: 
   html_document:
     theme: cosmo
-    toc: TRUE
-    toc_float: TRUE
     highlight: pygments
 ---
 
@@ -20,7 +18,7 @@ library(kableExtra)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/F8u45gB1cPM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-[Slide `r fa("file", fill = "steelblue")`](m1_t01-welcome.html)
+[Slide `r fa("file", fill = "steelblue")`](m1_t01-welcome.html){target="_blank"}
 
 To download a pdf copy, 
 
