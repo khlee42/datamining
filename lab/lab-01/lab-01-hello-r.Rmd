@@ -1,0 +1,158 @@
+---
+title: "Lab 01 - Hello R!"
+author: "None"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+```
+
+The main goal of this lab is to introduce you to R and RStudio, which we will be using throughout the course. All the course materials of this course including lectures, assignments, and exams are based on R, so I can't stress enought how important it is for you to build some basic fluency in R. As the course progresses, you are encouraged to explore beyond what the labs dictate.
+
+Today we begin with the fundamental building blocks of R and RStudio: the interface, reading in data, and basic commands. And we spend some times with R markdown to generate a reproducible report. 
+
+## Install R/Rstudio
+First of all, we need to install both R and Rstudio. You can think of Rstudio as a dashboard and R as the engine behind it. As you don't open your hood to see the car engine everyday, most of the time you will be interacting only with Rstudio.
+
+### For Mac
+**To Install R**  
+
+- Click [here](https://repo.miserver.it.umich.edu/cran/bin/macosx/R-4.0.2.pkg) to download `R-4.0.2.pkg`.
+- Save the `.pkg` file on your computer, double-click it to open, and follow the installation instructions.
+
+**To Install RStudio**
+
+- Click [here](https://download1.rstudio.org/desktop/macos/RStudio-1.3.1073.dmg) to download `RStudio-1.3.1073.dmg`
+- Save the `.dmg` file on your computer, double-click it to open, and then drag and drop it to your applications folder.
+
+### For Windows
+**To Install R**
+
+- Click [here](https://repo.miserver.it.umich.edu/cran/bin/windows/base/R-4.0.2-win.exe) to download `R-4.0.2-win.exe`.
+- Save the `.exe` file on your computer, double-click it to open, and follow the installation instructions.
+
+**To Install RStudio**
+
+- Click [here](https://download1.rstudio.org/desktop/windows/RStudio-1.3.1073.exe) to download `RStudio-1.3.1073.exe`
+- Save the `.exe` file on your computer, double-click it to open, and follow the installation instructions.
+
+
+## Getting started
+
+Each of your labs will begin with the following steps. Going forward each lab will start with a "Getting started" section but details will be a bit more sparse than this. You can always refer back to this lab for a detailed list of the steps involved for getting started with an assignment.
+
+- Click `Code` on the upper-right corner and then `Download Rmd`
+- Save RMD file on your computer  
+- Double-click file or open file on R studio
+- You're ready!
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/Eh1zUwwweQY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Packages
+
+R is an open-source language, and developers contribute functionality to R via packages. In this lab we will work with two packages: `datasauRus` which contains the dataset, and `tidyverse` which is a collection of packages for doing data analysis in a "tidy" way.
+
+Install these packages by running the following in the console.
+
+```{r eval = FALSE}
+install.packages("tidyverse")
+install.packages("datasauRus")
+```
+
+Now that the necessary packages are installed, you should be able to Knit your document and see the results. You need to install packages only once, unless you delete the packages or re-install R/Rstudio.
+
+If you'd like to run your code in the Console as well, you'll also need to load the packages there. To do so, run the following in the console. 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse) 
+library(datasauRus)
+```
+
+Note that the packages are also loaded with the same commands in your R Markdown document.
+
+## R markdown
+
+### What's R Markdown Document (RMD)?
+This document is called R markdown document. RMD is a fully-reproducible report where codes are stored together with narratives; narratives (like this one) make it easy to figure out what a report is about, especially in the future when you have probably forgotten the report has even existed. Every time we "knit" a RMD, it is re-complied and produces a report with the updated results, if there has been any changes on the codes, while keeping the narratives same. It will generate a `.html` file which you can open on any web browser by double-clicking it.  
+
+### YAML
+
+The top portion of your R Markdown file (between the three dashed lines) is called YAML. It stands for "YAML Ain't Markup Language". It is a human friendly data serialization standard for all programming languages. All you need to know is that this area is called the YAML (we will refer to it as such) and that it contains meta information about your document.
+
+- Open the R Markdown (Rmd) file in your project, change the author name to your name, and knit the document. You should be able to see your name on the knitted html document.  
+
+### How to run RMD
+Most of the time we will just knit the document by clicking `Knit` button. It will run all the code chunks from the beginning. If you like to run a specific code chunk at a time, click the play button "Run current code chunk" located at the upper-right corner of a code chunk.    
+
+Remember: code chunks may be dependent, so running a code chunk in the middle of a document could cause errors because it may require some of the code chunks executed before. This is why `Knit` is the safe bet because it runs codes from the top.  
+
+## The data
+
+The data frame we will be working with today is called `datasaurus_dozen` and it's in the `datasauRus` package. Actually, this single data frame contains 13 datasets, designed to show us  why data visualisation is important and how summary statistics alone can be misleading. The different datasets are maked by the `dataset` variable.
+
+```{marginfigure}
+If it's confusing that the data frame is called `datasaurus_dozen` when it contains 13 datasets, you're not alone! Have you heard of a [baker's dozen](https://en.wikipedia.org/wiki/Dozen#Baker's_dozen)?
+```
+
+To find out more about the dataset, type the following in your Console: `?datasaurus_dozen`. A question mark before the name of an object will always bring up its help file. This command must be ran in the Console.
+
+## Exercises
+
+1. Based on the help file, how many rows and how many columns does the `datasaurus_dozen` file have? What are the variables included in the data frame? 
+
+Let's take a look at what these datasets are. To do so we can make a *frequency table* of the dataset variable:
+
+```{r}
+datasaurus_dozen %>%
+  count(dataset) %>%
+  print(13)
+```
+You can ignore about what each line of the code means for now. We will get there eventually. What's important here is your R/Rstudio is working fine!  
+
+2. Plot `y` vs. `x` for the `dino` dataset. Then, calculate the correlation coefficient between `x` and `y` for this dataset.
+
+Below is the code you will need to complete this exercise. 
+
+```{r}
+dino_data <- datasaurus_dozen %>%
+  filter(dataset == "dino")
+```
+
+Again, we come back to this later in the course. But for those who can't wait, what the code does:
+
+The code is to pipe it into the `filter` function to filter for observations where `dataset == "dino"`. And it stores the resulting filtered data frame as a new data frame called `dino_data`.  
+
+A couple of things worth mentioning as they will frequent throughout the course:
+
+- the pipe operator: `%>%`, takes what comes before it and sends it as the first argument to what comes after it. So here, we're saying `filter` the `datasaurus_dozen` data frame for observations where `dataset == "dino"`.
+- the assignment operator: `<-`, assigns the name `dino_data` to the filtered data frame.  
+
+Next, we need to visualize these data. We will use the `ggplot` function for this. Its first argument is the data you're visualizing. Next we define the `aes`thetic mappings. In other words, the columns of the data that get mapped to certain aesthetic features of the plot, e.g. the `x` axis will represent the variable called `x` and the `y` axis will represent the variable called `y`. Then, we add another layer to this plot where we define which `geom`etric shapes we want to use to represent each observation in the data. In this case we want these to be points,m hence `geom_point`.
+
+```{r fig.fullwidth=TRUE}
+ggplot(data = dino_data, mapping = aes(x = x, y = y)) +
+  geom_point()
+```
+
+3. Plot `y` vs. `x` for the `star` dataset. Which part of the code would you change?
+
+```{r}
+dino_data <- datasaurus_dozen %>%
+  filter(dataset == "star")
+```
+
+```{r fig.fullwidth=TRUE}
+ggplot(data = dino_data, mapping = aes(x = x, y = y)) +
+  geom_point()
+```
+
+You're done with your first lab! Each lab contains the codes covered in the lecture slide and a couple of exercises like the above to help you practice. Spend as much time as you can on the labs, and like I said, explore beyond what the labs tell you to do - that's key to improving your fluency in R.  
+

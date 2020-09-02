@@ -32,6 +32,10 @@ knitr::kable(df, escape = F, col.names=NULL) %>%
 * [Grolemund, Garrett, and Wickham, Hadley. R for data science, 1st Edition, O'Reilly Media](https://r4ds.had.co.nz/)  
 * [Irizarry, Rafael, Introduction to Data Science, 1st Edition, Chapman and Hall/CRC](https://rafalab.github.io/dsbook/)
 
+#### Tech
+* [DataCamp Tutorial](./lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial)
+* [R/Rstudio](./lab/lab-01/lab-01-hello-r.html)
+
 #### Review [Course Policies](policies.html)
 
 Each module starts at 6:00 pm on the date shown in the schedule. All the evaluations (exercise, homework, exam) must be submitted by 5:59 pm on their due dates before the next week module starts. The syllabus and policies are preliminary and always subject to change.
@@ -53,7 +57,7 @@ addicon <- function(i, img){
   }
 }
 
-week <- 0
+week <- 1
 publish <- function(list){
   for(i in 1:15){
     if(i > week){
@@ -63,15 +67,17 @@ publish <- function(list){
   list
 }
 
-slide <- sapply(publish(slide_links), addicon, img='folder')
-dc <- sapply(publish(dc_links), addicon, img='flask')
-hw <- sapply(publish(hw_links), addicon, img='code')
-exam <- sapply(publish(exam_links), addicon, img='edit')
+lecture <- sapply(publish(lecture_links), addicon, img='folder')
+lab <- sapply(publish(lab_links), addicon, img='flask')
+dc <- sapply(publish(dc_links), addicon, img='code')
+hw <- sapply(publish(hw_links), addicon, img='edit')
+exam <- sapply(publish(exam_links), addicon, img='calendar-check')
 
 df <- tibble(
   Date=date,
   Topic=topic,
-  Slide=slide,
+  Lecture=lecture,
+  Lab=lab,
   Ex.=dc,
   HW=hw,
   Exam=exam

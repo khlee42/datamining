@@ -19,7 +19,7 @@ due_in <- function(adv, due){
 n = 1:15
 date = week_after(n)
 topic = c(
-  'Intro to data mining and toolkit',
+  'Introduction to data analytics',
   'R basics, R markdown, workflow',
   'Data visualization 1 (ggplot2)',
   'Exploratory data analysis (dplyr)',
@@ -45,8 +45,8 @@ topic = c(
 # More on R data type: factor/String/Date
 
 # URL must include https or http
-slide_links <- c(
-  "./slide/slide1.html",
+lecture_links <- c(
+  "./lecture/w1-welcome/lecture1.html",
   "./slide/slide2.html",
   "./slide/slide3.html",
   "./slide/slide4.html",
@@ -63,17 +63,35 @@ slide_links <- c(
   NA
 )
 
+lab_links <- c(
+  "./lab/lab-01/lab-01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  NA,
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-01/lab01-hello-r.html",
+  NA
+)
+
 dc_links <- c(
-  "./assignment/dc1.html",
-  "./assignment/dc2.html",
-  "./assignment/dc3.html",
-  "./assignment/dc4.html",
-  "./assignment/dc5.html",
+  "./exercise/dc1.html",
+  "./exercise/dc2.html",
+  "./exercise/dc3.html",
+  "./exercise/dc4.html",
+  "./exercise/dc5.html",
   NA,
-  "./assignment/dc6.html",
-  "./assignment/dc7.html",
+  "./exercise/dc6.html",
+  "./exercise/dc7.html",
   NA,
-  "./assignment/dc8.html",
+  "./exercise/dc8.html",
   NA,
   NA,
   NA,
@@ -87,12 +105,12 @@ hw_links <- c(
   NA,
   NA,
   NA,
-  './assignment/hw1.html',
+  './homework/hw1.html',
   NA,
   NA,
   NA,
   NA,
-  "./assignment/hw2.html",
+  "./homework/hw2.html",
   NA,
   NA,
   NA,

@@ -1,0 +1,63 @@
+---
+title: "Lecture 1 - Introduction to Data Analytics"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/F8u45gB1cPM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Slide `r fa("file", fill = "steelblue")`](m1_t01-welcome.html)
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+
+# `r fa("dumbbell", fill = "steelblue")` DataCamp Tutorial
+
+Click the link to create your DataCamp account. You must use `wayne.edu` email address to join.
+https://datacamp.com/groups/shared_links/b0d9298dc2e2b1a875975f0151835ef6022aeaea22fe9e96c5ee5eee55f89045
+
+When you log in, you will see `My Progress` on the left. That's your dashboard where you can track all the assignments and their due dates.  
+
+```{r echo=FALSE, out.width="70%"}
+knitr::include_graphics("dc_my_progress.png")
+```
+
+The first assignment is `Introduction to R`. To start, you can either  
+
+- log into DataCamp, go to your `My_Progress`, and click the assignment you want to start, or
+- on the course syllabus, click `Ex.` icon for this week's module. You will find a direct link to the assignment page on DataCamp. Log in with your DataCamp account and enjoy!
+
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "R4DS", "[Chapter 1 Introduction](https://r4ds.had.co.nz/introduction.html)",
+  "IDS", "[Chapter 1 Getting started with R and RStudio](https://rafalab.github.io/dsbook/getting-started.html)",
+  "IDS", "[Chapter 2 R basics](https://rafalab.github.io/dsbook/r-basics.html)",
+  "IDS", "[Chapter 3 Programming basics](https://rafalab.github.io/dsbook/programming-basics.html)"
+)
+# knitr::kable(df) 
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+

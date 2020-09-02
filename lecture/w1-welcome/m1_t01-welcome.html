@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to data analytics   🚀</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to data analytics <br> 🚀
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+# Course objective
+
+.blockquote[
+*Analytics is the scientific process of transforming data into insights
+for the purpose of making better decisions.* 
+]
+.small[
+.footnote[https://www.informs.org/About-INFORMS/News-Room/O.R.-and-Analytics-in-the-News/Best-definition-of-analytics]
+]
+
+&lt;br&gt;
+
+This is an introductory data analytics course. Upon completion, you will be able to:
+
+- process raw data,
+- explore and visualize,
+- run (simple) statistical analyses, and
+- generate a reproducible document
+
+All using R
+
+---
+
+# Course format
+
+- Weekly modules will go live every Wednesday at 6:00 PM
+- Lecture: to introduce essential concepts and skills
+- Lab: for you to practice what you've learned in lecture (ungraded)
+- Exercise: to improve your R fluency (graded)
+- Homework: 2 individual assignments (graded)
+- Exam: Midterm and final exams (graded)
+- Please see [Syllabus](../../syllabus.html) for detail
+
+---
+
+## Toolkit
+
+This course uses lots of hands-on exercises. You must have access to laptop/desktop and the software ready.
+
+- R and R studio
+- R markdown
+- DataCamp
+- Instructions will be provided when needed
+
+---
+
+## Exercise (50%)
+
+- `DataCamp`: interactive R exercises
+- You can take as many times as you want to complete an exercise until its due, and pass/fail will be given based on whether you have completed it.
+- Each accounts for 5%
+- 10 exercises in total.
+
+---
+
+## Homework (20%)
+
+- HW1: Data wangling and visualization
+- HW2: Data modeling
+- Each accounts for 10%
+
+---
+
+## Exam (30%)
+
+- Midterm (10%)
+- Final (20%)
+- The exams are non-cumulative: the topics covered in the midterm will not be questioned in the final exam. 
+
+---
+
+## Grading policy
+
+&lt;table class="table table-striped" style=""&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Type &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Exercise &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 50% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Homework &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Midterm exam &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 10% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Final exam &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Total &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 100% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;br&gt;
+
+**Late submission: 5% deduction/day; won't be accepted after 10 days**  
+**Deferring exam: Only for extraordinary situations; documentation required**
+
+---
+
+## Academic integrity
+
+- Sharing/reusing code is essential part of any data science project. There is an enormous amount of code available on the web, and you can use any online resources (e.g. StackOverflow, RStudio Community).
+- You are welcome to discuss the problems together and ask for advice.  
+
+&lt;br&gt;
+
+**But**
+- On individual assignments you **may not** directly send or make use of code from another student in this class or from the web,  
+- On exams you must use the Lockdown browser and not communicate with your classmates.
+- Please see [Policies](../../policies.html) for detail
+
+---
+
+class: center, middle
+&lt;img src="img/ds-sexiest-job.png" width="70%" /&gt;
+
+.footnote[https://hbr.org/2012/10/data-scientist-the-sexiest-job-of-the-21st-century]
+
+---
+
+&lt;img src="img/ai-resurgence.png" width="65%" /&gt;
+
+- the infrastructure and classification approaches has been **scaled**, enabling the tackling of ambitious problems on **larger data-sets**.
+
+.small[
+.footnote[https://www.wired.com/insights/2015/03/ai-resurgence-now/]
+]
+
+---
+
+&lt;img src="img/mobile-growth-2019.png" style="display: block; margin: auto;" /&gt;
+
+.small[
+.footnote[https://www.cisco.com/c/dam/m/en_us/network-intelligence/service-provider/digital-transformation/knowledge-network-webinars/pdfs/190320-mobility-ckn.pdf]
+]
+
+---
+
+&lt;img src="img/wef-iot.png" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.blockquote[
+*Along with advanced data analytics, IoT-enabled devices and sensors are helping us reduce air pollution in some of our world’s biggest cities, improve agriculture and our food supply, and even detect and contain deadly viruses.*
+]
+
+.footnote[https://www.weforum.org/agenda/2018/01/6-ways-the-internet-of-things-is-improving-our-lives/]
+
+---
+
+## (Big) Data + (predictive) analytics
+
+&lt;img src="img/history-ml-ai.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+.footnote[https://medium.com/@ODSC/the-history-and-future-of-ai-with-michael-i-jordan-85f9962ff139]
+
+---
+
+## **Target**ed Ad
+
+.pull-left[
+![](img/target-pregnancy.png)&lt;!-- --&gt;
+]
+.pull-right[
+- Target estimated "pregnancy score" based on purchase pattern
+- And, sent coupons according to the stage of pregnancy
+]
+.small[
+.footnote[https://www.forbes.com/sites/kashmirhill/2012/02/16/how-target-figured-out-a-teen-girl-was-pregnant-before-her-father-did/#6298ff1e6668]]
+
+---
+
+## AI recruiter
+
+.pull-left[
+&lt;img src="img/robot-recruiter.jpg" width="50%" /&gt;
+]
+
+.pull-right[
+&lt;iframe width="600" height="340" src="https://www.youtube.com/embed/8QEK7B9GUhM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+]
+
+.small[
+.footnote[https://www.economist.com/business/2013/04/06/robot-recruiters]
+]
+---
+
+class: middle
+
+.blockquote[
+*The AI industry to Big Data is as petrochemical industry was to crude oil.*
+]
+
+&lt;br&gt;
+
+.small[
+https://www.wired.com/insights/2015/03/ai-resurgence-now/
+]
+
+&lt;br&gt;
+
+.blockquote[
+*The more data we put through the machine learning models, the better they get. It’s a virtuous cycle.*
+]
+
+&lt;br&gt;
+
+.small[
+https://enterprisersproject.com/article/2019/10/how-big-data-and-ai-work-together
+]
+
+---
+
+# Course Module
+
+&lt;img src="img/data-science.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Module 1 - Data exploration
+
+&lt;img src="img/data-science-explore.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+- Data exploration: Transform ➡️ Visualize
+
+---
+
+# Module 2 - Data wrangling
+
+&lt;img src="img/data-science-wrangle.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+- Data exploration: Transform ➡️ Visualize  
+- Data wrangling: Import ➡️ Tidy ➡️ Transform  
+
+---
+
+# Module 3 - Modeling
+
+&lt;img src="img/data-science-model.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+- Data exploration: Transform ➡️ Visualize  
+- Data wrangling: Import ➡️ Tidy ➡️ Transform  
+- Modeling: Model 
+
+---
+
+# Module 4 - Communication
+
+&lt;img src="img/data-science-communicate.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+- Data exploration: Transform ➡️ Visualize  
+- Data wrangling: Import ➡️ Tidy ➡️ Transform  
+- Modeling: Model 
+- Communication: Visualize ➡️ Communicate  
+
+---
+
+# Wrap up
+
+- Welcome to the class!
+- Check out the instructions to set up your system ready
+- Questions? Email me at kyunghee.lee@wayne.edu
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+---
+title: "Datacamp Exercise 8"
+subtitle: "Intro to regression in R"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_dc$release[8]`**  
+**Due: `r due_dc$due[8]`**
+
+Linear regression and logistic regression are the two most widely used statistical models and act like master keys, unlocking the secrets hidden in datasets. In this course, you’ll gain the skills you need to fit simple linear and logistic regressions. Through hands-on exercises, you’ll explore the relationships between variables in real-world datasets, including motor insurance claims, Taiwan house prices, fish prices, and more. By the end of this course, you’ll know how to make predictions from your data, quantify model performance, and diagnose problems with model fit.
+
+* Go here to start: https://learn.datacamp.com/courses/introduction-to-regression-in-r
+* If you haven't signed up, click [here](../lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!
