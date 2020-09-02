@@ -19,7 +19,7 @@ due_in <- function(adv, due){
 n = 1:15
 date = week_after(n)
 topic = c(
-  'Introduction to data analytics',
+  'Introduction to Data Analytics',
   'R basics, R markdown, workflow',
   'Data visualization 1 (ggplot2)',
   'Exploratory data analysis (dplyr)',
@@ -46,7 +46,7 @@ topic = c(
 
 # URL must include https or http
 lecture_links <- c(
-  "./lecture/w1-welcome/lecture1.html",
+  "./lecture/w01-welcome/w01-welcome.html",
   "./slide/slide2.html",
   "./slide/slide3.html",
   "./slide/slide4.html",
