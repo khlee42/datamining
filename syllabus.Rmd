@@ -33,7 +33,7 @@ knitr::kable(df, escape = F, col.names=NULL) %>%
 * [Irizarry, Rafael, Introduction to Data Science, 1st Edition, Chapman and Hall/CRC](https://rafalab.github.io/dsbook/)
 
 #### Tech
-* [DataCamp Tutorial](./lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial)
+* [DataCamp Tutorial](./lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial)
 * [R/Rstudio](./lab/lab-01/lab-01-hello-r.html)
 
 #### Review [Course Policies](policies.html)
