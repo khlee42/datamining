@@ -12,7 +12,6 @@ link-citations: yes
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(fontawesome)
 ```
 
 The main goal of this lab is to introduce you to R and RStudio, which we will be using throughout the course. All the course materials of this course including lectures, assignments, and exams are based on R, so I can't stress enought how important it is for you to build some basic fluency in R. As the course progresses, you are encouraged to explore beyond what the labs dictate.
