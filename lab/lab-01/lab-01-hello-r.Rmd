@@ -65,7 +65,7 @@ install.packages("tidyverse")
 install.packages("datasauRus")
 ```
 
-> To Windows users: if you're getting this warning-"Rtools is required to build R packages but is not currently installed"-when installing the packages, please follow the instructions to install `Rtools`. [Jeffrey Leek, Installing Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/#1)
+> To Windows users: if you're getting this warning-"Rtools is required to build R packages but is not currently installed"-when installing the packages, please follow the instructions to install `Rtools`. [Jeffrey Leek, Installing Rtools](http://jtleek.com/modules/01_DataScientistToolbox/02_10_rtools/#1){target="_blank"}
 
 Now that the necessary packages are installed, you should be able to Knit your document and see the results. You need to install packages only once, unless you delete the packages or re-install R/Rstudio.
 
