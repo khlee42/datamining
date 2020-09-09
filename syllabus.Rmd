@@ -57,7 +57,7 @@ addicon <- function(i, img){
   }
 }
 
-week <- 1
+week <- 2
 publish <- function(list){
   for(i in 1:15){
     if(i > week){

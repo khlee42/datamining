@@ -1,8 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700);
 @import url(https://fonts.googleapis.com/css?family=Fira+Mono|Open+Sans);
 
+:root {
+  --main-bg-color: #8CBA60;
+  --main-hg-color: #59724B;
+  --main-font: 'Source Sans Pro'
+}
+
 body { 
-  font-family: 'Source Sans Pro'; sans-serif;
+  font-family: var(--main-font); sans-serif;
   color: #333333;
 }
 p {
@@ -10,16 +16,16 @@ p {
   margin: 0px;
 }
 h2 {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: bold;
-  color: #A7D5E8;
+  font-family: var(--main-font), sans-serif;
+  font-weight: normal;
+  color: var(--main-bg-color);
   font-size: 12px;
   margin: 0 0 0.5em 0;
 }
 h1, h3 {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: var(--main-font), sans-serif;
   font-weight: bold;
-  color: #A7D5E8;
+  color: var(--main-bg-color);
   margin-top: 0px;
   margin-bottom: 20px;
 }
@@ -36,7 +42,7 @@ a, a > code {
 
 /* Sections */
 .inverse {
-  background-color: #A7D5E8;
+  background-color: var(--main-bg-color);
   color: #ffffff;
 }
 .inverse h1, .inverse h2, .inverse h3 {
@@ -56,7 +62,7 @@ a, a > code {
 
 /* Code formatting */
 .remark-code-line-highlighted {
-  background-color: #A7D5E8;
+  background-color: var(--main-bg-color);
 }
 
 .remark-code { 
@@ -192,7 +198,7 @@ ul {
 }
 ul li:before {
   content: "✚"; 
-  color: #A7D5E8; 
+  color: var(--main-bg-color); 
   display: inline-block; 
   width: 1.5em;
   margin-left: -1.5em

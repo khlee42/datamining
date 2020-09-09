@@ -20,7 +20,7 @@ n = 1:15
 date = week_after(n)
 topic = c(
   'Introduction to Data Analytics',
-  'R basics, R markdown, workflow',
+  'R essentials',
   'Data visualization 1 (ggplot2)',
   'Exploratory data analysis (dplyr)',
   'Data transformation (dplyr)',
@@ -47,7 +47,7 @@ topic = c(
 # URL must include https or http
 lecture_links <- c(
   "./lecture/w01-welcome/w01-welcome.html",
-  "./slide/slide2.html",
+  "./lecture/w02-r/w02-r.html",
   "./slide/slide3.html",
   "./slide/slide4.html",
   "./slide/slide5.html",
@@ -65,7 +65,7 @@ lecture_links <- c(
 
 lab_links <- c(
   "./lab/lab-01/lab-01-hello-r.html",
-  "./lab/lab-01/lab01-hello-r.html",
+  "./lab/lab-02/lab-02-r.html",
   "./lab/lab-01/lab01-hello-r.html",
   "./lab/lab-01/lab01-hello-r.html",
   "./lab/lab-01/lab01-hello-r.html",

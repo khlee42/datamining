@@ -1,0 +1,296 @@
+---
+title: "Lab 02 - R essentials"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture 2, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button.
+
+Remember that your code must be inside **R chunks**. We've learned from the lecture 2 that R codes must be inside of the R chunk, surrounded by three backticks. Otherwise, your computer would just treat your code as plain text and won't run it.
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+
+# Variable
+
+## Assign value `<-`
+
+You can assign a value to a variable and use it by referring the name. We use `<-` sign for this.
+
+```{r}
+a <- 12
+b <- 157
+a
+b
+```
+
+Store the result in a variable
+
+```{r}
+c <- a*b
+c
+```
+
+## Data type
+
+R can handle a variety of data including **numeric, logical, character.**
+
+```{r}
+title <- "silicon valley"
+season <- 5
+episode <- 4
+rating <- 4.8
+is_show_finished <- TRUE
+```
+
+## What's the data type?
+
+Use `class()` function to find out
+
+```{r}
+class(title)
+class(season)
+class(rating)
+class(is_show_finished)
+```
+
+Boolean values (TRUE or FALSE) are **logical**
+
+# Vector
+
+## When to use vector?
+
+To store more than one value, we need the combine function `c()` to create a vector
+
+```{r}
+numeric_vector <- c(5,6)
+numeric_vector
+character_vector <- c("season","episode")
+character_vector
+```
+
+## Name vector elements `names()`
+
+```{r}
+names(numeric_vector) <- c("season", "ep")
+numeric_vector
+```
+
+Or, we could use `character_vector` already defined to do the same thing
+```{r}
+names(numeric_vector) <- character_vector
+numeric_vector
+```
+
+Notice the name of the second column has changed from "ep" to "episode"
+
+## Vector calculation
+### Calculation between two vectors
+
+We can do arithmetic calculations on vectors
+
+
+```{r}
+s1_rating_vector <- c(3.4, 2.8, 1, 5, 4.5)
+s2_rating_vector <- c(5, 4.7, 2, 3.4, 2.2)
+episode_vector <- c("ep1", "ep2", "ep3", "ep4", "ep5")
+names(s1_rating_vector) <- episode_vector
+names(s2_rating_vector) <- episode_vector
+s1_rating_vector + s2_rating_vector
+s1_rating_vector * s2_rating_vector
+```
+
+- Important: the numbers of elements in the vectors must be the same
+
+```{r}
+s3_rating_vector <- c(1, 3.2, 5)
+s1_rating_vector + s3_rating_vector
+```
+
+### Calculation within a vector
+
+```{r}
+sum(s1_rating_vector) # sum
+prod(s1_rating_vector) # product
+mean(s1_rating_vector) # average
+sd(s1_rating_vector) # standard deviation
+```
+
+## Compare rating by episode
+
+```{r}
+s1_rating_vector > s2_rating_vector
+```
+
+```{r}
+s1_rating_vector < s2_rating_vector
+```
+
+```{r}
+s1_rating_vector == s2_rating_vector
+```
+
+- `>`, `<`, `==` are called **logical comparison operator**. More on this later!
+
+## Exercise 1
+
+1. What's the average rating for each season?
+
+```{r}
+# write your code below this comment line
+
+
+
+```
+
+
+2. Is the season 1 has a higher average rating than the season 2?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+3. What's the data type of `is_s1_better_than_s2`? [Hint: use class()]
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+
+## Vector selection
+
+### Select vector element with index
+
+```{r}
+s1_ep1 <- s1_rating_vector[1]
+s1_ep1
+s1_ep3 <- s1_rating_vector[3]
+s1_ep3
+```
+
+```{r}
+s1_ep1_and_3 <- s1_rating_vector[c(1,3)]
+s1_ep1_and_3
+```
+
+```{r}
+s1_ep1_through_3 <- s1_rating_vector[1:3]
+s1_ep1_through_3
+```
+
+
+### Select vector element with name
+
+```{r}
+s1_rating_vector
+s1_ep1 <- s1_rating_vector["ep1"]
+s1_ep1
+s1_ep1_and_3 <- s1_rating_vector[c("ep1", "ep3")]
+s1_ep1_and_3
+```
+
+### Select vector element with condition
+
+Which episode has rating > 4?
+
+```{r}
+s1_rating_vector
+s1_ep_above_4 <- s1_rating_vector > 4
+s1_ep_above_4
+s1_rating_vector[s1_ep_above_4]
+```
+
+# Data frame
+
+## When to use data frame?
+
+- A single value `r emo::ji('right_arrow')` variable
+- More than one value `r emo::ji('right_arrow')` vector
+- Multiple vectors `r emo::ji('right_arrow')` data frame
+
+Use `data.frame()` function to store a data set comprising of different data types
+```{r}
+s1_rating_vector <- c(3.4, 2.8, 1, 5, 4.5)
+s2_rating_vector <- c(5, 4.7, 2, 3.4, 2.2)
+episode_vector <- c("ep1", "ep2", "ep3", "ep4", "ep5")
+rating_df <- data.frame(episode_vector, s1_rating_vector, s2_rating_vector)
+```
+
+
+## View data frame
+
+```{r}
+head(rating_df) # first part of data
+str(rating_df) # structure
+```
+
+## Name columns
+
+```{r}
+rating_df <- data.frame(episode=episode_vector, 
+                        season1=s1_rating_vector, 
+                        season2=s2_rating_vector)
+head(rating_df)
+```
+
+## Select columns
+
+```{r}
+rating_df$episode
+rating_df$season1
+rating_df$season2
+```
+
+## Exercise 2
+
+1. Create a numeric vector named `s3_rating_vector` with the five values: 2.3, 4,6, 5.6, 2.0, 3.0
+
+```{r}
+# write your code below this comment line
+
+```
+
+2. What's the average of `s3_rating_vector`?
+
+```{r}
+# write your code below this comment line
+
+```
+
+3. Create a data frame named `rating_df2` that includes the four vectors: episode_vector, s1_rating_vector, s2_rating_vector, and s3_rating_vector
+
+```{r}
+# write your code below this comment line
+
+```
+
+4. What's the average rating of season 2?
+
+```{r}
+# write your code below this comment line
+
+```
+
+5. What's the min rating of season 3? [Hint: use min()]
+
+```{r}
+# write your code below this comment line
+
+```
+
+
+
