@@ -1,0 +1,52 @@
+---
+title: "Lecture 3 - Data visualization 1"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/AvuARxpDWIo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/iXMLAHMJgM4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/WZdDdLJPaGY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/BeD-RZYRdsc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Slide `r fa("file", fill = "steelblue")`](s1-3-data-viz-1.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "R4DS", "[Chapter 3 Data visualization](https://r4ds.had.co.nz/data-visualisation.html){target=\"_blank\"}",
+  "IDS", "[Chapter 6 Introduction to data visualization](https://rafalab.github.io/dsbook/introduction-to-data-visualization.html){target=\"_blank\"}",
+  "IDS", "[Chapter 7 ggplot2](https://rafalab.github.io/dsbook/ggplot2.html){target=\"_blank\"}",
+  "Article", "[Why is Data Visualization Important? What is Important in Data Visualization?](https://hdsr.mitpress.mit.edu/pub/zok97i7p/release/2){target=\"_blank\"}"
+)
+
+# how do I get a copy? https://hbr.org/2016/06/visualizations-that-really-work
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

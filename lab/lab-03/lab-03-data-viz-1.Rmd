@@ -1,0 +1,229 @@
+---
+title: "Lab 03 - Data visualization 1"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# ggplot basic
+
+We're going to use `Starwars` data set. To use it, we first need to call `tidyverse` pkg.
+```{r message=FALSE}
+library(tidyverse)
+starwars
+```
+
+## What's in the Star Wars data?
+
+Take a `glimpse` at the data: 
+
+```{r}
+glimpse(starwars)
+```
+
+Or, you can use `head`:
+
+```{r}
+head(starwars)
+```
+
+Each function shows data in different ways so you can choose which function fits your use case.
+
+## Plotting
+
+To draw a graph, we first need a paper to draw it on. That's where we need `ggplot`: 
+```{r out.width="70%"}
+ggplot(data = starwars, mapping = aes(x = height, y = mass))
+```
+
+To illustrate actual data points, add `geom_point` to the `ggplot` with `+`:
+```{r out.width="70%"}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  geom_point() #<<
+```
+
+## Labeling
+
+To label, we use `labs` function and add it to the ggplot in the same way: 
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters", #<<
+       x = "Height (cm)", y = "Weight (kg)")             #<<
+```
+
+---
+
+## Mass vs. height
+
+.question[
+How would you describe this relationship? What other variables would help us understand data points that don't follow the overall trend? Who is the not so tall but really chubby character?
+]
+
+.small[
+```{r out.width="70%", warning=FALSE,echo=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       x = "Height (cm)", y = "Weight (kg)")
+```
+]
+
+# Aesthetics
+
+## Aesthetics options
+
+## color
+
+You can change the color of data points using `color` option of `ggplot`. Notice that `color` is not a function but an option inside `ggplot`: it goes inside of `ggplot`, rather than outside and combined with `+` as the other functions like `geom_point` do.
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, 
+       mapping = aes(x = height, y = mass, 
+                     color = gender)) + #<<
+  geom_point()
+```
+
+If you put a continuous variable in the color option, `ggplot` uses a gradient of a color, instead of using a different color for each category.
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, 
+       mapping = aes(x = height, y = mass, 
+                     color = birth_year)) + #<<
+  geom_point()
+```
+
+## Size
+
+Similarly, you can change the size using `size` option. Notice that the size changes based on the values of the variable birth_year.
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, 
+       mapping = aes(x = height, y = mass, 
+                     color = gender, 
+                     size = birth_year)) + #<<
+  geom_point()
+```
+
+Let's now increase the size of all points **not** based on the values of a 
+variable in the data:
+
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass, color = gender)) +
+  geom_point(size = 2) #<<
+```
+
+## Shape
+
+```{r out.width="70%", warning=FALSE}
+ggplot(data = starwars, 
+       mapping = aes(x = height, y = mass, 
+                     color = birth_year,
+                     shape = gender)) + #<<
+  geom_point()
+```
+
+# Faceting
+
+We use faceting for drawing multiple graphs for different subsets of data. You can either use `facet_grid` or `facet_wrap` depending on how you want to display. These facet functions use a special syntax below:
+
+- `facet_grid()`: one variable per direction  
+
+    - `rows ~ cols`  
+    - use `.` for no faceting
+
+## `facet_grid`
+This will draw a graph for each gender and display them by column
+
+```{r out.width="80%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  facet_grid(. ~ gender) + #<<
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       subtitle = "Faceted by gender")  #<<
+```
+]
+
+This will draw the same but display them by row, instead of column
+```{r out.width="80%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  facet_grid(gender ~ .) + #<<
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       subtitle = "Faceted by gender")  #<<
+```
+
+If you put variables on the both sides of the `~`, you will see a graph for each combination of these two variables. And, depending on how you specify the order (where you put which variable on which side of `~`), you will see the display order changes. This particular example will put `gender` on row and `hair_color` on column because `gender` is on the left side of the tilde and `hair_color` is on the right side.
+
+```{r out.width="80%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  facet_grid(gender ~ hair_color) + #<<
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       subtitle = "Faceted by gender and hair_color")  #<<
+```
+
+## `facet_wrap()`: to specify the number of columns in graph
+
+`facet_wrap` requires an additional parameter `ncol`. It's simply to specify how many columns you want to display graphs with.
+```{r out.width="80%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+  facet_wrap(gender ~ ., ncol=2) + #<<
+  geom_point() +
+  labs(title = "Mass vs. height of Starwars characters",
+       subtitle = "Faceted by gender")  #<<
+```
+
+# Exercise
+
+1. Plot a graph with `birth_year` on x-axis and `mass` on y-axis using `ggplot` and `geom_point`.
+```{r}
+# write your code below this comment line
+
+```
+
+2. Title the graph "Mass vs. age"
+```{r}
+# write your code below this comment line
+
+```
+
+3. Label x-axis as "Age" and y-axis as "Mass"
+```{r}
+# write your code below this comment line
+
+```
+
+4. Change the color of data points based on the value of `height`
+```{r}
+# write your code below this comment line
+
+```
+
+5. Change the shape of data points based on the value of `gender` 
+```{r}
+# write your code below this comment line
+
+```
+
+6. Use `facet_grid` to draw this graph, one for each `gender` and display them by column
+```{r}
+# write your code below this comment line
+
+```
+
+7. Use `facet_wrap` to draw this graph, one for each `gender`, and display them with 1 column. [Hint: change `ncol` option]
+```{r}
+# write your code below this comment line
+
+```

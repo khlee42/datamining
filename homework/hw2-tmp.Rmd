@@ -1,0 +1,117 @@
+---
+title: "Homework 2 - Data analysis"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_hw$release[2]`**  
+**Due: `r due_hw$due[2]`**
+
+In this homework, ...
+
+Change the author name to yours
+
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+# library(dplyr)
+# library(tidyr)
+houses <- read.csv("Boston_house_prices.csv")
+```
+
+
+# Question 1
+
+- Q1-1. Spread the data out to multiple columns, with the shop type (Starbucks vs. Dunkin Donuts) being the column name (key) and the shops variable the value (Hint: tidyr).
+- Q1-2. Delete observations that contain at least one missing value or invalud value (e.g. negative income).
+```{r}
+houses1 <- houses %>%
+  spread(key =shop_type, value = shops)
+
+houses2 <- houses1 %>%
+  na.omit() %>%
+  filter(median_income >= 0)
+```
+
+# Question 2
+- Q2-1. To examine the relationship between house prices and Starbucks, make a scatter plot using ggplot2.
+- Q2-2. Repeat Q2-1 using Dunkin Donuts instead of Starbucks.
+```{r}
+ggplot(houses2, aes(x = starbucks, y = house_price_index)) + 
+  geom_point() + 
+  geom_smooth(method="lm")
+
+
+ggplot(houses2, aes(x = dunkin_donuts, y = house_price_index)) + 
+  geom_point() + 
+  geom_smooth(method="lm")
+```
+
+# Question 3
+- Q3. Make a linear regression model to predict house prices based on the number of Starbucks and Dunkin Donuts.
+```{r}
+lm(house_price_index ~ starbucks + dunkin_donuts, data = houses2) %>%
+  summary()
+```
+
+# Question 4
+One might argue that neighborhoods where Starbucks are located are relatively rich. Does Starbucks have a predictive power for house prices, even after controlling for household incomes and population?
+
+- Q4-1. Make new variables by taking log10 to median_income and population.
+- Q4-2. Make a linear regression model to predict house prices based on the number of Starbucks and Dunkin Donuts, as well as (logarithm of) household incomes and population.
+```{r}
+houses2 <- houses2 %>%
+  mutate(log_income = log10(median_income), log_pop = log10(population))
+
+lm(house_price_index ~ starbucks + dunkin_donuts + log_income + log_pop, data = houses2) %>%
+  summary()
+```
+
+# Question 5
+The dynamics of house prices might vary across counties in Boston.
+
+- Q5-1. Separate the plot resulting from Question 2 by county.
+- Q5-2. Add county variable to the previous linear regression model (from Question 4).
+
+```{r}
+ggplot(houses2, aes(x = starbucks, y = house_price_index)) + 
+  geom_point(aes(color=county)) + 
+  geom_smooth(method="lm") + 
+  facet_wrap(~county)
+
+
+ggplot(houses2, aes(x = dunkin_donuts, y = house_price_index)) + 
+  geom_point(aes(color=county)) + 
+  geom_smooth(method="lm") + 
+  facet_wrap(~county)
+
+
+lm(house_price_index ~ starbucks + dunkin_donuts + log_income + log_pop + county, data = houses2) %>%
+  summary()
+```
+
+# Question 6
+
+Based on your analysis, do you agree or disagree that Starbucks is the bellwether of rise in house prices?
+
+```{r}
+
+```
+
+
