@@ -22,6 +22,6 @@ knitr::read_chunk('../global.R')
 
 Once you've started learning tools for data manipulation and visualization like dplyr and ggplot2, this course gives you a chance to use them in action on a real dataset. You'll explore the historical voting of the United Nations General Assembly, including analyzing differences in voting between countries, across time, and among international issues. In the process you'll gain more practice with the dplyr and ggplot2 packages, learn about the broom package for tidying model output, and experience the kind of start-to-finish exploratory analysis common in data science.
 
-* Go here to start: https://learn.datacamp.com/courses/case-study-exploratory-data-analysis-in-r
-* If you haven't signed up, click [here](../lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* Go here to start: [https://learn.datacamp.com/courses/case-study-exploratory-data-analysis-in-r](https://learn.datacamp.com/courses/case-study-exploratory-data-analysis-in-r){target="_blank"}
+* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

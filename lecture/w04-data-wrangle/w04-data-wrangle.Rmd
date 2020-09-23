@@ -1,0 +1,49 @@
+---
+title: "Lecture 4 - Data wrangling"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/CJ1aC2JJUPY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/XYfGlZXEYAU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/viWgRfIz5VI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Slide `r fa("file", fill = "steelblue")`](s1-4-data-wrangle.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "R4DS", "[Chapter 5 Data transformation](https://r4ds.had.co.nz/transform.html){target=\"_blank\"}",
+  "IDS", "[Chapter 4 The tidyverse](https://rafalab.github.io/dsbook/tidyverse.html){target=\"_blank\"}",
+  "Article", "[Why is Data Visualization Important? What is Important in Data Visualization?](https://hdsr.mitpress.mit.edu/pub/zok97i7p/release/2){target=\"_blank\"}"
+)
+
+# how do I get a copy? https://hbr.org/2016/06/visualizations-that-really-work
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

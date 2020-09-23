@@ -23,8 +23,8 @@ knitr::read_chunk('../global.R')
 Importing data into R should be the easiest step in your analysis. Unfortunately, that is almost never the case. Data can come in many formats, ranging from .csv and text files, to statistical software files, to databases and HTML data. Knowing which approach to use is key to getting started with the actual analysis. In this course, you’ll start by learning how to read .csv and text files in R. You will then cover the readr and data.table packages to easily and efficiently import flat file data.
 
 * Go here to start: 
-https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-data-from-flat-files-with-utils?ex=1  
-https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-excel-data?ex=1  
+[https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-data-from-flat-files-with-utils?ex=1](https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-data-from-flat-files-with-utils?ex=1){target="_blank"}  
+[https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-excel-data?ex=1](https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-excel-data?ex=1){target="_blank"}  
 
-* If you haven't signed up, click [here](../lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

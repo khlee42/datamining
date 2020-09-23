@@ -1,0 +1,251 @@
+---
+title: "Lab 04 - Data wrangling"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Data: Hotel bookings
+
+As always, let's call `tidyverse` first.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+Unlike the other prior labs where we import data from packages, we're going to import a csv file this time. To do this, you first need to download `hotels.csv` from [this download link](https://khlee42.github.io/datamining/lab/lab-04/hotels.csv){target="_blank"} and save it in the same directory where you downloaded this RMD file. Both RMD and csv file must be in the same directory!
+
+```{r message=FALSE}
+hotels <- read_csv("hotels.csv")
+```
+
+Once you've loaded the data, take a look at it using `names` (or `glimpse`, `head`, or `str`). A brief description about the data: 
+
+- Data from two hotels: one resort and one city hotel
+- Observations: Each row represents a hotel booking
+- Goal for original data collection: Development of prediction models to classify a hotel booking's likelihood to be cancelled ([Antonia et al., 2019](https://www.sciencedirect.com/science/article/pii/S2352340918315191#bib5))
+
+```{r message=FALSE}
+names(hotels)
+```
+
+# Manipulate columns
+
+## `select` to keep variables
+
+To select a variable, use `%>%` and `select` function. 
+```{r}
+hotels %>%
+  select(hotel)
+```
+
+To select multiple variables, simply list the columns inside:
+```{r}
+hotels %>% 
+  select(hotel, lead_time, agent)
+```
+
+
+## `select` to exclude variables
+
+You can also select which variable to **exclude**. All you need is `-` sign and put it in front of the variable to exclude. The code below is to select all variables except agent.
+```{r}
+hotels %>%
+  select(-agent) #<<
+```
+
+## `select` variables with certain characteristics
+
+`select` can also do search variable names for specific keywords. The below is to select variables whose name **starts** with "arrival":
+```{r}
+hotels %>%
+  select(starts_with("arrival")) #<<
+```
+And, this one is to select variables whose name **ends** with "type":
+```{r}
+hotels %>%
+  select(ends_with("type")) #<<
+```
+
+## `mutate` to add a new variable
+
+`mutate` is used to create a new variable in a data set. Let's start with a simple one: copy the children variable and add it to a new variable named children2:
+```{r}
+hotels %>% 
+  mutate(children2 = children) %>% 
+  select(children, children2)
+```
+Instead of copy, let's make a variable that requires some calculation. The below is to create a variable called "little_ones" that is the sum of "children" and "babies":
+```{r}
+hotels %>%
+  mutate(little_ones = children + babies) %>% 
+  select(children, babies, little_ones) %>% 
+  arrange(desc(little_ones))
+```
+The arrange function at the end is used to sort the data in the descending order of "little_ones."
+
+# Manipulate rows
+
+## `slice` for certain row numbers
+`slice` requires two arguments: the starting position and the end position. e.g., to slice the first five row, the starting position is one and the end position is 5:
+```{r}
+hotels %>%
+  # slice the first five rows  # this line is a comment
+  #select(hotel) %>%           # this one doesn't run
+  slice(1:5)                   # this line runs
+```
+Notice that there are two additional lines between `hotels` and `slice()`. They are comments as they come after `#`. Comments are not executable, and won't affect your code output. You can leave as many comments as you want.
+
+To slice the last five rows, first we need to figure out the index for the last row in the data. You can get the number from `nrow()` and use that number in `slice()` to identify the starting and end positions:
+```{r}
+# last five
+last_row <- nrow(hotels)         # nrow() gives the number of rows in a data frame
+hotels %>%
+  slice((last_row - 4):last_row) #<<
+```
+
+## `filter` to select a subset of rows
+
+Using `filter()`, you can filter observations with any conditions you want, like equality condition:
+```{r}
+# bookings in City Hotels
+hotels %>%
+  filter(hotel == "City Hotel")
+```
+
+many conditions at once:
+```{r}
+hotels %>%
+  filter( 
+    adults == 0,  
+    children >= 1 
+    ) %>% 
+  select(adults, babies, children)
+```
+
+Or even more complex conditions that involve logical operators:
+
+```{r}
+# bookings with no adults and some children or babies in the room
+hotels %>%
+  filter( 
+    adults == 0,     
+    children >= 1 | babies >= 1     # | means or  #<<
+    ) %>%
+  select(adults, babies, children)
+```
+
+This is a list of the logical operators in R for your reference.
+
+operator    | definition                   || operator     | definition
+------------|------------------------------||--------------|----------------
+`<`         | less than                    || `x & y`      | `x` AND `y`
+`<=`        |	less than or equal to        || `x`&nbsp;&#124;&nbsp;`y`   | `x` OR `y` 
+            |                              || `!x`         | not `x`
+`>`         | greater than                 || `is.na(x)`   | test if `x` is `NA`
+`>=`        |	greater than or equal to     || `!is.na(x)`  | test if `x` is not `NA`
+`==`        |	exactly equal to             || `x %in% y`   | test if `x` is in `y`
+`!=`        |	not equal to                 || `!(x %in% y)`| test if `x` is not in `y`
+
+## Select unique rows
+
+```{r}
+hotels %>% 
+  distinct(market_segment)
+```
+
+
+# Explore data
+
+## `count` to create frequency tables
+
+```{r}
+# alphabetical order by default
+hotels %>%
+  count(market_segment) #<<
+```
+
+## `count` and `arrange`
+
+```{r}
+# ascending frequency order
+hotels %>%
+  count(market_segment) %>%
+  arrange(n) #<<
+```
+
+## `summarise` for summary stats
+`summarise` can be used for multiple summary statistics as well
+
+```{r}
+hotels %>%
+  summarise(
+    min_adr = min(adr),
+    mean_adr = mean(adr),
+    median_adr = median(adr),
+    max_adr = max(adr)
+    )
+```
+## `group_by` for grouped operations
+```{r}
+# mean average daily rate for all booking at city and resort hotels
+hotels %>%
+  group_by(hotel) %>% #<<
+  summarise(mean_adr = mean(adr))
+```
+
+
+# Exercise
+
+1. Add a variable "little_ones" that is the sum of "children" and "babies" to "hotels" data frame
+```{r}
+# write your code below this comment line
+
+
+```
+
+2. Choose booking records with more than one "little_ones", select the three columns ("hotel", "country", "little_ones"), and save the output as "booking_with_littleone"
+```{r}
+# write your code below this comment line
+
+
+```
+3. Using "booking_with_littleone", calculate the average number of little_ones (hint: `summarise()`)
+```{r}
+# write your code below this comment line
+
+```
+
+4. Using "booking_with_littleone", calculate the average number of little_ones by country [hint: `group_by()`]
+```{r}
+# write your code below this comment line
+
+```
+
+5. Using "booking_with_littleone", count the number of observations for each value of "little_ones" and save the output as "freq_by_little" [hint: use `count()` to create a frequency table based on "little_ones"]
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+6. Using "freq_by_little", calculate the probability for each value of "little_ones" [hint: prop = n / sum(n) ]
+```{r}
+# write your code below this comment line
+
+
+```
+

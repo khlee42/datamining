@@ -22,6 +22,6 @@ knitr::read_chunk('../global.R')
 
 So far you've been answering questions about individual country-year pairs, but you may be interested in aggregations of the data, such as the average life expectancy of all countries within each year. Here you'll learn to use the group by and summarize verbs, which collapse large datasets into manageable summaries.
 
-* Go here to start: https://campus.datacamp.com/courses/introduction-to-the-tidyverse/grouping-and-summarizing
-* If you haven't signed up, click [here](../lecture/w1-welcome/lecture1.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* Go here to start: [https://campus.datacamp.com/courses/introduction-to-the-tidyverse/grouping-and-summarizing](https://campus.datacamp.com/courses/introduction-to-the-tidyverse/grouping-and-summarizing){target="_blank"}
+* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!
