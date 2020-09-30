@@ -1,0 +1,335 @@
+---
+title: "Lab 05 - Data visualization 2"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Packages
+For this lab, we need `tidyverse` and `nycflights13` packages. Use `install.packages()` to install them if you haven't yet.
+
+# Starwars
+
+First, we need to load our Starwars data set, which is in the `tidyverse` package. Let's load it up.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+glimpse(starwars)
+```
+
+Before we jump in, I'd like to clean up the hair_color variable. This variable is simply too detailed and has too many hair colors as it is so that only a few of these colors has enough observations. Let's create a frequency table to see if how many observations each hair color have.
+
+```{r}
+starwars %>% 
+  count(hair_color)
+```
+
+Well, most of the colors has only one observation, so it makes less sense to code them as a separate category. What I'm going to do is to keep the three hair colors (black, brown, blond), and have all the other colors coded as others. That way, we will have four categories of hair color, each of which will have a sufficient sample size. I'm using the `fct_other()` function from the **forcats** package, which is also part of the **tidyverse**.
+
+```{r}
+starwars <- starwars %>%
+  mutate(hair_color2 = 
+           fct_other(hair_color, 
+                     keep = c("black", "brown", "blond")
+                     )
+         )
+```
+
+
+The data is ready. Let's graph out the data using different types. 
+
+
+## Distribution
+
+### Histogram
+
+```{r out.width="75%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(x = height)) +
+  geom_histogram(binwidth = 10)
+```
+
+### Density plots
+
+```{r out.width="75%", warning = FALSE}
+ggplot(data = starwars, mapping = aes(x = height)) +
+  geom_density() #<<
+```
+
+### Side-by-side box plots
+
+```{r out.width="75%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(y = height, 
+                                      x = gender)) + #<<
+  geom_boxplot()
+```
+
+### Violin plots
+
+```{r out.width="75%", warning=FALSE}
+ggplot(data = starwars, mapping = aes(y = height, x = gender)) +
+  geom_violin()
+```
+
+## Ranking
+
+### Bar plots
+
+```{r out.width="80%"}
+ggplot(data = starwars, mapping = aes(x = gender)) +
+  geom_bar()
+```
+
+### Segmented bar plots, counts
+
+```{r out.width="75%"}
+ggplot(data = starwars, mapping = aes(x = gender, 
+                                      fill = hair_color)) + #<<
+  geom_bar()
+```
+
+See the fill option in the aesthetic mapping. `fill = hair_color`. We want to **fill** the bar based on different **hair colors**. Make sense, right?
+
+### Segmented bar plots, counts
+
+```{r out.width="70%"}
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+  geom_bar() +
+  coord_flip()
+```
+
+`coord_flip()` is used for flipping coordinates to its side. 
+
+### Segmented bar plots, proportions
+
+You can set the position argument in `geom_bar()` to "fill" to make the x-axis as proportions.
+```{r out.width="70%"}
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  labs(y = "proportion")
+```
+
+### Grouped bar plots
+
+```{r out.width="70%"}
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+  geom_bar(position="dodge") + #<<
+  coord_flip()
+```
+
+`geom_bar()` has the position argument set to "dodge" to make the bars grouped together. 
+
+### Pie chart
+
+To make a pie chart, we need an extra step for creating a frequency variable of hair_color2.  
+```{r out.width="70%"}
+starwars2 <- starwars %>% 
+  count(hair_color2)
+starwars2
+```
+The new data set, starwars2, has now two variables - hair_color2 and n. Let's make a pie chart using this data frame.
+
+```{r}
+ggplot(data = starwars2, mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0)
+```
+
+Look at how I changed the `geom_bar()` setting. The stat option is now "identity", rather than its default "count" because we've created a count variable n. This code also has another function `coord_polar()`, which is used to make the chart in circle. If we take this function out,
+```{r}
+ggplot(data = starwars2, mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white")
+```
+it's then just a rectangular shape. Now we understand how `coord_polar()` shapes the chart.
+
+You can change the color scheme as well. 
+```{r}
+ggplot(data = starwars2, mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  scale_fill_brewer(palette = "GnBu", name = "Hair Color") + #<<
+  labs(title = "Hair color of Starwars characters")
+```
+
+`scale_fill_brewer()` has the palette option set to "GnBu." Let's change it to something else, like "BuGn."
+
+```{r}
+ggplot(data = starwars2, mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  scale_fill_brewer(palette = "BuGn", name = "Hair Color") + #<<
+  labs(title = "Hair color of Starwars characters")
+```
+Or, "Accent"
+
+```{r}
+ggplot(data = starwars2, mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  scale_fill_brewer(palette = "Accent", name = "Hair Color") + #<<
+  labs(title = "Hair color of Starwars characters")
+```
+
+You can see how it works, right? Simply specify the color scheme you want to the palette option. To see the list of available color schemes, check this link: https://colorbrewer2.org/#type=sequential&scheme=GnBu&n=5.
+
+## Correlation
+
+### Scatter plot
+```{r out.width="60%", warning=FALSE}
+nozabba <- starwars %>% 
+  filter(mass<1000)
+ggplot(data = nozabba, aes(y = mass, x = height)) +
+  geom_point()
+```
+
+### Scatter plot with regression line
+```{r out.width="60%", warning=FALSE}
+ggplot(data = nozabba, aes(y = mass, x = height)) +
+  geom_point() +
+  geom_smooth(method=lm)
+```
+
+### Bubble plot
+```{r out.width="75%", warning=FALSE}
+ggplot(data = nozabba, aes(y = mass, x = height, 
+                           size=birth_year, color=hair_color2)) + #<<
+  geom_point()
+```
+
+# NYC flights in 2013
+
+In this example, we're using another data set-`nyclights13`. Since it's not part of `tidyverse`, you first need to install the package using this command: `install.packages("nycflights13")` You only need to install it once. After that, you can simply call the package using `library()` as we do with any other packages.
+
+```{r}
+library(nycflights13)
+dow = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+flights1 <- flights %>% 
+  mutate(total_delay = dep_delay + arr_delay,
+         date = as.Date(paste(year, month, day, sep='-')),
+         weekday = factor(weekdays(date), levels= dow))
+flights1 %>% 
+  select(date, origin, total_delay)
+```
+
+I created three new variables: total_delay, date, weekday. Total_delay is the sum of the two types of delay (departure and arrival). Date is to convert three separate date information (year, month, day) into one date variable, and weekday is to find out what the day of week is for each date. There are some new functions used in this code such as `as.Date()` and `weekdays()`. We will see these functions later, so let's move on for now. It's enough that you are aware of the fact that R can do this stuff (When needed, we can google it). 
+
+## Average flight delay by month
+
+The original data seems too large to visualize it. Let's average them for each month.
+```{r out.width="75%", warning=FALSE}
+avg_delay_month <- flights1 %>% 
+  group_by(month, origin) %>% 
+  summarise(mean_delay = mean(total_delay, na.rm=TRUE))
+```
+
+### Bar chart
+```{r out.width="75%"}
+ggplot(avg_delay_month, aes(x=month, y=mean_delay)) +
+  geom_bar(stat="identity") #<<
+```
+
+We can now see clearly the trend of flight delays over the year. One thing to note is that the month on x-axis has decimal points like 7.5 month. That's because R treated month as a **continuous** variable because it's integer. Hence, 7.5 month is possible.
+
+To resolve this issue, we need to make month as a factor variable using `as.factor()` (you can also use `factor()` instead). **Factor** is the data type R uses for storing categorical variables (discrete values)
+
+### Bar chart for each airport
+```{r out.width="75%"}
+ggplot(avg_delay_month, aes(x=as.factor(month), y=mean_delay)) +
+  geom_bar(stat="identity") +
+  facet_grid(.~origin) #<<
+```
+
+Notice `as.factor(month)` has removed the decimal point.
+
+### Grouped bar chart
+
+```{r out.width="75%"}
+ggplot(avg_delay_month, aes(x=as.factor(month), y=mean_delay, fill=origin)) + #<<
+  geom_bar(position="dodge", stat="identity") + #<<
+  labs(x="Month",
+       y="Average delay",
+       fill="Airport",
+       title="Average delay by airport")
+```
+
+## What day of week is the worst for flight delays?
+
+To answer this question, we need to average the data over month as well as  day of week.
+```{r out.width="75%", warning=FALSE}
+delay_weekday <- flights1 %>% 
+  group_by(month, weekday, origin) %>% 
+  summarise(mean_delay = mean(total_delay, na.rm=TRUE))
+```
+
+`geom_tile()` is used to create a heatmap. The basic heatmap chart is as simple as adding `geom_tile()`.
+```{r out.width="75%"}
+ggplot(delay_weekday, aes(as.factor(month), weekday, fill=mean_delay)) + 
+  geom_tile() + #<<
+  labs(x="Month",
+     y="Day of week",
+     title = "Flight delay heatmap", 
+     fill="Delay")
+```
+
+To make it prettier, or more informative, you may want to adjust its color schemes as well as other design options. I used `scale_fill_gradient()` to change the color, but you can also use `scale_fill_distiller()` with the palette option as we did before.
+```{r out.width="75%"}
+ggplot(delay_weekday, aes(as.factor(month), weekday, fill=mean_delay)) + 
+  geom_tile(colour = "white") + 
+  scale_fill_gradient(low="white", high="red") + #<<
+  facet_grid(.~origin) + #<<
+  labs(x="Month",
+       y="Day of week",
+       title = "Flight delay heatmap", 
+       fill="Delay")
+```
+
+# Exercise
+
+1. Create a new variable "speed" by dividing "distance" by "air_time"
+```{r}
+# write your code below this comment line
+flights %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(origin, dest, carrier, speed)
+```
+
+2. Average "speed" of flights departed from JFK for each destination (dest) by each airline (carrier). Save it as `flight_speed`
+```{r}
+# write your code below this comment line
+flight_speed <- flights %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(origin =="JFK") %>% 
+  group_by(dest, carrier) %>% 
+  summarise(mean_speed=mean(speed, na.rm=TRUE))
+```
+3. Make a bar plot of mean_speed across airline carriers
+```{r}
+# write your code below this comment line
+ggplot(flight_speed, aes(x=carrier, y=mean_speed)) +
+  geom_bar(stat="identity")
+```
+
+4. Make a bar plot of mean_speed across destinations.
+```{r}
+# write your code below this comment line
+ggplot(flight_speed, aes(x=dest, y=mean_speed,)) +
+  geom_bar(stat="identity")
+```

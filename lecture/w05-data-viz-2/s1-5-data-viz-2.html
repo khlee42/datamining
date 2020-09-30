@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data visualization 2   📊📊</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Data visualization 2 <br> 📊📊
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+![](img/type_of_graph.png)
+.small[
+.footnote[[The R Graph Gallery](https://www.r-graph-gallery.com/index.html)]
+]
+
+---
+
+class: center, middle
+
+# Distribution
+
+---
+
+## Describing shapes of numerical distributions
+
+* shape:
+    * skewness: right-skewed, left-skewed, symmetric (skew is to the side of the longer tail)
+    * modality: unimodal, bimodal, multimodal, uniform
+* center: mean (`mean`), median (`median`), mode (not always useful)
+* spread: range (`range`), standard deviation (`sd`), inter-quartile range (`IQR`)
+* unusal observations
+
+---
+
+## Histograms
+
+
+```r
+ggplot(data = starwars, mapping = aes(x = height)) +
+  geom_histogram(binwidth = 10)
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-2-1.png" width="75%" /&gt;
+
+---
+
+## Density plots
+
+
+```r
+ggplot(data = starwars, mapping = aes(x = height)) +
+* geom_density()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-3-1.png" width="75%" /&gt;
+
+---
+
+## Box plots
+
+
+```r
+ggplot(data = starwars, mapping = aes(y = height)) +
+* geom_boxplot()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-4-1.png" width="60%" /&gt;
+
+---
+
+## Side-by-side box plots
+
+
+```r
+ggplot(data = starwars, mapping = aes(y = height, 
+*                                     x = gender)) +
+  geom_boxplot()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-5-1.png" width="75%" /&gt;
+
+---
+
+## Scatter plot...
+
+This is not a great representation of these data.
+
+
+```r
+ggplot(data = starwars, mapping = aes(y = height, x = gender)) +
+  geom_point()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-6-1.png" width="60%" /&gt;
+
+---
+
+## Violin plots
+
+
+```r
+ggplot(data = starwars, mapping = aes(y = height, x = gender)) +
+  geom_violin()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-7-1.png" width="75%" /&gt;
+
+---
+
+class: center, middle
+
+# Ranking
+
+---
+
+## Bar plots
+
+
+```r
+ggplot(data = starwars, mapping = aes(x = gender)) +
+  geom_bar()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-8-1.png" width="80%" /&gt;
+
+---
+
+## Segmented bar plots, counts
+
+.small[
+
+```r
+ggplot(data = starwars, mapping = aes(x = gender, 
+*                                     fill = hair_color)) +
+  geom_bar()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-9-1.png" width="75%" /&gt;
+]
+
+---
+
+## Recode hair color
+
+Using the `fct_other()` function from the **forcats** package, which is also part of the **tidyverse**.
+
+
+```r
+starwars &lt;- starwars %&gt;%
+  mutate(hair_color2 = 
+           fct_other(hair_color, 
+                     keep = c("black", "brown", "blond")
+                     )
+         )
+```
+
+---
+
+## Segmented bar plots, counts
+
+
+```r
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+  geom_bar() +
+* coord_flip()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-11-1.png" width="70%" /&gt;
+
+---
+
+## Grouped bar plots, counts
+
+
+```r
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+* geom_bar(position="dodge") +
+  coord_flip()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-12-1.png" width="70%" /&gt;
+
+---
+
+## Segmented bar plots, proportions
+
+
+```r
+ggplot(data = starwars, 
+       mapping = aes(x = gender, fill = hair_color2)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  labs(y = "proportion")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-13-1.png" width="70%" /&gt;
+
+---
+
+.question[
+Which plot is a more useful representation for visualizing the relationship between gender and hair color?
+]
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-14-1.png" width="50%" /&gt;
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-15-1.png" width="50%" /&gt;
+
+---
+
+## Pie chart
+
+
+```r
+starwars1 &lt;- starwars %&gt;% 
+  count(gender)
+ggplot(data = starwars1, 
+       mapping = aes(x="", y = n, fill = gender)) +
+  geom_bar(stat="identity") +
+* coord_polar("y", start=0)
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-16-1.png" width="70%" /&gt;
+
+---
+
+## Pie chart, prettier
+
+
+```r
+ggplot(data = starwars1, 
+       mapping = aes(x="", y = n, fill = gender)) +
+* geom_bar(stat="identity", color="white") +
+  coord_polar("y", start=0) +
+* theme_void()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-17-1.png" width="70%" /&gt;
+
+---
+
+## Pie chart, prettier
+
+.small[
+
+```r
+starwars2 &lt;- starwars %&gt;% 
+  count(hair_color2)
+ggplot(data = starwars2, 
+       mapping = aes(x="", y = n, fill = hair_color2)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+* scale_fill_brewer(palette = "GnBu", name = "Hair Color") +
+  labs(title = "Hair color of Starwars characters")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-18-1.png" width="70%" /&gt;
+]
+
+---
+
+## Pre-set color variation
+
+- `scale_*_brewer` for discrete scale (https://ggplot2.tidyverse.org/reference/scale_brewer.html)
+  - `scale_colour_brewer`
+  - `scale_fill_brewer`
+- `scale_*_gradient` for continuous scale (https://ggplot2.tidyverse.org/reference/scale_gradient.html)
+  - `scale_colour_gradient`
+  - `scale_fill_gradient`
+  - `scale_colour_distiller`
+  - `scale_fill_distiller`
+- brewer palette (https://colorbrewer2.org/#type=sequential&amp;scheme=GnBu&amp;n=5)
+
+---
+
+class: center, middle
+
+# Correlation
+
+---
+
+## Scatter plot
+
+```r
+nozabba &lt;- starwars %&gt;% 
+  filter(mass&lt;1000)
+ggplot(data = nozabba, aes(y = mass, x = height)) +
+  geom_point()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-19-1.png" width="60%" /&gt;
+---
+
+## Scatter plot with regression line
+
+```r
+ggplot(data = nozabba, aes(y = mass, x = height)) +
+  geom_point() +
+  geom_smooth(method=lm)
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-20-1.png" width="60%" /&gt;
+---
+
+## Bubble plot
+
+.small[
+
+```r
+ggplot(data = nozabba, aes(y = mass, x = height, 
+*                          size=birth_year, color=hair_color2)) +
+  geom_point()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-21-1.png" width="75%" /&gt;
+]
+
+---
+
+class: middle, center
+
+# Data visualization in action
+
+---
+
+## Data - NYC flights in 2013
+
+.pull-left[
+&lt;img src="img/delayed.jpeg" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+.small[
+
+```r
+library(nycflights13)
+dow = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+flights1 &lt;- flights %&gt;% 
+  mutate(total_delay = dep_delay + arr_delay,
+         date = as.Date(paste(year, month, day, sep='-')),
+         weekday = factor(weekdays(date), levels= dow))
+flights1 %&gt;% 
+  select(date, origin, total_delay)
+```
+
+```
+## # A tibble: 336,776 x 3
+##    date       origin total_delay
+##    &lt;date&gt;     &lt;chr&gt;        &lt;dbl&gt;
+##  1 2013-01-01 EWR             13
+##  2 2013-01-01 LGA             24
+##  3 2013-01-01 JFK             35
+##  4 2013-01-01 JFK            -19
+##  5 2013-01-01 LGA            -31
+##  6 2013-01-01 EWR              8
+##  7 2013-01-01 EWR             14
+##  8 2013-01-01 LGA            -17
+##  9 2013-01-01 JFK            -11
+## 10 2013-01-01 LGA              6
+## # … with 336,766 more rows
+```
+]
+]
+
+---
+
+## NYC airport delay in 2013 (scatter plot)
+
+.small[
+
+```r
+ggplot(flights1, aes(x=date, y=total_delay)) + 
+* geom_point()
+```
+
+```
+## Warning: Removed 9430 rows containing missing values (geom_point).
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-24-1.png" width="75%" /&gt;
+]
+
+---
+
+## NYC airport delay in 2013 (box plot)
+
+.small[
+
+```r
+ggplot(flights1, aes(x=month, y=total_delay)) +
+* geom_boxplot()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-25-1.png" width="75%" /&gt;
+]
+
+---
+
+## NYC airport delay in 2013 (violin plot)
+
+.small[
+
+```r
+ggplot(flights1, aes(x=as.factor(month), y=total_delay)) +
+* geom_violin() +
+  facet_grid(.~origin)
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-26-1.png" width="75%" /&gt;
+]
+
+---
+
+## Average flight delay by date
+
+.small[
+
+```r
+avg_delay &lt;- flights1 %&gt;% 
+  group_by(date, origin) %&gt;% 
+  summarise(mean_delay = mean(total_delay, na.rm=TRUE))
+```
+
+```
+## `summarise()` regrouping output by 'date' (override with `.groups` argument)
+```
+
+```r
+ggplot(avg_delay, aes(x=date, y=mean_delay)) +
+* geom_line()
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-27-1.png" width="75%" /&gt;
+]
+
+---
+
+## Average flight delay by date and airport
+
+.small[
+
+```r
+ggplot(avg_delay, aes(x=date, y=mean_delay)) +
+  geom_line() +
+* facet_grid(origin~.)
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-28-1.png" width="75%" /&gt;
+]
+
+---
+
+## Average flight delay by month
+
+
+```r
+avg_delay_month &lt;- flights1 %&gt;% 
+  group_by(month, origin) %&gt;% 
+  summarise(mean_delay = mean(total_delay, na.rm=TRUE))
+```
+
+```
+## `summarise()` regrouping output by 'month' (override with `.groups` argument)
+```
+
+---
+
+## Average flight delay by month (bar chart)
+
+.small[
+
+
+```r
+ggplot(avg_delay_month, aes(x=month, y=mean_delay)) +
+* geom_bar(stat="identity")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-30-1.png" width="75%" /&gt;
+]
+
+---
+## 7.5 month?
+
+- R treated `month` as a **continuous** variable because it's integer. Hence, 7.5 month is possible.
+- **Factor** is the data type R uses for storing categorical variables (discrete values)
+
+```r
+glimpse(flights1$month)
+```
+
+```
+##  int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+```
+
+```r
+glimpse(as.factor(flights1$month))
+```
+
+```
+##  Factor w/ 12 levels "1","2","3","4",..: 1 1 1 1 1 1 1 1 1 1 ...
+```
+
+---
+## Average flight delay by month (bar chart)
+
+.small[
+
+```r
+ggplot(avg_delay_month, aes(x=as.factor(month), y=mean_delay)) +
+  geom_bar(stat="identity") +
+* facet_grid(.~origin)
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-32-1.png" width="75%" /&gt;
+]
+
+---
+
+## Average flight delay by month (grouped bar chart)
+
+.small[
+
+```r
+*ggplot(avg_delay_month, aes(x=as.factor(month), y=mean_delay, fill=origin)) +
+* geom_bar(position="dodge", stat="identity") +
+  labs(x="Month",
+       y="Average delay",
+       fill="Airport",
+       title="Average delay by airport")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-33-1.png" width="75%" /&gt;
+]
+
+---
+
+## What day of week is the worst for flight delays?
+
+
+```r
+delay_weekday &lt;- flights1 %&gt;% 
+  group_by(month, weekday, origin) %&gt;% 
+  summarise(mean_delay = mean(total_delay, na.rm=TRUE))
+```
+
+```
+## `summarise()` regrouping output by 'month', 'weekday' (override with `.groups` argument)
+```
+
+---
+
+## Heatmap
+
+.small[
+
+```r
+ggplot(delay_weekday, aes(as.factor(month), weekday, fill=mean_delay)) + 
+* geom_tile() +
+  labs(x="Month",
+     y="Day of week",
+     title = "Flight delay heatmap", 
+     fill="Delay")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-35-1.png" width="75%" /&gt;
+]
+
+---
+
+## What day of week to avoid for each airport
+
+.small[
+
+```r
+ggplot(delay_weekday, aes(as.factor(month), weekday, fill=mean_delay)) + 
+  geom_tile(colour = "white") + 
+* scale_fill_gradient(low="white", high="red") +
+* facet_grid(.~origin) +
+  labs(x="Month",
+       y="Day of week",
+       title = "Flight delay heatmap", 
+       fill="Delay")
+```
+
+&lt;img src="s1-5-data-viz-2_files/figure-html/unnamed-chunk-36-1.png" width="75%" /&gt;
+]
+
+---
+
+## Wrap-up
+
+Visualizing ...
+
+- Distribution
+- Ranking
+- Correlation
+
+[Top 50 ggplot2 Visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

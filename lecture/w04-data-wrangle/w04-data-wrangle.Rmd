@@ -37,7 +37,6 @@ df <- tribble(
   ~text, ~chapter,
   "R4DS", "[Chapter 5 Data transformation](https://r4ds.had.co.nz/transform.html){target=\"_blank\"}",
   "IDS", "[Chapter 4 The tidyverse](https://rafalab.github.io/dsbook/tidyverse.html){target=\"_blank\"}",
-  "Article", "[Why is Data Visualization Important? What is Important in Data Visualization?](https://hdsr.mitpress.mit.edu/pub/zok97i7p/release/2){target=\"_blank\"}"
 )
 
 # how do I get a copy? https://hbr.org/2016/06/visualizations-that-really-work
