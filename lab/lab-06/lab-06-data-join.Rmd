@@ -1,0 +1,170 @@
+---
+title: "Lab 06 - Data join"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Fisheries data
+
+First, we need to download `fisheries.csv` from [this download link](https://khlee42.github.io/datamining/lab/lab-06/fisheries.csv){target="_blank"} and `continents.csv` from [this download link](https://khlee42.github.io/datamining/lab/lab-06/continents.csv){target="_blank"}, and save it in the same directory where you downloaded this RMD file. **Both RMD and csv file must be in the same directory!**
+
+Then, let's load the csv files using `read_csv()`
+```{r message=FALSE}
+library(tidyverse)
+fisheries <- read_csv("fisheries.csv")
+continents <- read_csv("continents.csv")
+fisheries <- fisheries %>%
+  filter(total > 100000)
+```
+
+```{r}
+
+```
+
+# Join tables
+To join the two tables, we used `left_join()` in the lecture. That's because we wanted to keep even the observations that have no match in the continents table. Let's try both `left_join()` and `inner_join()` this time to see if there is any difference.
+
+```{r}
+fisheries_innerjoin <- inner_join(fisheries, continents)
+fisheries_leftjoin <- left_join(fisheries, continents)
+fisheries_innerjoin
+fisheries_leftjoin
+```
+
+See, the number of rows in fisheries_innerjoin is 79 while that in fisheries_leftjoin is 82. Why? Because `inner_join()` exclude those countries that had no corresponding continents. To see the countries for which the continent column is missing:
+```{r}
+fisheries_innerjoin %>% filter(is.na(continent))
+fisheries_leftjoin %>% filter(is.na(continent))
+```
+The additional three observations in fisheries_leftjoin are in fact those countries with missing continent values. Since we don't want to lose any data points, we use `left_join()` and manually fill in those missing values.
+
+```{r catch-up}
+fisheries <- fisheries %>%
+  left_join(continents) %>%
+  mutate(
+    continent = case_when(
+      country == "Democratic Republic of the Congo" ~ "Africa",
+      country == "Hong Kong"                        ~ "Asia",
+      country == "Myanmar"                          ~ "Asia",
+      TRUE                                          ~ continent
+      ),
+    aquaculture_perc = aquaculture / total
+    )
+```
+
+# World map
+
+To map the fisheries data, we need this world map data set that contains geographic boundaries of countries. Once again, left-join the fisheries data with this world map.
+```{r}
+world_map <- map_data("world") %>%
+  mutate(region = case_when(
+    region == "UK"           ~ "United Kingdom",
+    region == "USA"          ~ "United States",
+    subregion == "Hong Kong" ~ "Hong Kong",
+    TRUE                     ~ region
+    )
+  )
+fisheries_map <- left_join(fisheries, world_map, 
+                           by = c("country" = "region")) #<<
+```
+  
+`geom_polygon()` is used to plot coordinates (longitude and latitude) on map. What we want to do is to plot each country on the map and vary its color based on the level of fishery harvest.
+```{r}
+ggplot(fisheries_map, mapping = aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill = capture)) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal()
+```
+
+You can stack up as many layers of map as we want. Let's add another layer to change the color for those countries that are missing in the fisheries data. First, we use the world_map data to draw all countries in **lightgray**, and then, add the fishery map above on top of that. In this way, the missing countries will be in the color of lightgray rather than simply being missing.
+```{r}
+ggplot() +
+  geom_polygon(world_map, 
+               mapping = aes(x = long, y = lat, group = group), 
+               fill = "lightgray") +
+  geom_polygon(fisheries_map, 
+               mapping = aes(x = long, y = lat, group = group, 
+                             fill = capture)) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal() +
+  labs(
+    x = "", y = "",
+    title = "Fisheries harvest by capture, 2016",
+    subtitle = "Capture measured in tonnes",
+    caption = "Source: bit.ly/2VrawTt"
+  )
+```
+
+
+# Exercise
+### Exercise 1.
+
+Calculate the mean aquaculture percentage (we'll call it `mean_ap` for short) 
+for continents in the fisheries data using the `summarise()` function in dplyr. 
+Note that the function for calculating the mean is `mean()` in R.
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 2.
+
+Now expand your calculations to also calculate the minimum and maximum 
+aquaculture percentage for continents in the fisheries data. Note that the 
+functions for calculating minimum and maximum in R are `min()` and `max()`
+respectively.
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 3.
+
+Create a new data frame called `fisheries_summary_continent` that calculates 
+minimum, mean, and maximum aquaculture percentage for each continent in the 
+fisheries data. 
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 4.
+
+Take the `fisheries_summary_continent` data frame and order the results in descending 
+order of mean aquaculture percentage.
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 5.
+
+Map the `fisheries_map` data frame and vary the color of each country based on its `total` harvest value. Use log-scale.
+
+```{r}
+# write your code below this comment line
+
+
+```

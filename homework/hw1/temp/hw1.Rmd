@@ -1,6 +1,6 @@
 ---
 title: "Homework 1 - Data wrangling and visualization"
-author: "Kyunghee Lee"
+author: "Enter Your Name"
 output: 
   html_document:
     theme: cosmo
@@ -11,13 +11,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r echo=FALSE}
-knitr::read_chunk('../global.R')
-```
-
-```{r global, echo=FALSE}
 ```
 
 **Release: `r due_hw$release[1]`**  
@@ -36,52 +29,31 @@ library(nycflights13)
 
 # Question 1
 
-- Q1-1. Copy your data frame to `flights1`
-```{r}
-flights1 <- flights
-```
-
-- Q1-1. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, to your data frame
-```{r}
-flights1 <- flights1 %>%
-  mutate(total_delay = dep_delay + arr_delay)
-```
-
-- Q1-2. Remove the columns `year` from your data frame [Hint: Reassign a data frame excluding the variables. You may want to use negative index]
-```{r}
-flights1 <- flights1 %>%
+- Q1-1. Remove the columns `year` from your data frame (`flights1`) [Hint: Reassign a data frame excluding the variables. You may want to use negative index]
+```{r label='q1-1'}
+flights %>%
   select(-year)
 ```
 
-- Q1-3. Remove the carriers with less than 1000 flights in 2014.
-
-```{r}
-flights1 <- flights1 %>%
-  group_by(carrier) %>%                        
-  mutate(carrier_count = n()) %>%
-  filter(carrier_count>1000) %>%
-  ungroup()
-```
-
-- Q1-4. Sort your data frame in descending order of total_day, and save it as a new data frame `flight2`
-```{r}
-flights2 <- flights1 %>%
+- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, to your data frame (`flights1`). Sort your data frame (`flights1`) in descending order of total_delay, and save it as a new data frame `flight2`
+```{r label='q1-2'}
+flights1 <- flights %>%
+  mutate(total_delay = dep_delay + arr_delay) %>% 
   arrange(desc(total_delay))
 ```
 
-# Question 2
-Draw box plots of total delay separately by carriers.
+- Q1-3. Draw box plots of total delay separately by carriers. Use `flights1`
 
 ```{r}
-ggplot(flights2, aes(x=carrier, y=total_delay)) + 
+ggplot(flights1, aes(x=carrier, y=total_delay)) + 
   geom_boxplot()
 ```
 
-# Question 3
+# Question 2
 
 - Q3-1. Filter flights whose `dep_delay` or `arr_delay` is greater than 60, and save it as a new data frame `major_delay`
 ```{r}
-major_delay <- flights2 %>%
+major_delay <- flights %>%
   filter(dep_delay > 60 | arr_delay > 60)
 ```
 

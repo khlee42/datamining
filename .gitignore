@@ -1,5 +1,9 @@
 .DS_Store
 
+# Grading folder
+/homework/hw1/grading
+/homework/hw2/grading
+
 # History files
 .Rhistory
 .Rapp.history

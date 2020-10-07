@@ -1,0 +1,51 @@
+---
+title: "Homework 1 - Data wrangling and visualization"
+author: "Enter Your Name"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In this homework, ...
+
+which one is the worst airline.
+
+Change the author name to yours
+
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+# Question 1
+
+- Q1-1. Remove the columns `year` from your data frame (`flights1`) [Hint: Reassign a data frame excluding the variables. You may want to use negative index]
+```{r label='q1-1'}
+flights %>%
+  select(-year)
+```
+
+- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and sort your data frame in descending order of total_delay. Save the output as a new data frame `flight1`
+```{r label='q1-2'}
+flights1 <- flights %>%
+  mutate(total_delay = dep_delay + arr_delay) %>% 
+  arrange(desc(total_delay))
+```
+
+- Q1-3. Use `flight1` data frame and draw box plots of total delay separately by carriers
+
+```{r}
+ggplot(flights1, aes(x=carrier, y=total_delay)) + 
+  geom_boxplot()
+```
+

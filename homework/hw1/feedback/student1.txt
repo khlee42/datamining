@@ -1,0 +1,34 @@
+Question 1, Score: 0
+Student code:
+flights %>%
+  select(-year
+-->Have a look at the third code chunk. Your code contains an error that you should fix:
+```
+Error: <text>:9:1: unexpected symbol
+8: 
+9: flights1
+   ^
+```
+
+
+Question 2, Score: 0
+Student code:
+flights1 <- flights %>%
+  mutate(total_delay = dep_delay + arr_delay) %>% 
+  arrange(desc(total_delay))
+-->Have a look at the fourth code chunk. Your code contains an error that you should fix:
+```
+Error: <text>:9:1: unexpected symbol
+8: 
+9: flights1
+   ^
+```
+
+
+Question 3, Score: 1
+Student code:
+ggplot(flights1, aes(x=carrier, y=total_delay)) + 
+  geom_boxplot()
+-->Great work!
+
+

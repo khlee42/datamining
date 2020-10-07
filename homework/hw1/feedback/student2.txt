@@ -1,0 +1,22 @@
+Question 1, Score: 1
+Student code:
+flights %>%
+  select(-year)
+-->Great work!
+
+
+Question 2, Score: 0
+Student code:
+flights1 <- flights %>%
+  mutate(total_delay = dep_delay + arr_delay) %>% 
+  arrange((total_delay))
+-->Have a look at the fourth code chunk. The contents of the variable `flights1` aren't correct.
+
+
+Question 3, Score: 1
+Student code:
+ggplot(flights1, aes(x=carrier, y=total_delay)) + 
+  geom_boxplot()
+-->Great work!
+
+

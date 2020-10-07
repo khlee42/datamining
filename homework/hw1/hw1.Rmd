@@ -1,0 +1,179 @@
+---
+title: "Homework 1 - Data wrangling and visualization"
+author: "Enter Your Name Here"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Release: 10/07/2020**  
+**Due: 10/21/2020**
+
+In this homework, you will write R codes to answer the below questions regarding the flights that departed New York City in 2013. Each question involves some form of data wrangling and data visualization, which we've covered until this week. Before you start, please read the below instructions carefully as failure to follow the instructions may result in deductions in your score.
+
+# Before you start ...
+## Instructions
+
+- Download the source Rmd file from the `Code` tab at the upper-right corner of this document.
+- In the YAML header, change `author` to your name.
+- For each question, write your R code inside the R chunk, starting below the line `# write your code below this comment line`
+  - one answer for each question
+- You must write your code **inside** the R chunks. Do not change anything else (e.g., chunk options, order of question)
+- Do not add additional R chunks
+
+## Submission
+
+- Save your R markdown document as "lastname_firstname_WSUID.Rmd" (e.g., lee_kyunghee_gl3566.Rmd)
+- Submit your `Rmd` file on **Canvas**
+  - You only need to submit the `Rmd` file, not the output `html` document which is generated from the `Rmd` file. 
+
+## Grading
+
+- 15 questions in total, each accounts for 1 point
+- **To get the full score for each question, your code must be executable without generating any errors**
+- If your code doesn't run, partial credits will be given.
+
+
+## R markdown tutorial
+
+- The source RMD file is on `Code` tab on the top. 
+- You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. 
+- Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. 
+- See the instructions and video in [Lab 1](https://khlee42.github.io/datamining/lab/lab-01/lab-01-hello-r.html) for more
+
+# Package and Data
+For this assignment, we have two packages to load: `tidyverse` and `nycflights13`. You should be familiar by now with the first package `tidyverse`. The second package is for the `flights` data set we're using for the assignment: Flights that Departed NYC in 2013 (see https://www.rdocumentation.org/packages/nycflights13/versions/1.0.1 for details). The below code chunk is to load these packages and take a look at the data set.
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(nycflights13)
+
+names(flights)
+head(flights)
+```
+
+
+# Question 1 - Warm-up
+
+- Q1-1. Remove the columns `year` from your data frame (`flights`) [Hint: `select()`]
+```{r label='q1-1'}
+# write your code below this comment line
+
+
+```
+
+- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and sort your data frame in descending order of total_delay. Save the output as a new data frame `flight1`
+```{r label='q1-2'}
+# write your code below this comment line
+
+
+```
+
+- Q1-3. Use `flight1` data frame to draw box plots of total delay separately by carriers
+```{r label='q1-3'}
+# write your code below this comment line
+
+
+```
+
+- Q1-4. Use `flights1` data frame and visualize the relationship between total delay time and flight distance. [Hint: `ggplot` and `geom_point`]
+```{r label='q1-4'}
+# write your code below this comment line
+
+
+```
+
+
+# Question 2 - Which airline carrier is the most frequently delayed?
+
+- Q2-1. Filter `flights` whose `dep_delay` or `arr_delay` is greater than 60, and save it as a new data `major_delay`
+```{r label='q2-1'}
+# write your code below this comment line
+
+
+```
+
+- Q2-2. Use `major_delay` data frame to create a frequency table of delayed flights by carrier, and save it as a new data frame `carrier_table` [Hint: `count()`]
+```{r label='q2-2'}
+# write your code below this comment line
+
+
+```
+
+- Q2-3. Use `carrier_table` to draw a pie chart to examine the most frequently delayed carrier [Hint: set `x`="" and `y`=n]
+```{r label='q2-3'}
+# write your code below this comment line
+
+
+```
+
+# Question 3 - JFK-departed flights
+
+- Q3-1. Filter `flights` that departed from JFK airport and save it as `JFK_flights` 
+```{r label='q3-1'}
+# write your code below this comment line
+
+
+```
+
+- Q3-2. Use `JFK_flights` to create the histogram of departure delay (`dep_delay`) of flights that departed from JFK.
+```{r label='q3-2'}
+# write your code below this comment line
+
+
+```
+
+- Q3-3. Use `JFK_flights` to create a frequency table of flight counts by destination.
+```{r label='q3-3'}
+# write your code below this comment line
+
+
+```
+
+- Q3-4. Use `dest_table` to visualize the number of flights by destination, in decreasing order, that departed from JFK [Hint: `geom_bar()`]
+```{r label='q3-4'}
+# write your code below this comment line
+
+
+```
+
+
+
+# Question 4 - Which airline carrier is the most frequently departed from each of the NYC airports?
+
+- Q4-1. Group `flights` by ("origin", "carrier") and count the number of flights for each group [Hint: use `group_by()` and `summarize()`]
+```{r label='q4-1'}
+# write your code below this comment line
+
+
+```
+
+- Q4-2. Use `flights` to create a frequency table of the number of flights by ("origin", "carrier"), and save it as a new data frame `count_flights`[Hint: use `count()` this time. Q5-1 and Q5-2 have the same output!]
+```{r label='q4-2'}
+# write your code below this comment line
+
+
+```
+
+- Q4-3. Use `count_flights` to draw the point plots of the number of flights by carrier (i.e., x-axis: `carrier` and y-axis: `n`) and change colors by `carrier` [Hint: `geom_point()`]
+```{r label='q4-3'}
+# write your code below this comment line
+
+
+```
+
+- Q4-4. Separate the above plot by "origin", and label x-axis as "Carrier for each origin airport" and y-axis as "Frequency" [Hint: use `facet_wrap()` or `facet_grid()`]
+```{r label='q4-4'}
+# write your code below this comment line
+
+
+```
+
+

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Joining data from multiple sources   🤝</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Joining data from multiple sources <br> 🤝
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+class: center, middle
+
+# Join multiple datasets
+
+---
+
+## Fisheries of the world
+
+Fisheries and Aquaculture Department of the Food and Agriculture Organization of 
+the United Nations collects data on fisheries production of countries.
+
+&lt;img src="img/fisheries-data.png" width="60%" style="display: block; margin: auto;" /&gt;
+.center[
+.hand[...]
+]
+
+.footnote[
+- Source: https://en.wikipedia.org/wiki/Fishing_industry_by_country
+]
+
+---
+
+## Load data
+
+
+```r
+fisheries &lt;- read_csv("data/fisheries.csv")
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   country = col_character(),
+##   capture = col_double(),
+##   aquaculture = col_double(),
+##   total = col_double()
+## )
+```
+
+---
+
+## First peek at the data
+
+.xsmall[
+
+```r
+skim(fisheries)
+```
+
+```
+## ── Data Summary ────────────────────────
+##                            Values   
+## Name                       fisheries
+## Number of rows             216      
+## Number of columns          4        
+## _______________________             
+## Column type frequency:              
+##   character                1        
+##   numeric                  3        
+## ________________________            
+## Group variables            None     
+## 
+## ── Variable type: character ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+##   skim_variable n_missing complete_rate   min   max empty n_unique whitespace
+## 1 country               0             1     4    32     0      215          0
+## 
+## ── Variable type: numeric ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+##   skim_variable n_missing complete_rate    mean       sd    p0    p25    p50     p75     p100 hist 
+## 1 capture               0             1 421916. 1478638.     0 3280.  33797  221884. 17800000 ▇▁▁▁▁
+## 2 aquaculture           0             1 508368. 4496073.     0   25.2  1574.  25998  63700000 ▇▁▁▁▁
+## 3 total                 0             1 930284. 5846301.     0 7270.  44648. 271901. 81500000 ▇▁▁▁▁
+```
+]
+
+---
+
+.discussion[
+The (not-so-great) visualization below shows the distribution of fishery harvest 
+of countries for 2016, by capture and aquaculture. What are some ways you would 
+improve this visualization? Note that countries whose total harvest was less 
+than 100,000 tons are not included in the visualization.
+]
+
+&lt;img src="img/fisheries.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Calculate summary statistics at the continent level and visualize them.
+- Map the data.
+
+---
+
+.huge-pink[goal:] 
+
+.hand-blue[calculate summary statistics at the continent level and visualize them]
+
+---
+
+## Data prep
+
+
+```r
+continents &lt;- read_csv("data/continents.csv")
+```
+
+Filter out countries whose total harvest was less than 100,000 tons since they 
+are not included in the visualization:
+
+
+```r
+fisheries &lt;- fisheries %&gt;%
+  filter(total &gt; 100000)
+
+fisheries
+```
+
+```
+## # A tibble: 82 x 4
+##    country    capture aquaculture   total
+##    &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Angola      486490         655  487145
+##  2 Argentina   755226        3673  758899
+##  3 Australia   174629       96847  271476
+##  4 Bangladesh 1674770     2203554 3878324
+##  5 Brazil      705000      581230 1286230
+##  6 Cambodia    629950      172500  802450
+##  7 Cameroon    233190        2315  235505
+##  8 Canada      874727      200765 1075492
+##  9 Chad        110000          94  110094
+## 10 Chile      1829238     1050117 2879355
+## # … with 72 more rows
+```
+
+---
+
+class: middle
+
+# Data joins
+
+---
+
+.pull-left[
+
+```r
+fisheries %&gt;% select(country)
+```
+
+```
+## # A tibble: 82 x 1
+##    country   
+##    &lt;chr&gt;     
+##  1 Angola    
+##  2 Argentina 
+##  3 Australia 
+##  4 Bangladesh
+##  5 Brazil    
+##  6 Cambodia  
+##  7 Cameroon  
+##  8 Canada    
+##  9 Chad      
+## 10 Chile     
+## # … with 72 more rows
+```
+]
+.pull-right[
+
+```r
+continents
+```
+
+```
+## # A tibble: 245 x 2
+##    country           continent
+##    &lt;chr&gt;             &lt;chr&gt;    
+##  1 Afghanistan       Asia     
+##  2 Åland Islands     Europe   
+##  3 Albania           Europe   
+##  4 Algeria           Africa   
+##  5 American Samoa    Oceania  
+##  6 Andorra           Europe   
+##  7 Angola            Africa   
+##  8 Anguilla          Americas 
+##  9 Antigua &amp; Barbuda Americas 
+## 10 Argentina         Americas 
+## # … with 235 more rows
+```
+]
+
+---
+
+## Joining data frames
+
+```
+something_join(x, y)
+```
+
+- `inner_join()`: all rows from x where there are matching values in y, return 
+all combination of multiple matches in the case of multiple matches
+- `left_join()`: all rows from x
+- `right_join()`: all rows from y
+- `full_join()`: all rows from both x and y
+- `semi_join()`: all rows from x where there are matching values in y, keeping just columns from x.
+- `anti_join()`: return all rows from x where there are not matching values in y, never duplicate rows of x
+- ...
+ 
+---
+
+## Setup
+
+For the next few slides...
+
+.pull-left[
+
+
+```r
+x
+```
+
+```
+## # A tibble: 3 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+## 3     3
+```
+]
+.pull-right[
+
+
+```r
+y
+```
+
+```
+## # A tibble: 3 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+## 3     4
+```
+]
+
+---
+
+## `inner_join()`
+
+.pull-left[
+
+```r
+inner_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 2 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+```
+]
+.pull-right[
+![](img/inner-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `left_join()`
+
+.pull-left[
+
+```r
+left_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 3 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+## 3     3
+```
+]
+.pull-right[
+![](img/left-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `right_join()`
+
+.pull-left[
+
+```r
+right_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 3 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+## 3     4
+```
+]
+.pull-right[
+![](img/right-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `full_join()`
+
+.pull-left[
+
+```r
+full_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 4 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+## 3     3
+## 4     4
+```
+]
+.pull-right[
+![](img/full-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `semi_join()`
+
+.pull-left[
+
+```r
+semi_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 2 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+```
+]
+.pull-right[
+![](img/semi-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `anti_join()`
+
+.pull-left[
+
+```r
+anti_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 1 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     3
+```
+]
+.pull-right[
+![](img/anti-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+.discussion[
+We want to keep all rows and columns from `fisheries` and add a column for 
+corresponding continents. Which join function should we use?
+]
+
+.pull-left[
+
+```r
+fisheries %&gt;% select(country)
+```
+
+```
+## # A tibble: 82 x 1
+##    country   
+##    &lt;chr&gt;     
+##  1 Angola    
+##  2 Argentina 
+##  3 Australia 
+##  4 Bangladesh
+##  5 Brazil    
+##  6 Cambodia  
+##  7 Cameroon  
+##  8 Canada    
+##  9 Chad      
+## 10 Chile     
+## # … with 72 more rows
+```
+]
+.pull-right[
+
+```r
+continents
+```
+
+```
+## # A tibble: 245 x 2
+##    country           continent
+##    &lt;chr&gt;             &lt;chr&gt;    
+##  1 Afghanistan       Asia     
+##  2 Åland Islands     Europe   
+##  3 Albania           Europe   
+##  4 Algeria           Africa   
+##  5 American Samoa    Oceania  
+##  6 Andorra           Europe   
+##  7 Angola            Africa   
+##  8 Anguilla          Americas 
+##  9 Antigua &amp; Barbuda Americas 
+## 10 Argentina         Americas 
+## # … with 235 more rows
+```
+]
+
+---
+
+## Join fisheries and continents 
+.small[
+
+```r
+fisheries &lt;- left_join(fisheries, continents)
+```
+
+```
+## Joining, by = "country"
+```
+
+```r
+fisheries &lt;- left_join(fisheries, continents, by=c("country"="country")) 
+```
+
+]
+
+--
+
+.discussion[
+How does `left_join()` know to join the two data frames by `country`?
+]
+
+Hint:
+
+- Variables in the original fisheries dataset:
+
+
+```
+## [1] "country"     "capture"     "aquaculture" "total"
+```
+
+- Variables in the continents dataset:
+
+
+```
+## [1] "country"   "continent"
+```
+
+
+---
+
+## Check the data - `is.na()`
+
+
+```r
+fisheries %&gt;%
+  filter(is.na(continent))
+```
+
+```
+## # A tibble: 3 x 5
+##   country                          capture aquaculture   total continent
+##   &lt;chr&gt;                              &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;    
+## 1 Democratic Republic of the Congo  237372        3161  240533 &lt;NA&gt;     
+## 2 Hong Kong                         142775        4258  147033 &lt;NA&gt;     
+## 3 Myanmar                          2072390     1017644 3090034 &lt;NA&gt;
+```
+
+---
+
+## Implement fixes - `case_when()`
+
+
+```r
+fisheries &lt;- fisheries %&gt;%
+  mutate(continent = case_when(
+    country == "Democratic Republic of the Congo" ~ "Africa",
+    country == "Hong Kong"                        ~ "Asia",
+    country == "Myanmar"                          ~ "Asia",
+    TRUE                                          ~ continent
+    )
+  )
+```
+
+...and check again
+
+
+
+
+
+```r
+fisheries %&gt;%
+  filter(is.na(continent))
+```
+
+```
+## # A tibble: 0 x 5
+## # … with 5 variables: country &lt;chr&gt;, capture &lt;dbl&gt;, aquaculture &lt;dbl&gt;, total &lt;dbl&gt;,
+## #   continent &lt;chr&gt;
+```
+
+---
+## Share of aquaculture by continent
+
+
+```r
+fisheries_summary &lt;- fisheries %&gt;%
+  mutate(aquaculture_perc = aquaculture / total) %&gt;% 
+  group_by(continent) %&gt;%
+  summarise(
+    min_ap  = min(aquaculture_perc),
+    mean_ap = mean(aquaculture_perc),
+    max_ap  = max(aquaculture_perc)
+  )
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+---
+
+## Visualize continent summary stats
+
+
+```r
+ggplot(fisheries_summary, aes(x = continent, y = mean_ap)) +
+  geom_col() # same as geom_bar(stat="identity")
+```
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-37-1.png" width="3000" /&gt;
+
+---
+
+## Improve visualization - `fct_reorder()`
+
+
+```r
+ggplot(fisheries_summary, 
+*      aes(x = fct_reorder(continent, mean_ap), y = mean_ap)) +
+  geom_col()
+```
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-38-1.png" width="3000" /&gt;
+
+---
+
+## Improve visualization further
+
+
+```r
+ggplot(fisheries_summary, 
+       aes(x = fct_reorder(continent, mean_ap), y = mean_ap)) +
+  geom_col() + 
+* coord_flip() +
+    labs( 
+    x = "",
+    y = "", 
+    title = "Average share of aquaculture by continent",
+    subtitle = "out of total fisheries harvest, 2016",
+    caption = "Source: bit.ly/2VrawTt"
+  )
+```
+
+---
+
+## Improve visualization further
+
+
+```r
+ggplot(fisheries_summary, 
+       aes(x = fct_reorder(continent, mean_ap), y = mean_ap)) +
+  geom_col() + 
+  coord_flip() +
+*   labs(
+*   x = "",
+*   y = "",
+*   title = "Average share of aquaculture by continent",
+*   subtitle = "out of total fisheries harvest, 2016",
+*   caption = "Source: bit.ly/2VrawTt"
+  ) +
+  theme_minimal()
+```
+
+`\(\rightarrow\)` See next slide...
+
+---
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-41-1.png" width="1500" /&gt;
+
+---
+
+class: middle, center
+
+# Map fishery data at the country level
+
+---
+
+## `map_data()`
+
+The `map_data()` function turns data from the **maps** package into a data frame 
+suitable for plotting with ggplot2:
+
+
+```r
+map_data("world")
+```
+
+
+```
+##         long      lat group order      region subregion
+## 1  -69.89912 12.45200     1     1       Aruba      &lt;NA&gt;
+## 2  -69.89571 12.42300     1     2       Aruba      &lt;NA&gt;
+## 3  -69.94219 12.43853     1     3       Aruba      &lt;NA&gt;
+## 4  -70.00415 12.50049     1     4       Aruba      &lt;NA&gt;
+## 5  -70.06612 12.54697     1     5       Aruba      &lt;NA&gt;
+## 6  -70.05088 12.59707     1     6       Aruba      &lt;NA&gt;
+## 7  -70.03511 12.61411     1     7       Aruba      &lt;NA&gt;
+## 8  -69.97314 12.56763     1     8       Aruba      &lt;NA&gt;
+## 9  -69.91181 12.48047     1     9       Aruba      &lt;NA&gt;
+## 10 -69.89912 12.45200     1    10       Aruba      &lt;NA&gt;
+## 12  74.89131 37.23164     2    12 Afghanistan      &lt;NA&gt;
+## 13  74.84023 37.22505     2    13 Afghanistan      &lt;NA&gt;
+## 14  74.76738 37.24917     2    14 Afghanistan      &lt;NA&gt;
+## 15  74.73896 37.28564     2    15 Afghanistan      &lt;NA&gt;
+```
+
+---
+## Mapping the fisheries data
+
+- Obtain country boundaries and store as a data frame
+- Join the fisheries and country boundaries data frames
+- Plot the country boundaries, and fill by fisheries harvest data
+
+---
+
+## A few fixes for better matching
+
+.discussion[
+What does the following code do?
+]
+
+
+```r
+world_map &lt;- map_data("world") %&gt;%
+  mutate(region = case_when(
+    region == "UK"           ~ "United Kingdom",
+    region == "USA"          ~ "United States",
+    subregion == "Hong Kong" ~ "Hong Kong",
+    TRUE                     ~ region
+    )
+  )
+```
+
+---
+
+## Map the world
+
+.midi[
+
+```r
+ggplot(world_map, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "gray") +
+  theme_minimal()
+```
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-45-1.png" width="3600" /&gt;
+]
+
+
+---
+
+## Join fisheries and world map
+
+.pull-left[
+
+```r
+fisheries %&gt;% select(country)
+```
+
+```
+## # A tibble: 82 x 1
+##    country   
+##    &lt;chr&gt;     
+##  1 Angola    
+##  2 Argentina 
+##  3 Australia 
+##  4 Bangladesh
+##  5 Brazil    
+##  6 Cambodia  
+##  7 Cameroon  
+##  8 Canada    
+##  9 Chad      
+## 10 Chile     
+## # … with 72 more rows
+```
+]
+.pull-right[
+
+```r
+world_map %&gt;% select(region) %&gt;% slice_head(n=20)
+```
+
+```
+##         region
+## 1        Aruba
+## 2        Aruba
+## 3        Aruba
+## 4        Aruba
+## 5        Aruba
+## 6        Aruba
+## 7        Aruba
+## 8        Aruba
+## 9        Aruba
+## 10       Aruba
+## 11 Afghanistan
+## 12 Afghanistan
+## 13 Afghanistan
+## 14 Afghanistan
+## 15 Afghanistan
+## 16 Afghanistan
+## 17 Afghanistan
+## 18 Afghanistan
+## 19 Afghanistan
+## 20 Afghanistan
+```
+]
+
+---
+
+## Join fisheries and world map
+
+
+```r
+fisheries_map &lt;- left_join(fisheries, world_map, 
+*                          by = c("country" = "region"))
+```
+
+
+```r
+glimpse(fisheries_map)
+```
+
+```
+## Rows: 72,685
+## Columns: 10
+## $ country     &lt;chr&gt; "Angola", "Angola", "Angola", "Angola", "Angola", "Angola", "Angola…
+## $ capture     &lt;dbl&gt; 486490, 486490, 486490, 486490, 486490, 486490, 486490, 486490, 486…
+## $ aquaculture &lt;dbl&gt; 655, 655, 655, 655, 655, 655, 655, 655, 655, 655, 655, 655, 655, 65…
+## $ total       &lt;dbl&gt; 487145, 487145, 487145, 487145, 487145, 487145, 487145, 487145, 487…
+## $ continent   &lt;chr&gt; "Africa", "Africa", "Africa", "Africa", "Africa", "Africa", "Africa…
+## $ long        &lt;dbl&gt; 23.96650, 23.98828, 24.01006, 24.02559, 24.04141, 24.04668, 24.0293…
+## $ lat         &lt;dbl&gt; -10.87178, -11.00283, -11.18477, -11.31563, -11.37412, -11.40537, -…
+## $ group       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3…
+## $ order       &lt;int&gt; 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 43…
+## $ subregion   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+```
+
+---
+
+## Mapping fisheries
+
+.midi[
+
+```r
+ggplot(fisheries_map, mapping = aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill = capture)) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal()
+```
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-50-1.png" width="3600" /&gt;
+]
+
+.footnote[https://colorbrewer2.org/#type=sequential&amp;scheme=Blues&amp;n=5]
+
+---
+
+.discussion[
+What is misleading about the following map?
+]
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-51-1.png" width="3600" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Putting it altogether
+
+
+```r
+ggplot() +
+  # layer 1
+  geom_polygon(world_map, 
+               mapping = aes(x = long, y = lat, group = group), 
+*              fill = "lightgray") +
+  # layer 2
+  geom_polygon(fisheries_map, 
+               mapping = aes(x = long, y = lat, group = group, 
+*                            fill = capture)) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(
+    x = "", y = "",
+    title = "Fisheries harvest by capture, 2016",
+    subtitle = "Capture measured in tonnes",
+    caption = "Source: bit.ly/2VrawTt"
+  )
+```
+
+---
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-53-1.png" width="3300" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Log scale
+
+
+```r
+ggplot() +
+  geom_polygon(world_map, 
+               mapping = aes(x = long, y = lat, group = group), 
+               fill = "lightgray") +
+  geom_polygon(fisheries_map, 
+               mapping = aes(x = long, y = lat, group = group, 
+*                                           fill = log(capture))) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal() +
+  labs(
+    x = "", y = "",
+    title = "Fisheries harvest by capture, 2016",
+    subtitle = "Capture measured in logged tonnes",
+    caption = "Source: bit.ly/2VrawTt"
+  )
+```
+
+---
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-55-1.png" width="3300" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Aquaculture
+
+
+```r
+ggplot() +
+  geom_polygon(world_map, 
+               mapping = aes(x = long, y = lat, group = group), 
+               fill = "lightgray") +
+  geom_polygon(fisheries_map, 
+               mapping = aes(x = long, y = lat, group = group, 
+*                            fill = aquaculture)) +
+  scale_fill_distiller(palette="GnBu") +
+  theme_minimal() +
+  labs(
+    x = "", y = "",
+    title = "Fisheries harvest by aquaculture, 2016",
+    subtitle = "Aquaculture measured in logged tonnes",
+    fill = "log(aquaculture)",
+    caption = "Source: bit.ly/2VrawTt"
+  )
+```
+
+---
+
+&lt;img src="s1-6-data-join_files/figure-html/unnamed-chunk-57-1.png" width="3300" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Wrap-up
+
+- Join
+  - `inner_join()`
+  - `left_join()`
+- Map
+  - `geom_polygon()`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
