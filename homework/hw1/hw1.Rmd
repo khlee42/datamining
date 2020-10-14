@@ -69,14 +69,14 @@ head(flights)
 
 ```
 
-- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and sort your data frame in descending order of total_delay. Save the output as a new data frame `flight1`
+- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and sort your data frame in descending order of total_delay. Save the output as a new data frame `flights1`
 ```{r label='q1-2'}
 # write your code below this comment line
 
 
 ```
 
-- Q1-3. Use `flight1` data frame to draw box plots of total delay separately by carriers
+- Q1-3. Use `flights1` data frame to draw box plots of total delay separately by carriers
 ```{r label='q1-3'}
 # write your code below this comment line
 
@@ -130,7 +130,7 @@ head(flights)
 
 ```
 
-- Q3-3. Use `JFK_flights` to create a frequency table of flight counts by destination.
+- Q3-3. Use `JFK_flights` to create a frequency table of flight counts by destination. Save it as `dest_table`.
 ```{r label='q3-3'}
 # write your code below this comment line
 
