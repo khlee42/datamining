@@ -1,0 +1,121 @@
+---
+title: "Lab 07 - Tidy data"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Prerequisite
+
+This lab uses, as always, `tidyverse` package. Let's load it up.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+# Data - AAUP staff employment
+
+The data we're going to use is an external csv file, so we need `readr` package to import the file onto R. Luckily, `readr` is part of `tidyverse`, which means no additional library calling required. To read a csv file, we use `read_csv()` with the file path as argument. Notice the code below only has the file name inside the function because the csv file is in the same folder as this RMD file. If data is located in a different folder, you would need to point to the full path including folders.
+
+```{r load-data-staff, message=FALSE}
+staff <- read_csv("instructional-staff.csv")
+staff
+```
+
+As we discussed in the lecture, this data is a bit messy. The reporting years are augmented horizontally, growing wider as more observations come along. This is fine for us to read, but not for R, as it is designed to operate by column (mostly). We need each variable has its own column so we can apply R functions to the data. 
+
+## Pivot staff data
+
+The data is the trends of academic staff employment share by faculty type. From here we can figure out what we need: we need one variable for faculty type (`faculty_type`), one for time (`year`), and one for employment share (`percentage`). And we need them in separate columns.
+
+We've talked about two types of the pivot functions: `pivot_wider()` and `pivot_longer()`. It may come as confusing to decide which one to use. Think of it this way: the original data set has 13 columns and we want to cut it down to 3 columns (`faculty_type`, `year`, and `percentage`). So it's a transition from **wide** to **long**, which makes `pivot_longer()` is what we're looking for. 
+
+```{r eval=FALSE}
+staff %>%
+  pivot_longer(
+    cols = c("1975", "1989", "1993", "1995", "1999", "2001", "2003", "2005", "2007", "2009","2011"), 
+    names_to = "year", 
+    values_to = "percentage"
+    )
+```
+
+`pivot_longer()` takes four arguments: data, cols, names_to, and values_to. The data argument is omitted because we use `%>%` to pipe the data directly into the function. The next argument, cols, is the column names that we want to shrink down, which in this case all the years. names_to is the name of the column for what's specified in cols. Lastly, values_to is the name of the column for the cell value.
+
+The above code works fine but could improve, specifically in how it specifies cols. Instead of specifying the columns to include, we can specify the columns to exclude as well, using `-` sign in front of variable names. 
+
+```{r}
+staff_long <- staff %>%
+  pivot_longer(
+    cols = -faculty_type, 
+    names_to = "year", 
+    values_to = "percentage"
+    )
+
+staff_long
+```
+
+See this code use `-faculty_type` to include all the columns but this. And I save the pivoted table as `staff_long`.
+
+## Bar chart
+```{r}
+staff_long %>%
+  ggplot(aes(x = percentage, y = year, fill = faculty_type)) +
+  geom_col()
+```
+
+## Line chart
+```{r}
+staff_long %>%
+  mutate(part_time = case_when(faculty_type == "Part-Time Faculty" ~ "Part-Time Faculty",
+                               TRUE ~ "Other Faculty")) %>%
+  ggplot(aes(x = year, y = percentage/100, 
+             group = faculty_type, 
+             color = part_time)) +
+  geom_line() +
+  theme_minimal() +
+  labs(
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Proportion",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+
+# Exercise
+### Exercise 1.
+
+Pivot `staff_long` back to its original wide format. You may want to use `pivot_wider()` this time.
+
+```{r}
+# write your code below this comment line
+staff_long %>% 
+  pivot_wider(names_from = year,
+              values_from = percentage)
+
+```
+
+### Exercise 2.
+
+Pivot `staff_long` to the wide format where each faculty type has its own column. 
+
+```{r}
+# write your code below this comment line
+staff_long %>% 
+  pivot_wider(names_from = faculty_type,
+              values_from = percentage)
+
+```

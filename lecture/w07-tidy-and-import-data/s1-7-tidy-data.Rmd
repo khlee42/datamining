@@ -1,0 +1,486 @@
+---
+title: "Data tidying and reshaping <br> `r emo::ji('broom')`"
+author: "Kyunghee Lee"
+output:
+  xaringan::moon_reader:
+    css: "../slides.css"
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(emo)
+library(knitr)
+library(skimr)
+library(scales)
+library(patchwork)
+```
+
+
+class: center, middle
+
+# Tidy data
+
+---
+
+## Characteristics of tidy data
+
+- Each variable must have its own column.
+- Each observation must have its own row.
+- Each value must have its own cell.
+
+```{r echo=FALSE, out.width="95%", fig.align = "center"}
+knitr::include_graphics("img/tidy-var-obs-val.png")
+```
+
+
+---
+
+
+.question[
+What makes this data not tidy?
+]
+
+```{r hyperwar-airplanes-on-hand, echo=FALSE, out.width="90%", fig.align = "center", caption = "WW2 Army Air Force combat aircraft"}
+knitr::include_graphics("img/untidy-data/hyperwar-airplanes-on-hand.png")
+```
+
+.footnote[
+Source: [Army Air Forces Statistical Digest, WW II](https://www.ibiblio.org/hyperwar/AAF/StatDigest/aafsd-3.html)
+]
+
+---
+
+.question[
+What makes this data not tidy?
+]
+
+<br>
+
+```{r hiv-est-prevalence-15-49, echo=FALSE, out.width="95%", fig.align = "center", caption = "Estimated HIV prevalence among 15-49 year olds"}
+knitr::include_graphics("img/untidy-data/hiv-est-prevalence-15-49.png")
+```
+
+.footnote[
+Source: [Gapminder, Estimated HIV prevalence among 15-49 year olds](https://www.gapminder.org/data)
+]
+
+---
+
+.question[
+What makes this data not tidy?
+]
+
+<br>
+
+```{r us-general-economic-characteristic-acs-2017, echo=FALSE, out.width="95%", fig.align = "center", caption = "US General Economic Characteristics, ACS 2017"}
+knitr::include_graphics("img/untidy-data/us-general-economic-characteristic-acs-2017.png")
+```
+
+.footnote[
+Source: [US Census Fact Finder, General Economic Characteristics, ACS 2017](https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_DP03&src=pt)
+]
+
+---
+
+## A grammar of data tidying
+
+.pull-left[
+```{r dplyr-part-of-tidyverse, echo=FALSE, out.width="70%", fig.align = "center", caption = "dplyr is part of the tidyverse"}
+include_graphics("img/tidyr-part-of-tidyverse.png")
+```
+]
+.pull-right[
+The goal of tidyr is to help you create tidy data
+]
+
+---
+
+## `tidyr` functions
+
+- `pivot_longer()`
+- `pivot_wider()`
+- `separate()`
+- `unite()`
+
+---
+
+## `pivot_*()` functions
+
+
+```{r echo=FALSE}
+include_graphics("img/tidyr-longer-wider.gif")
+```
+
+---
+
+## `pivot_longer()`
+
+```{r echo=FALSE, out.width="100%", fig.align = "center"}
+include_graphics("img/tidy-pivot-long.png")
+```
+
+---
+
+## `pivot_wider()` for the opposite
+
+```{r echo=FALSE, out.width="100%", fig.align = "center"}
+include_graphics("img/tidy-pivot-wide.png")
+```
+
+---
+## `pivot_longer()`
+
+```{r eval=FALSE}
+pivot_longer(data, cols, names_to = "name", values_to = "value")
+```
+
+- The first argument is `data` as usual.
+--
+
+- The second argument, `cols`, is where you specify which columns to pivot 
+into longer format
+--
+
+- The third argument, `names_to`, is a string specifying the name of the column to create from the data stored in the column names of data
+--
+
+- The fourth argument, `values_to`, is a string specifying the name of the column to create from the data stored in cell values
+
+---
+
+## `pivot_longer()`
+
+.small[
+.pull-left[
+```{r}
+table4a
+```
+]
+
+.pull-right[
+```{r}
+table4a %>% 
+  pivot_longer(c(`1999`, `2000`), 
+               names_to = "year", 
+               values_to = "cases")
+```
+]
+]
+
+---
+
+## `pivot_wider()` for the opposite
+
+```{r eval=FALSE}
+pivot_wider(data, names_from = "name", values_from = "value")
+```
+
+- The first argument is `data` as usual.
+--
+
+- The second argument, `names_from`, is a string specifying the name of the column which contains column names to create
+--
+
+- The third argument, `values_from`, is a string specifying the name of the column which contains values for these new columns
+
+---
+
+## `pivot_wider()` for the opposite
+
+.small[
+.pull-left[
+```{r}
+table2
+```
+]
+.pull-right[
+```{r}
+table2 %>%
+    pivot_wider(names_from = type, 
+                values_from = count)
+```
+]
+]
+
+---
+
+## `separate()` to separate column
+
+```{r eval=FALSE}
+separate(data, col, into)
+```
+
+```{r echo=FALSE, out.width="100%", fig.align = "center"}
+include_graphics("img/tidy-separate.png")
+```
+---
+
+## `separate()` to separate column
+
+.small[
+.pull-left[
+```{r}
+table3
+```
+]
+
+.pull-right[
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
+```
+]
+]
+
+---
+
+## `unite()` for the opposite
+
+```{r eval=FALSE}
+unite(data, col)
+```
+
+```{r echo=FALSE, out.width="100%", fig.align = "center"}
+include_graphics("img/tidy-unite.png")
+```
+
+
+---
+
+## `unite()` for the opposite
+
+.small[
+.pull-left[
+```{r}
+table5
+```
+]
+
+.pull-right[
+```{r}
+table5 %>% 
+  unite(new, century, year)
+```
+]
+]
+
+---
+
+## `unite()` without `sep`erator
+
+```{r}
+table5 %>% 
+  unite(new, century, year, sep="")
+```
+
+---
+
+class: middle
+
+# Instructional staff employment trends
+
+---
+
+The American Association of 
+University Professors (AAUP) is a nonprofit membership association of faculty 
+and other academic professionals. 
+[This report](https://www.aaup.org/sites/default/files/files/AAUP_Report_InstrStaff-75-11_apr2013.pdf) 
+by the AAUP shows trends in instructional staff employees between 1975 
+and 2011, and contains an image very similar to the one given below.  
+
+```{r echo=FALSE,out.width="100%",fig.align="center"}
+include_graphics("img/staff-employment.png")
+```
+  
+.question[
+What makes this data not tidy?
+]
+
+---
+
+## Data
+
+Each row in this dataset represents a faculty type, and the columns are the 
+years for which we have data. The values are percentage of hires of that type 
+of faculty for each year.
+
+```{r load-data-staff, message=FALSE}
+staff <- read_csv("data/instructional-staff.csv")
+staff
+```
+
+---
+
+## Recreate the visualization
+
+In order to recreate this visualization we need to first reshape the data to have 
+one variable for faculty type and one variable for year. In other words, 
+we will convert the data from the wide format to long format. 
+
+---
+
+class: middle
+
+```{r echo=FALSE,out.width="80%",fig.align="center"}
+include_graphics("img/pivot.gif")
+```
+
+---
+
+## Pivot staff data
+
+.small[
+```{r eval=FALSE}
+staff %>%
+  pivot_longer(
+    cols = c("1975", "1989", "1993", "1995", "1999", "2001", "2003", "2005", "2007", "2009","2011"), 
+    names_to = "year", 
+    values_to = "percentage"
+    )
+```
+
+```{r}
+staff %>%
+  pivot_longer(
+    cols = -faculty_type, 
+    names_to = "year", 
+    values_to = "percentage"
+    )
+```
+]
+---
+
+## Pivot staff data, and save result
+
+```{r}
+staff_long <- staff %>%
+  pivot_longer(
+    cols = -faculty_type, 
+    names_to = "year", 
+    values_to = "percentage"
+    )
+
+staff_long
+```
+
+---
+
+```{r fig.width=8, fig.height=3}
+staff_long %>%
+  ggplot(aes(x = percentage, y = year, fill = faculty_type)) +
+  geom_col(position = "dodge")
+```
+
+---
+
+## Some improvement...
+
+```{r fig.width=8, fig.height=3}
+staff_long %>%
+  ggplot(aes(x = percentage, y = year, fill = faculty_type)) +
+  geom_col()
+```
+
+---
+
+## More improvement
+
+```{r fig.width=8, fig.height=3}
+staff_long %>%
+  ggplot(aes(x = year, y = percentage, group = faculty_type, color = faculty_type)) +
+  geom_line()
+```
+
+
+---
+
+.discussion[
+How would you go about creating the following plot?
+]
+
+```{r echo=FALSE, fig.width=6, fig.height=3}
+staff_long %>%
+  mutate(part_time = case_when(faculty_type == "Part-Time Faculty" ~ "Part-Time Faculty",
+                               TRUE ~ "Other Faculty")) %>%
+  ggplot(aes(x = year, y = percentage/100, 
+             group = faculty_type, 
+             color = part_time)) +
+  geom_line() +
+  theme_minimal() +
+  labs(
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Proportion",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+```{r eval=FALSE}
+staff_long %>%
+  mutate(part_time = case_when(faculty_type == "Part-Time Faculty" ~ "Part-Time Faculty", #<<
+                               TRUE ~ "Other Faculty")) %>% #<<
+  ggplot(aes(x = year, y = percentage/100, 
+             group = faculty_type, 
+             color = part_time)) + 
+  geom_line() +
+  theme_minimal() + 
+  labs(
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Proportion",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+```{r eval=FALSE}
+staff_long %>%
+  mutate(part_time = case_when(faculty_type == "Part-Time Faculty" ~ "Part-Time Faculty",
+                               TRUE ~ "Other Faculty")) %>%
+  ggplot(aes(x = year, y = percentage/100, 
+             group = faculty_type, #<< 
+             color = part_time)) + #<<
+  geom_line() +
+  theme_minimal() + #<<
+  labs( 
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Proportion",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+---
+
+```{r eval=FALSE}
+staff_long %>%
+  mutate(part_time = case_when(faculty_type == "Part-Time Faculty" ~ "Part-Time Faculty",
+                               TRUE ~ "Other Faculty")) %>%
+  ggplot(aes(x = year, y = percentage/100, 
+             group = faculty_type, 
+             color = part_time)) + 
+  geom_line() +
+  theme_minimal() + 
+  labs( #<<
+    title = "Instructional staff employment trends", #<<
+    x = "Year", #<<
+    y = "Proportion", #<<
+    color = "" #<<
+  ) +
+  theme(legend.position = "bottom") #<<
+```

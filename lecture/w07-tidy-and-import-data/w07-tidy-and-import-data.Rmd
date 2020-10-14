@@ -1,0 +1,47 @@
+---
+title: "Lecture 7 - Tidy and import data"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/iC9bSW1xczM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s1-7-tidy-data.html){target="_blank"}
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/khSQhKUBMAE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Slide `r fa("file", fill = "steelblue")`](s1-8-import-data.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "R4DS", "[Chapter 11 Data import](https://r4ds.had.co.nz/data-import.html){target=\"_blank\"}",
+  "R4DS", "[Chapter 12 Tidy data](https://r4ds.had.co.nz/tidy-data.html){target=\"_blank\"}",
+  "IDS", "[Chapter 5 Importing data](https://rafalab.github.io/dsbook/importing-data.html){target=\"_blank\"}",
+  "IDS", "[Chapter 21 Reshaping data](https://rafalab.github.io/dsbook/reshaping-data.html){target=\"_blank\"}"
+)
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

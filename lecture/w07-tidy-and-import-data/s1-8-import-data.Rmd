@@ -1,0 +1,183 @@
+---
+title: "Importing data <br> `r emo::ji('up_arrow')`"
+author: "Kyunghee Lee"
+output:
+  xaringan::moon_reader:
+    css: "../slides.css"
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+class: middle
+
+# Reading tabular data into R
+
+---
+
+class: middle
+
+.pull-left[
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/readr.png")
+```
+]
+.pull-right[
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/readxl.png")
+```
+]
+
+---
+
+## readr
+
+- `read_csv()` - comma delimited files
+- `read_csv2()` - semicolon separated files (common in countries where , is used as the decimal place)
+- `read_tsv()` - tab delimited files
+- `read_delim()` - reads in files with any delimiter
+- `read_fwf()` - fixed width files
+- `read_table()` - common variation of fixed width files where columns are separated by white space
+- ...
+
+---
+
+## Reading data
+
+```{r echo=FALSE, message=FALSE}
+edi_airbnb <- read_csv("data/edi-airbnb.csv")
+```
+
+**From local file:**
+```{r eval=FALSE}
+edi_airbnb <- read_csv("data/edi-airbnb.csv")
+```
+
+**Or, from online source:**
+```{r eval=FALSE}
+edi_airbnb <- read_csv("https://khlee42.github.io/datamining/lab/lab-06/fisheries.csv")
+```
+
+---
+
+## Common issue: variable names
+
+```{r message=FALSE}
+names(edi_airbnb)
+```
+
+--
+
+... but R doesn't allow spaces in variable names
+
+```{r error=TRUE}
+ggplot(edi_airbnb, aes(x = Number of bathrooms, y = Price)) +
+  geom_point()
+```
+
+---
+
+## Solution - Define column names
+
+.small[
+```{r}
+edi_airbnb_col_names <- read_csv("data/edi-airbnb.csv",
+  col_names = c("id", "price", "neighbourhood", "accommodates",
+                "bathroom", "bedroom", "bed", 
+                "review_scores_rating", "n_reviews", "url"))
+
+names(edi_airbnb_col_names)
+```
+]
+
+---
+
+## Common issue: missing value
+
+.pull-left[
+<br><br><br>
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("img/df-na.png")
+```
+]
+.pull-right[
+```{r message=FALSE}
+read_csv("data/df-na.csv")
+```
+]
+
+---
+
+## Solution - na option
+
+```{r eval=FALSE}
+read_csv("data/df-na.csv", 
+         na = c("", "NA", ".", "9999", "Not applicable"))
+```
+
+.pull-left[
+<br>
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("img/df-na.png")
+```
+]
+.pull-right[
+```{r echo=FALSE,message=FALSE}
+read_csv("data/df-na.csv", 
+  na = c("", "NA", ".", "9999",
+         "Not applicable"))
+```
+]
+
+---
+
+## Writing data
+
+**Write a file**
+```{r cache=TRUE}
+df <- tribble(
+  ~x, ~y,
+  1,  "a",
+  2,  "b",
+  3,  "c"
+)
+
+write_csv(df, path = "data/df.csv")
+```
+
+---
+
+## R data file: `read_rds()` and `write_rds()`
+
+- CSVs can be unreliable for saving interim results if there is specific 
+variable type information you want to hold on to.
+- An alterive is RDS files, you can read and write them with `read_rds()` and 
+`write_rds()`, respectively.
+
+```{r eval=FALSE}
+read_rds(path)
+write_rds(x, path)
+```
+
+---
+
+## Packages for reading other types
+
+- **googlesheets4:** Google Sheets
+- **haven**: SPSS, Stata, and SAS files
+- **DBI**, along with a database specific backend (e.g. RMySQL, RSQLite, RPostgreSQL etc): allows you to run SQL queries against a database and return a data frame
+- **jsonline**: JSON
+- **xml2**: xml
+- **rvest**: web scraping
+- **httr**: web APIs
+- **sparklyr**: data loaded into spark
