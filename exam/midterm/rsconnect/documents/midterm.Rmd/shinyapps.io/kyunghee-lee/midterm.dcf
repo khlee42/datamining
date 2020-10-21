@@ -1,0 +1,13 @@
+name: midterm
+title: midterm
+username:
+account: kyunghee-lee
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3016410
+bundleId: 3767139
+url: https://kyunghee-lee.shinyapps.io/midterm/
+when: 1603296935.53512
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: midterm_solution.html|midterm_solution.Rmd|midterm_files/.DS_Store

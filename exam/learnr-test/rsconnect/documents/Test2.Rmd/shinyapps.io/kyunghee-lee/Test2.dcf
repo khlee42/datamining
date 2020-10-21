@@ -1,0 +1,13 @@
+name: Test2
+title: Test2
+username:
+account: kyunghee-lee
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2827069
+bundleId: 3638126
+url: https://kyunghee-lee.shinyapps.io/Test2/
+when: 1600314874.86143
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: lego-sales.html|lego-sales.Rmd|Test2.html

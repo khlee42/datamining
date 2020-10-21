@@ -1,0 +1,13 @@
+name: learnr-testing
+title: learnr-testing
+username:
+account: kyunghee-lee
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3015124
+bundleId: 3741427
+url: https://kyunghee-lee.shinyapps.io/learnr-testing/
+when: 1602704960.20691
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ui/server.R|ui/ui.R|lego-sales

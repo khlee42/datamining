@@ -18,6 +18,8 @@ due_in <- function(adv, due){
 # Module detail
 n = 1:15
 date = week_after(n)
+date[9]=paste0(date[9],'*')
+date[15]=paste0(date[15],'*')
 topic = c(
   'Introduction to Data Analytics',
   'R essentials',
@@ -26,7 +28,7 @@ topic = c(
   'Data visualization 2',
   'Join data',
   'Tidy and import data',
-  'Modeling',
+  'Modeling & Mock exam',
   'Midterm exam',
   'Regression 1 (Univariate)',
   'Regression 2 (Multivariate, model selection)',
@@ -53,7 +55,7 @@ lecture_links <- c(
   "./lecture/w05-data-viz-2/w05-data-viz-2.html",
   "./lecture/w06-data-join/w06-data-join.html",
   "./lecture/w07-tidy-and-import-data/w07-tidy-and-import-data.html",
-  "",
+  "./lecture/w08-modeling/w08-modeling.html",
   NA,
   "",
   "",
@@ -71,7 +73,7 @@ lab_links <- c(
   "./lab/lab-05/lab-05-data-viz-2.html",
   "./lab/lab-06/lab-06-data-join.html",
   "./lab/lab-07/lab-07-tidy-and-import-data.html",
-  "",
+  NA,
   NA,
   "",
   "",
@@ -125,7 +127,7 @@ exam_links <- c(
   NA,
   NA,
   NA,
-  NA,
+  "https://canvas.wayne.edu/courses/134413/quizzes/340763",
   "./exam/midterm_instruction.html",
   NA,
   NA,

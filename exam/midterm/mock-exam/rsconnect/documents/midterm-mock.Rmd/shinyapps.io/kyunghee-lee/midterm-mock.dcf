@@ -1,0 +1,13 @@
+name: midterm-mock
+title: midterm-mock
+username:
+account: kyunghee-lee
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3066836
+bundleId: 3767537
+url: https://kyunghee-lee.shinyapps.io/midterm-mock/
+when: 1603304013.44554
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: midterm-mock-solution.html|midterm-mock-solution.Rmd

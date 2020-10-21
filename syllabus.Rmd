@@ -35,10 +35,13 @@ knitr::kable(df, escape = F, col.names=NULL) %>%
 #### Tech
 * [DataCamp Tutorial](./lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial)
 * [R/Rstudio](./lab/lab-01/lab-01-hello-r.html)
+* [Lockdown Browser & Respondus Monitor](./lockdown_browser.html)
 
 #### Review [Course Policies](policies.html)
 
 Each module starts at 6:00 pm on the date shown in the schedule. All the evaluations (exercise, homework, exam) must be submitted by 5:59 pm on their due dates before the next week module starts. The syllabus and policies are preliminary and always subject to change.
+
+***The midterm and final exams will be during the weekend of the specified week, from Saturday 9:00 AM to Sunday 11:59 PM.** 
 
 ```{r schedule, echo=FALSE}
 addLink <- function(link, img, color) {
@@ -57,7 +60,7 @@ addicon <- function(i, img){
   }
 }
 
-week <- 7
+week <- 8
 publish <- function(list){
   for(i in 1:15){
     if(i > week){

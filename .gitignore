@@ -3,6 +3,8 @@
 # Grading folder
 /homework/hw1/grading
 /homework/hw2/grading
+/exam/midterm/grading
+/exam/final/grading
 
 # History files
 .Rhistory

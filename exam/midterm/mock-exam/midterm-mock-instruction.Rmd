@@ -1,0 +1,15 @@
+---
+title: "Mock exam for midterm"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This is a mock exam for the midterm. It won't be graded, and you can try it as many times as you want. Use it to ensure everything is set up correctly and you have no issues taking the exam on your machine.  
+
+The midterm exam will be similar to this mock exam. You will be asked to answer multiple-choice questions about the data set (nycflights13). Using the provided R console, you can write and test your code to figure out the answer to each question. Only your answer will be submitted, not the code you write. 

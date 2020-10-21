@@ -1,0 +1,155 @@
+---
+title: "Data Mining - Mock Exam"
+output: 
+  learnr::tutorial: 
+    toc: TRUE
+    toc_float: FALSE
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(gradethis)
+library(nycflights13)
+
+# a larger # observations causes pandoc error on shinyapps.
+set.seed(124)
+flights <- flights %>% sample_n(1000)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Instruction
+
+- This is a mock exam. Use it to make sure everything is running on your machine.
+- This console is provided only for the testing purpose. You can write and test your code before submitting your answer, but what you enter into the console won't be recorded nor submitted.
+- **You must submit your answer to the below questions on Canvas.**
+- You can navigate through the "previous topic" and "next topic" buttons on the bottom, or the question list on the left.
+- Click the title if you don't see the question list.
+
+## Data
+This exam uses the nycflights13 data, which we are familiar with from HW1. The data is pre-loaded, so you don't need to load any packages. And the original data set is too large for the test purpose, so a sample of 1000 obs has been randomly chosen and we will be using this instead. Below is the description of the data.
+```{r data_summary, exercise=TRUE, exercise.eval=TRUE}
+glimpse(flights)
+```
+
+## Question 1
+
+What is the flight number and carrier of the flight with the longest total delay (`total_delay` = `dep_delay` + `arr_delay`)?
+
+1. B6 1307
+2. AA 85
+3. DL 1091
+4. MQ 4577
+
+```{r q1, exercise=TRUE}
+
+```
+
+```{r q1-hint}
+flights %>%
+  .....(total_delay = dep_delay + arr_delay) %>% 
+  .....(desc(total_delay)) %>% 
+  select(flight, carrier, total_delay)
+```
+
+## Question 2
+
+Which airline carrier has the lowest average total delay?
+
+1. HA
+2. DL
+3. VX
+4. AA
+
+```{r q2, exercise=TRUE}
+
+```
+
+```{r q2-hint}
+flights %>%
+  .....(total_delay = dep_delay + arr_delay) %>% 
+  .....(.....) %>% 
+  .....(avg_total_delay = mean(total_delay, na.rm=TRUE)) %>% 
+  arrange(avg_total_delay)
+```
+
+## Question 3
+
+How many flights have `dep_delay` greater than 60?
+
+1. 20
+2. 36
+3. 78
+4. 88
+
+```{r q3, exercise=TRUE}
+
+```
+
+```{r q3-hint}
+flights %>%
+  .....(dep_delay>=60) %>% 
+  count()
+```
+
+## Question 4
+
+Which airline carrier is the most frequently departed from LGA airport?
+
+1. B6
+2. DL
+3. UA
+4. AA
+
+```{r q4, exercise=TRUE}
+
+```
+
+```{r q4-hint}
+flights %>%
+  .....(.....) %>% 
+  count(carrier) %>% 
+  .....(.....(n))
+```
+
+## Question 5
+
+On which month do the NYC airports have the largest number of flight traffic?
+
+1. March
+2. April
+3. August
+4. December
+
+```{r q5, exercise=TRUE}
+
+```
+
+```{r q5-hint}
+flights %>% 
+  .....(.....) %>% 
+  arrange(desc(n))
+```
+
+
+## Question 6
+
+On which month does the JFK airport have the fewest number of flight traffic?
+
+1. March
+2. April
+3. August
+4. December
+
+```{r q6, exercise=TRUE}
+
+```
+
+```{r q6-hint}
+flights %>% 
+  .....(.....==.....) %>% 
+  .....(month) %>% 
+  arrange(n)
+```

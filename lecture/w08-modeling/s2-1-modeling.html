@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Modeling fundamentals   📈</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Modeling fundamentals <br> 📈
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+class: center, middle
+
+# What's model?
+
+---
+
+## What's model?
+
+.pull-left[
+&lt;img src="img/cow_real.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="img/cow_model.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## What's model?
+
+&lt;img src="img/bridge_model.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="img/bridge_real.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## We want to explain `y` with `x`
+
+.large[
+$$ y = f(x) + e $$
+]
+
+- `y`: what we want to model
+- `x`: what we want to build a model with
+- `f(x)`: how x explains y (model)
+- `e`: what model can't explain (random error or noise); gap between model and reality
+
+
+---
+
+## Examples of model
+
+- we want to explain a person's weight with the average weight of all people in this room:
+$$ weight = f(mean) + e $$
+- we want to explain a person's weight with the height of the person
+$$ weight = f(height) + e $$
+- we want to explain a person's weight with the height and nutrition of the person
+$$ weight = f(height, nutrition) + e $$
+---
+
+## Modeling for prediction vs. statistical inference
+
+.blockquote[
+Prediction: I want to predict person's weight as closely as possible. I don't care how many variables to include or what functional form to use. I just want to increase the prediction rate.
+]
+
+&lt;br&gt;
+
+.blockquote[
+Statistical Inference: the data I have is only a sample of the population. But I want to see if this model and the parameters estimated are applicable to the population as well. 
+]
+
+---
+
+## Principal 1: Define your problem
+
+&lt;img src="img/stay_with_problem.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Principal 1: Define your problem
+
+- which model to use depends on the type of `y`
+
+&lt;img src="img/type_of_learning.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- supervised learning: both `y` and `x` are available
+  - discrete `y`: classification
+  - continuous `y`: regression (or estimation)
+- unsupervised learning to produce output based on pattern of `x`
+
+---
+
+## Principal 2: There is no perfect model
+
+&lt;img src="img/all_models_are_wrong.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Principal 2: There is no perfect model
+
+- Which model is better?
+- Model validation based on `e`
+  - How small is the gap between the model and reality?
+  - there is a variety of error metrics for quantifying `e`
+
+&lt;img src="img/reg_error.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Principal 3: Model that fits all
+
+&lt;img src="img/under_good_overfit.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+- problem of overfitting: it doesn't fit other data (not generalizable)
+
+---
+
+## Principal 3: Model that fits all
+
+&lt;img src="img/bias-variance-tradeoff.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- model complexity: a model becomes more complex with lots of variables and parameters
+- Bias-variance tradeoff
+  - bias (`e`) decreases as model complexity
+  - variance (sensitivity) increases as model complexity
+- Goal is to find the sweet spot where **the total error** is minimal.
+
+---
+
+## Principal 4: Correlation != causation 
+
+&lt;img src="img/cell_phones.png" width="100%" /&gt;
+
+.footnote[
+Source: XKCD, [Cell phones](https://xkcd.com/925/)
+]
+
+---
+
+class: center, middle
+
+# Data: Paris Paintings
+
+---
+
+## Paris Paintings
+
+.small[
+
+```r
+pp &lt;- read_csv(
+  "data/paris-paintings.csv",
+  na = c("n/a", "", "NA")
+)
+names(pp)
+```
+
+```
+##  [1] "name"              "sale"              "lot"              
+##  [4] "position"          "dealer"            "year"             
+##  [7] "origin_author"     "origin_cat"        "school_pntg"      
+## [10] "diff_origin"       "logprice"          "price"            
+## [13] "count"             "subject"           "authorstandard"   
+## [16] "artistliving"      "authorstyle"       "author"           
+## [19] "winningbidder"     "winningbiddertype" "endbuyer"         
+## [22] "Interm"            "type_intermed"     "Height_in"        
+## [25] "Width_in"          "Surface_Rect"      "Diam_in"          
+## [28] "Surface_Rnd"       "Shape"             "Surface"          
+## [31] "material"          "mat"               "materialCat"      
+## [34] "quantity"          "nfigures"          "engraved"         
+## [37] "original"          "prevcoll"          "othartist"        
+## [40] "paired"            "figures"           "finished"         
+## [43] "lrgfont"           "relig"             "landsALL"         
+## [46] "lands_sc"          "lands_elem"        "lands_figs"       
+## [49] "lands_ment"        "arch"              "mytho"            
+## [52] "peasant"           "othgenre"          "singlefig"        
+## [55] "portrait"          "still_life"        "discauth"         
+## [58] "history"           "allegory"          "pastorale"        
+## [61] "other"
+```
+]
+
+---
+
+## Auctions today
+
+&lt;img src="img/auction-video.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+.tiny[
+https://www.youtube.com/watch?v=apaE1Q7r4so
+]
+
+---
+
+## Heights
+
+.question[
+Describe the distribution of heights of paintings.
+]
+.small[
+
+```r
+ggplot(data = pp, aes(x = Height_in)) +
+  geom_histogram(bins = 30) +
+  labs(x = "Height, in inches", y = "")
+```
+
+&lt;img src="s2-1-modeling_files/figure-html/height-dist-1.png" width="1500" /&gt;
+]
+---
+
+## Widths
+
+.question[
+Describe the distribution of widths of paintings.
+]
+.small[
+
+```r
+ggplot(data = pp, aes(x = Width_in)) +
+  geom_histogram(bins = 30) +
+  labs(x = "Width, in inches", y = "")
+```
+
+&lt;img src="s2-1-modeling_files/figure-html/width-dist-1.png" width="1500" /&gt;
+]
+---
+
+## Models as functions
+
+- We can represent relationships between variables using **functions**
+- A function is a mathematical concept: the relationship between an output
+and one or more inputs.
+    - Plug in the inputs and receive back the output
+    - Example: the formula `\(y = 3x + 7\)` is a function with input `\(x\)` and output `\(y\)`,
+    when `\(x\)` is `\(5\)`, the output `\(y\)` is `\(22\)`
+    ```
+    y = 3 * 5 + 7 = 22
+    ```
+
+$$ height = f(width) + e = b_0 + b_1~width + e$$
+
+---
+
+## Visualizing the linear model
+
+.small[
+
+```r
+ggplot(data = pp, aes(x = Width_in, y = Height_in)) +
+  geom_point() +
+  geom_smooth(method = "lm") # lm for linear model
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="s2-1-modeling_files/figure-html/height-width-plot-code-1.png" width="1500" /&gt;
+]
+
+---
+
+## ... with different cosmetic choices
+
+.small[
+
+```r
+ggplot(data = pp, aes(x = Width_in, y = Height_in)) +
+  geom_point() +
+  geom_smooth(method = "lm", 
+              col = "pink", lty = 2, lwd = 3)
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="s2-1-modeling_files/figure-html/height-width-plot-pink-line-1.png" width="1500" /&gt;
+]
+
+---
+
+## Height and width
+
+.small[
+
+```r
+lm(Height_in ~ Width_in, data = pp)
+```
+
+```
+## 
+## Call:
+## lm(formula = Height_in ~ Width_in, data = pp)
+## 
+## Coefficients:
+## (Intercept)     Width_in  
+##      3.6214       0.7808
+```
+]
+
+--
+
+`$$\widehat{height} = 3.62 + 0.78~width$$`
+`$$3.62 + 0.78*10 = 11.42$$`
+
+---
+
+## Vocabulary
+
+$$ height = f(width) + e = b_0 + b_1~width + e$$
+
+- **Dependent variable:** Variable whose behavior or variation you are trying to
+understand, on the y-axis (response variable)
+- **Independent variables:** Other variables that you want to use to explain the
+variation in the response, on the x-axis (explanatory variables)
+- **Predicted value:** Output of the **model function**
+    - The model function gives the typical (expected) value of the response
+    variable *conditioning* on the explanatory variables
+- **Residuals:** A measure of how far each case is from its predicted value
+(`e`)
+    - Residual = Observed value - Predicted value
+    - Tells how far above/below the expected value each case is
+
+---
+
+## Residuals
+
+.question[
+What does a negative residual mean? Which paintings on the plot have have
+negative residuals, those below or above the line?
+]
+
+&lt;img src="s2-1-modeling_files/figure-html/height-width-plot-no-se2-1.png" width="1500" /&gt;
+
+---
+
+## Visualizing residuals
+
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="s2-1-modeling_files/figure-html/unnamed-chunk-16-1.png" width="1500" /&gt;
+
+---
+
+## Ordinary Least Squares (OLS) regression or estimation
+
+$$ y = b_0 + b_1~x + e $$
+$$ \hat{y} = b_0 + b_1~x $$
+- The regression line minimizes the sum of squared residuals.
+  - `\(\sum_{i = 1}^n e_i^2 = \sum_{i = 1}^n (y - \hat{y})^2\)`.
+
+---
+
+## Wrap-up
+
+- what's model
+- 4 principals
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
