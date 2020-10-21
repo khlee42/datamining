@@ -6,6 +6,10 @@
 /exam/midterm/grading
 /exam/final/grading
 
+# Exam files
+/exam/midterm/midterm.Rmd
+/exam/midterm/midterm.html
+
 # History files
 .Rhistory
 .Rapp.history
