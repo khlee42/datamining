@@ -128,7 +128,7 @@ exam_links <- c(
   NA,
   NA,
   "https://canvas.wayne.edu/courses/134413/quizzes/340763",
-  "./exam/midterm_instruction.html",
+  "https://canvas.wayne.edu/courses/134413/quizzes/318577",
   NA,
   NA,
   NA,

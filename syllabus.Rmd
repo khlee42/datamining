@@ -29,13 +29,13 @@ knitr::kable(df, escape = F, col.names=NULL) %>%
 ```
 
 #### Texts are freely available
-* [Grolemund, Garrett, and Wickham, Hadley. R for data science, 1st Edition, O'Reilly Media](https://r4ds.had.co.nz/)  
-* [Irizarry, Rafael, Introduction to Data Science, 1st Edition, Chapman and Hall/CRC](https://rafalab.github.io/dsbook/)
+* [Grolemund, Garrett, and Wickham, Hadley. R for data science, 1st Edition, O'Reilly Media](https://r4ds.had.co.nz/){target="_blank"}
+* [Irizarry, Rafael, Introduction to Data Science, 1st Edition, Chapman and Hall/CRC](https://rafalab.github.io/dsbook/){target="_blank"}
 
 #### Tech
-* [DataCamp Tutorial](./lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial)
-* [R/Rstudio](./lab/lab-01/lab-01-hello-r.html)
-* [Lockdown Browser & Respondus Monitor](./lockdown_browser.html)
+* [DataCamp Tutorial](./lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial){target="_blank"}
+* [R/Rstudio](./lab/lab-01/lab-01-hello-r.html){target="_blank"}
+* [Lockdown Browser & Respondus Monitor](./lockdown_browser.html){target="_blank"}
 
 #### Review [Course Policies](policies.html)
 
@@ -45,7 +45,8 @@ Each module starts at 6:00 pm on the date shown in the schedule. All the evaluat
 
 ```{r schedule, echo=FALSE}
 addLink <- function(link, img, color) {
-  paste0("<a href=\"", link, "\">", as.character(fa(name = img, fill = color)), "</a>")
+  paste0("<a href=\"", link, "\" target=\"_blank\">", as.character(fa(name = img, fill = color)), "</a>")
+  # paste0("<a href=\"", link, "\">", as.character(fa(name = img, fill = color)), "</a>")
 }
 noLink <- function(img, color) {
   fa(name = img, fill = color)
@@ -60,7 +61,7 @@ addicon <- function(i, img){
   }
 }
 
-week <- 8
+week <- 9
 publish <- function(list){
   for(i in 1:15){
     if(i > week){

@@ -5,8 +5,10 @@
 /homework/hw2/grading
 
 # Remove after exam
-/exam/midterm
-/exam/final
+/exam/midterm/solution
+/exam/midterm/question
+/exam/final/solution
+/exam/final/question
 
 # History files
 .Rhistory
