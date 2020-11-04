@@ -1,0 +1,43 @@
+---
+title: "Lecture 10 - Linear regression"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/9CNU1pS5giU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-2-linear-reg.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "R4DS", "[Chapter 23 Model basics](https://r4ds.had.co.nz/model-basics.html){target=\"_blank\"}",
+  "IDS", "[Chapter 24 Model building](https://r4ds.had.co.nz/model-building.html){target=\"_blank\"}",
+  "IDS", "[Chapter 17 Regression](https://rafalab.github.io/dsbook/regression.html){target=\"_blank\"}",
+  "IDS", "[Chapter 18 Linear model](https://rafalab.github.io/dsbook/linear-models.html){target=\"_blank\"}"
+)
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

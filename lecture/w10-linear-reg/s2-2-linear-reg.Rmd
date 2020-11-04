@@ -1,0 +1,549 @@
+---
+title: "Linear regression <br> `r emo::ji('dango')`"
+author: "Kyunghee"
+output:
+  xaringan::moon_reader:
+    css: "../slides.css"
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+```
+
+
+## We want to explain `y` with `x`
+
+.large[
+$$ y = f(x) + e $$
+]
+
+- `y`: what we want to model
+- `x`: what we want to build a model with
+- `f(x)`: how x explains y (model)
+- `e`: what model can't explain (random error or noise); gap between model and reality
+
+---
+
+## Different kinds of modeling
+
+- Exploratory modeling: to uncover the relationships among measured variables
+  - inference
+  - endogeneity
+- **Predictive modeling**: to predict outcome variables
+  - over-fitting
+  - accuracy
+
+---
+
+## Types of predictive models
+
+- Supervised learning for labeled data  
+  - Regression (Linear/Logistic/glmnet)
+  - Classification (Trees/Forest/Neural net)
+- Unsupervised learning for unlabeled data    
+  - Clustering (k-mean)
+  - Dimension reduction (Embedding/PCA)
+
+---
+
+## Linear regression
+
+- Supervised learning for labeled data
+  - Regression (**Linear**/Logistic/glmnet)
+  - Classification (Trees/Forest/Neural net)
+- Unsupervised learning for unlabeled data
+  - Clustering (k-mean)
+  - Dimension reduction (Embedding/PCA)
+
+---
+
+## The data `r emo::ji('gem')`
+
+```{r, message=FALSE}
+library(tidyverse)
+str(diamonds)
+```
+
+---
+
+## The heavier, the more expensive?
+.small[
+.pull-left[
+```{r out.width="75%", warning=FALSE, message=FALSE}
+ggplot(diamonds, aes(x=price)) +
+  geom_histogram()
+```
+]
+
+.pull-right[
+```{r out.width="75%", warning=FALSE, message=FALSE}
+ggplot(diamonds, aes(x=carat)) +
+  geom_histogram()
+```
+]
+]
+
+---
+
+## The heavier, the more expensive?
+
+.small[
+```{r out.width="75%"}
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point()
+```
+]
+
+---
+
+
+## The heavier, the more expensive?
+
+.small[
+```{r out.width="75%", warning=FALSE, message=FALSE}
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  scale_y_continuous(limit=c(0,20000))
+```
+]
+
+---
+
+## Relationship between price and carat
+.small[
+```{r}
+model <- lm(price~carat, data = diamonds)
+summary(model)
+```
+]
+
+---
+
+## What these numbers mean?
+
+$$\widehat{y} = f(x) = a + bx$$
+$$\widehat{Price} = -2256.36 + 7756.43~Carat$$
+- **Slope:** For each additional carat, the price is 
+expected to increase $7,756
+  
+- **Intercept:** Zero carat diamonds are expected to be priced at -$2,256
+The intercept is meaningless in the context of these 
+data, it only serves to adjust the height of the line.
+
+---
+
+## Predicting the price of hypothetical diamond
+
+$$\widehat{Price} = -2256.36 + 7756.43~Carat$$
+- 2 carat diamond: -2256 + 7756*2 = 13256
+- 1.5 carat diamond: -2256 + 7756*1.5 = 9378
+- 0.2 carat diamond: -2256 + 7756*0.2 = -704.8
+
+---
+
+## Prediction vs. extrapolation
+
+.question[
+On average, how expansive are diamonds that weight 10 carats?
+]
+
+--
+
+```{r echo=FALSE, extrapolate, warning = FALSE, echo=FALSE, fig.height=2, fig.width=5}
+newdata <- tibble(carat = 10)
+newdata <- newdata %>%
+  mutate(price = predict(model, newdata))
+
+ggplot(data = diamonds, aes(x = carat, y = price)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", fullrange = TRUE, color = "#A7D5E8", se = FALSE) +
+  xlim(0, 11) +
+  geom_segment(data = newdata, mapping = aes(x = carat, y = 0, xend = carat, yend = price), color = "#1E5C65", lty = 2) +
+  geom_segment(data = newdata, mapping = aes(x = carat, y = price, xend = 0, yend = price), color = "#1E5C65", lty = 2)
+```
+
+---
+
+## Watch out for extrapolation!
+
+> "When those blizzards hit the East Coast this winter, it proved to my satisfaction
+that global warming was a fraud. That snow was freezing cold. But in an alarming
+trend, temperatures this spring have risen. Consider this: On February 6th it was 10
+degrees. Today it hit almost 80. At this rate, by August it will be 220 degrees. So
+clearly folks the climate debate rages on."<sup>1</sup>  <br>
+Stephen Colbert, April 6th, 2010
+
+.footnote[
+[1] OpenIntro Statistics. "Extrapolation is treacherous." OpenIntro Statistics.
+]
+
+---
+
+## Predicting the price of real diamonds in the data
+
+.small[
+```{r}
+hat <- predict(model, diamonds)
+diamonds2 <- diamonds %>% 
+  mutate(hat = hat,
+         error = hat-price) %>% 
+  select(price, carat, hat, error)
+diamonds2
+```
+]
+
+---
+
+## Error = residual
+.small[
+```{r out.width="75%", warning=FALSE, message=FALSE}
+ggplot(diamonds2, aes(x = carat, y = price)) +
+  geom_point(alpha=.2) + 
+  geom_smooth(method="lm") +
+  geom_segment(mapping = aes(xend = carat, yend = hat), color="gray", alpha=.1) +
+  scale_y_continuous(limit=c(0,20000))
+```
+]
+---
+
+## Average error = model fit
+
+$$RMSE=\sqrt{\sum_{i = 1}^n e_i^2/n} = \sqrt{\sum_{i = 1}^n (y_i - \hat{y_i})^2/n}$$
+
+```{r}
+rmse <- sqrt(mean(diamonds2$error^2))
+rmse
+
+```
+
+---
+
+
+class: middle, center
+
+# Multivariate linear regression
+
+---
+
+## Multiple predictors - Cut, color, clarity
+
+```{r echo=FALSE}
+diamonds <- diamonds %>% 
+  mutate(cut=factor(cut, ordered=FALSE),
+         color=factor(color, ordered=FALSE),
+         clarity=factor(clarity, ordered=FALSE))
+```
+
+``` {r}
+levels(diamonds$cut)
+levels(diamonds$color)
+levels(diamonds$clarity)
+```
+
+---
+
+## `price ~ carat + cut`
+
+.small[
+```{r}
+model3 <- lm(price~carat+cut, diamonds)
+summary(model3)
+```
+]
+
+---
+
+## Categorical explanatory variables
+
+- When the categorical explanatory variable has many levels, they're encoded to
+**dummy variables**.
+- Each coefficient describes the expected difference between heights in that
+particular school compared to the baseline level.
+
+---
+
+.question[
+What was the baseline level for the model with `cut` as predictor?
+]
+.small[
+```{r}
+levels(diamonds$cut)
+summary(model3)
+```
+]
+
+---
+
+## Error
+
+```{r}
+error3 <- predict(model3, diamonds) - diamonds$price
+rmse3 <- sqrt(mean(error3^2))
+rmse3 # In-sample error for caret+cut
+```
+
+---
+
+## `price ~ carat + cut + color`
+.small[
+```{r}
+model4 <- lm(price~carat+cut+color, diamonds)
+error4 <- predict(model4, diamonds)-diamonds$price
+rmse4 <- sqrt(mean(error4^2))
+summary(model4)
+```
+]
+---
+
+## `price ~ carat + cut + color + clarity`
+
+.small[
+```{r}
+model5 <- lm(price~carat+cut+color+clarity, diamonds)
+error5 <- predict(model5, diamonds)-diamonds$price
+rmse5 <- sqrt(mean(error5^2))
+summary(model5)
+```
+]
+
+---
+
+## Error comparison
+.small[
+```{r}
+rmse
+rmse3
+rmse4
+rmse5
+```
+]
+---
+
+## In-sample error vs. out-of-sample error
+
+.small[
+- We have used the same dataset for training and testing the model, which is cheating
+- Prone to over-fitting (Principal #3)
+  - Overfitted models won't work well on **new data**
+
+```{r out.width="80%", fig.align="center", echo=FALSE}
+knitr::include_graphics("img/under_good_overfit.png")
+```
+
+- In-sample error: estimated errors from the data used for training
+- Out-of-sample error: estimated errors from the data never used for training
+]
+
+---
+
+## Split data for training and testing
+
+```{r}
+set.seed(123) #<<
+nrow <- nrow(diamonds)
+rows <- sample(nrow)
+shuffled_diamonds <- diamonds[rows, ]
+
+split <- round(nrow*0.8)
+
+train <- shuffled_diamonds %>% slice(1:split)
+test <- shuffled_diamonds %>% slice((split+1):nrow)
+
+```
+
+---
+
+## Split data for training and testing
+
+```{r}
+set.seed(123)
+nrow <- nrow(diamonds) #<<
+rows <- sample(nrow) #<<
+shuffled_diamonds <- diamonds[rows, ] #<<
+
+split <- round(nrow*0.8)
+
+train <- shuffled_diamonds %>% slice(1:split)
+test <- shuffled_diamonds %>% slice((split+1):nrow)
+
+```
+
+---
+
+## Split data for training and testing
+
+```{r}
+set.seed(123)
+nrow <- nrow(diamonds)
+rows <- sample(nrow)
+shuffled_diamonds <- diamonds[rows, ]
+
+split <- round(nrow*0.8) #<<
+
+train <- shuffled_diamonds %>% slice(1:split) #<<
+test <- shuffled_diamonds %>% slice((split+1):nrow) #<<
+
+```
+
+---
+
+## Split data for training and testing
+
+```{r eval=FALSE}
+library(caret)
+
+splitratio <- 0.8
+index <- createDataPartition(diamonds$price, p=splitratio, list=FALSE)
+train <- diamonds[index, ]
+test <- diamonds[-index, ]
+```
+
+---
+
+## Compare in-sample and out-of-sample error
+
+```{r}
+model2 <- lm(price~carat, train) #<<
+error2 <- predict(model2, test) - test$price #<<
+rmse2 <- sqrt(mean(error2^2))
+
+rmse2 # out-of-sample error
+rmse # in-sample error
+```
+
+- Cross-validation for fitting models such that both in-sample and out-sample errors are minimized (more on that later)
+
+---
+
+## out-of-sample comparison
+
+```{r echo=FALSE}
+model_train <- lm(price~carat, train)
+model3_train <- lm(price~carat+cut, train)
+model4_train <- lm(price~carat+cut+color, train)
+model5_train <- lm(price~carat+cut+color+clarity, train)
+
+model_list <- list(model_train, model3_train, model4_train, model5_train)
+
+out_rmse <- function(mod, dat){
+  error <- predict(mod, dat)-dat$price
+  sqrt(mean(error^2))
+}
+
+rmses <- sapply(model_list, out_rmse, dat=test)
+```
+
+.small[
+.pull-left[
+```{r}
+rmse
+rmse3
+rmse4
+rmse5
+```
+]
+.pull-right[
+```{r}
+rmses[1]
+rmses[2]
+rmses[3]
+rmses[4]
+```
+]
+]
+---
+
+class: center, middle
+
+# Tidy regression output using `broom`
+
+---
+
+## Not-so-tidy regression output (1)
+
+#### Option 1:
+
+```{r}
+model
+```
+
+---
+
+## Not-so-tidy regression output (2)
+
+#### Option 2:
+
+```{r}
+summary(model)
+```
+
+---
+
+## Tidy regression output
+
+Achieved with functions from the `broom` package:
+
+- `tidy`: Constructs a data frame that summarizes the model's statistical findings: coefficient estimates, *standard errors, test statistics, p-values*.
+- `glance`: Constructs a concise one-row summary of the model. This typically contains values such as $R^2$, adjusted $R^2$, *and residual standard error that are computed once for the entire model*.
+- `augment`: Adds columns to the original data that was modeled. This includes predictions and residuals.
+
+---
+
+## We've already seen...
+
+- Tidy your model's statistical findings
+
+.small[
+```{r}
+library(broom)
+tidy(model)
+```
+]
+
+- Glance to assess model fit
+
+.small[
+```{r}
+glance(model)
+```
+]
+
+---
+
+## Augment data with model results
+
+New variables of note (for now):
+
+- `.fitted`: Predicted value of the response variable
+- `.resid`: Residuals
+
+.small[
+```{r}
+augment(model) %>%
+  slice(1:5)
+```
+]
+
+---
+
+## Wrap-up
+
+- Linear regression
+- Analysis framework
+  - Problem
+  - EDA
+  - Modeling
+  - Prediction
+  - Validation (Training/Testing split)
+- In-sample vs. out-of-sample error

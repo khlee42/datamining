@@ -1,0 +1,158 @@
+---
+title: "Lab 08 - Linear regression"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Prerequisite
+
+This lab uses, as always, `tidyverse` package along with some new packages `broom` and `caret`. Install the new packages using `install.packages(c("broom", "caret"))`.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+library(caret)
+str(diamonds)
+```
+
+# Diamond: The heavier, the more expensive?
+
+Before diving into modeling, let's graph it out to see if there is any pattern.
+```{r out.width="75%", warning=FALSE, message=FALSE}
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  scale_y_continuous(limit=c(0,20000))
+```
+
+There is a clear linear correlation between `price` and `caret`. It's time to model it.
+```{r}
+model <- lm(price~carat, data = diamonds)
+summary(model)
+```
+
+You can also use `tidy` and `glance` functions from `broom` package to report regression outputs:
+```{r}
+tidy(model)
+glance(model)
+```
+
+## What these numbers mean?
+
+$$\widehat{y} = f(x) = a + bx$$
+$$\widehat{Price} = -2256.36 + 7756.43~Carat$$
+  
+- **Slope:** For each additional carat, the price is 
+expected to increase $7,756
+  
+- **Intercept:** Zero carat diamonds are expected to be priced at -$2,256.
+The intercept is meaningless in the context of these 
+data, it only serves to adjust the height of the line.
+
+- 2 carat diamond: -2256 + 7756*2 = 13256
+- 1.5 carat diamond: -2256 + 7756*1.5 = 9378
+- 0.2 carat diamond: -2256 + 7756*0.2 = -704.8
+
+## Get predicted values and errors
+
+To get predicted values, we can use `predict` function to plug in the actual data into our model, and save the prediction to our original data set.
+```{r}
+hat <- predict(model, diamonds)
+diamonds2 <- diamonds %>% 
+  mutate(hat = hat,
+         error = hat-price) %>% 
+  select(price, carat, hat, error)
+diamonds2
+```
+
+Then, calculating RMSE of the model is a simple calculation: use `sqrt` and `mean` function to calculate the average errors:
+
+$$RMSE=\sqrt{\sum_{i = 1}^n e_i^2/n} = \sqrt{\sum_{i = 1}^n (y_i - \hat{y_i})^2/n}$$
+
+```{r}
+rmse <- sqrt(mean(diamonds2$error^2))
+rmse
+```
+
+# In-sample error vs. out-of-sample error
+
+We have used the same dataset for training and testing the model, which is cheating. Also, such overfitted models won't work well on new data sets, which limits the applicability of the model we built. Let's calculate both in-sample and out-of-sample errors to assess its validity. 
+
+- In-sample error: estimated errors from the data used for training
+- Out-of-sample error: estimated errors from the data never used for training
+
+## Split data for training and testing
+
+```{r}
+set.seed(123)
+nrow <- nrow(diamonds)
+rows <- sample(nrow)
+shuffled_diamonds <- diamonds[rows, ]
+
+split <- round(nrow*0.8)
+
+train <- shuffled_diamonds %>% slice(1:split)
+test <- shuffled_diamonds %>% slice((split+1):nrow)
+
+```
+
+Or, you can use `createDataPartition` from the `caret` package as its syntax is simpler.
+
+```{r eval=FALSE}
+set.seed(123)
+splitratio <- 0.8
+index <- createDataPartition(diamonds$price, p=splitratio, list=FALSE)
+train <- diamonds[index, ]
+test <- diamonds[-index, ]
+```
+
+We are going to retrain our model using `train`, saving `test` for testing purpose only.
+```{r}
+model2 <- lm(price~carat, train)
+error2 <- predict(model2, test) - test$price
+rmse2 <- sqrt(mean(error2^2))
+
+rmse2 # out-of-sample error
+rmse # in-sample error
+```
+
+The out-of-sample error is clearly higher than the in-sample error, which is understandable, but not by far. This validation process confirms the model we built is accurate and work well on new data that the model is not trained on.
+
+
+# Exercise
+### Exercise 1.
+
+Build a predictive model for diamond `price` using `carat` and `clarity` as predictor. Calculate RMSE of the model.
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 2.
+
+Build a predictive model for diamond `price` using `carat`, `depth`, and `table` as predictor. Calculate RMSE of the model.
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 3.
+
+Compare the RMSEs of the two models. Which model is better? Does adding more variables yield a better prediction?

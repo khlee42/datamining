@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Linear regression   🍡</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Linear regression <br> 🍡
+### Kyunghee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+
+## We want to explain `y` with `x`
+
+.large[
+$$ y = f(x) + e $$
+]
+
+- `y`: what we want to model
+- `x`: what we want to build a model with
+- `f(x)`: how x explains y (model)
+- `e`: what model can't explain (random error or noise); gap between model and reality
+
+---
+
+## Different kinds of modeling
+
+- Exploratory modeling: to uncover the relationships among measured variables
+  - inference
+  - endogeneity
+- **Predictive modeling**: to predict outcome variables
+  - over-fitting
+  - accuracy
+
+---
+
+## Types of predictive models
+
+- Supervised learning for labeled data  
+  - Regression (Linear/Logistic/glmnet)
+  - Classification (Trees/Forest/Neural net)
+- Unsupervised learning for unlabeled data    
+  - Clustering (k-mean)
+  - Dimension reduction (Embedding/PCA)
+
+---
+
+## Linear regression
+
+- Supervised learning for labeled data
+  - Regression (**Linear**/Logistic/glmnet)
+  - Classification (Trees/Forest/Neural net)
+- Unsupervised learning for unlabeled data
+  - Clustering (k-mean)
+  - Dimension reduction (Embedding/PCA)
+
+---
+
+## The data 💎
+
+
+```r
+library(tidyverse)
+str(diamonds)
+```
+
+```
+## tibble [53,940 × 10] (S3: tbl_df/tbl/data.frame)
+##  $ carat  : num [1:53940] 0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+##  $ cut    : Ord.factor w/ 5 levels "Fair"&lt;"Good"&lt;..: 5 4 2 4 2 3 3 3 1 3 ...
+##  $ color  : Ord.factor w/ 7 levels "D"&lt;"E"&lt;"F"&lt;"G"&lt;..: 2 2 2 6 7 7 6 5 2 5 ...
+##  $ clarity: Ord.factor w/ 8 levels "I1"&lt;"SI2"&lt;"SI1"&lt;..: 2 3 5 4 2 6 7 3 4 5 ...
+##  $ depth  : num [1:53940] 61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+##  $ table  : num [1:53940] 55 61 65 58 58 57 57 55 61 61 ...
+##  $ price  : int [1:53940] 326 326 327 334 335 336 336 337 337 338 ...
+##  $ x      : num [1:53940] 3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+##  $ y      : num [1:53940] 3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+##  $ z      : num [1:53940] 2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...
+```
+
+---
+
+## The heavier, the more expensive?
+.small[
+.pull-left[
+
+```r
+ggplot(diamonds, aes(x=price)) +
+  geom_histogram()
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/unnamed-chunk-3-1.png" width="75%" /&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(diamonds, aes(x=carat)) +
+  geom_histogram()
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/unnamed-chunk-4-1.png" width="75%" /&gt;
+]
+]
+
+---
+
+## The heavier, the more expensive?
+
+.small[
+
+```r
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point()
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/unnamed-chunk-5-1.png" width="75%" /&gt;
+]
+
+---
+
+
+## The heavier, the more expensive?
+
+.small[
+
+```r
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  scale_y_continuous(limit=c(0,20000))
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/unnamed-chunk-6-1.png" width="75%" /&gt;
+]
+
+---
+
+## Relationship between price and carat
+.small[
+
+```r
+model &lt;- lm(price~carat, data = diamonds)
+summary(model)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -18585.3   -804.8    -18.9    537.4  12731.7 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16
+## carat        7756.43      14.07   551.4   &lt;2e-16
+## 
+## Residual standard error: 1549 on 53938 degrees of freedom
+## Multiple R-squared:  0.8493,	Adjusted R-squared:  0.8493 
+## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## What these numbers mean?
+
+`$$\widehat{y} = f(x) = a + bx$$`
+`$$\widehat{Price} = -2256.36 + 7756.43~Carat$$`
+- **Slope:** For each additional carat, the price is 
+expected to increase $7,756
+  
+- **Intercept:** Zero carat diamonds are expected to be priced at -$2,256
+The intercept is meaningless in the context of these 
+data, it only serves to adjust the height of the line.
+
+---
+
+## Predicting the price of hypothetical diamond
+
+`$$\widehat{Price} = -2256.36 + 7756.43~Carat$$`
+- 2 carat diamond: -2256 + 7756*2 = 13256
+- 1.5 carat diamond: -2256 + 7756*1.5 = 9378
+- 0.2 carat diamond: -2256 + 7756*0.2 = -704.8
+
+---
+
+## Prediction vs. extrapolation
+
+.question[
+On average, how expansive are diamonds that weight 10 carats?
+]
+
+--
+
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/extrapolate-1.png" width="1500" /&gt;
+
+---
+
+## Watch out for extrapolation!
+
+&gt; "When those blizzards hit the East Coast this winter, it proved to my satisfaction
+that global warming was a fraud. That snow was freezing cold. But in an alarming
+trend, temperatures this spring have risen. Consider this: On February 6th it was 10
+degrees. Today it hit almost 80. At this rate, by August it will be 220 degrees. So
+clearly folks the climate debate rages on."&lt;sup&gt;1&lt;/sup&gt;  &lt;br&gt;
+Stephen Colbert, April 6th, 2010
+
+.footnote[
+[1] OpenIntro Statistics. "Extrapolation is treacherous." OpenIntro Statistics.
+]
+
+---
+
+## Predicting the price of real diamonds in the data
+
+.small[
+
+```r
+hat &lt;- predict(model, diamonds)
+diamonds2 &lt;- diamonds %&gt;% 
+  mutate(hat = hat,
+         error = hat-price) %&gt;% 
+  select(price, carat, hat, error)
+diamonds2
+```
+
+```
+## # A tibble: 53,940 x 4
+##    price carat     hat error
+##    &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1   326 0.23  -472.   -798.
+##  2   326 0.21  -628.   -954.
+##  3   327 0.23  -472.   -799.
+##  4   334 0.290   -7.00 -341.
+##  5   335 0.31   148.   -187.
+##  6   336 0.24  -395.   -731.
+##  7   336 0.24  -395.   -731.
+##  8   337 0.26  -240.   -577.
+##  9   337 0.22  -550.   -887.
+## 10   338 0.23  -472.   -810.
+## # … with 53,930 more rows
+```
+]
+
+---
+
+## Error = residual
+.small[
+
+```r
+ggplot(diamonds2, aes(x = carat, y = price)) +
+  geom_point(alpha=.2) + 
+  geom_smooth(method="lm") +
+  geom_segment(mapping = aes(xend = carat, yend = hat), color="gray", alpha=.1) +
+  scale_y_continuous(limit=c(0,20000))
+```
+
+&lt;img src="s2-2-linear-reg_files/figure-html/unnamed-chunk-9-1.png" width="75%" /&gt;
+]
+---
+
+## Average error = model fit
+
+`$$RMSE=\sqrt{\sum_{i = 1}^n e_i^2/n} = \sqrt{\sum_{i = 1}^n (y_i - \hat{y_i})^2/n}$$`
+
+
+```r
+rmse &lt;- sqrt(mean(diamonds2$error^2))
+rmse
+```
+
+```
+## [1] 1548.533
+```
+
+---
+
+
+class: middle, center
+
+# Multivariate linear regression
+
+---
+
+## Multiple predictors - Cut, color, clarity
+
+
+
+
+```r
+levels(diamonds$cut)
+```
+
+```
+## [1] "Fair"      "Good"      "Very Good" "Premium"   "Ideal"
+```
+
+```r
+levels(diamonds$color)
+```
+
+```
+## [1] "D" "E" "F" "G" "H" "I" "J"
+```
+
+```r
+levels(diamonds$clarity)
+```
+
+```
+## [1] "I1"   "SI2"  "SI1"  "VS2"  "VS1"  "VVS2" "VVS1" "IF"
+```
+
+---
+
+## `price ~ carat + cut`
+
+.small[
+
+```r
+model3 &lt;- lm(price~carat+cut, diamonds)
+summary(model3)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat + cut, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -17540.7   -791.6    -37.6    522.1  12721.4 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  -3875.47      40.41  -95.91   &lt;2e-16
+## carat         7871.08      13.98  563.04   &lt;2e-16
+## cutGood       1120.33      43.50   25.75   &lt;2e-16
+## cutVery Good  1510.14      40.24   37.53   &lt;2e-16
+## cutPremium    1439.08      39.87   36.10   &lt;2e-16
+## cutIdeal      1800.92      39.34   45.77   &lt;2e-16
+## 
+## Residual standard error: 1511 on 53934 degrees of freedom
+## Multiple R-squared:  0.8565,	Adjusted R-squared:  0.8565 
+## F-statistic: 6.437e+04 on 5 and 53934 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Categorical explanatory variables
+
+- When the categorical explanatory variable has many levels, they're encoded to
+**dummy variables**.
+- Each coefficient describes the expected difference between heights in that
+particular school compared to the baseline level.
+
+---
+
+.question[
+What was the baseline level for the model with `cut` as predictor?
+]
+.small[
+
+```r
+levels(diamonds$cut)
+```
+
+```
+## [1] "Fair"      "Good"      "Very Good" "Premium"   "Ideal"
+```
+
+```r
+summary(model3)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat + cut, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -17540.7   -791.6    -37.6    522.1  12721.4 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  -3875.47      40.41  -95.91   &lt;2e-16
+## carat         7871.08      13.98  563.04   &lt;2e-16
+## cutGood       1120.33      43.50   25.75   &lt;2e-16
+## cutVery Good  1510.14      40.24   37.53   &lt;2e-16
+## cutPremium    1439.08      39.87   36.10   &lt;2e-16
+## cutIdeal      1800.92      39.34   45.77   &lt;2e-16
+## 
+## Residual standard error: 1511 on 53934 degrees of freedom
+## Multiple R-squared:  0.8565,	Adjusted R-squared:  0.8565 
+## F-statistic: 6.437e+04 on 5 and 53934 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Error
+
+
+```r
+error3 &lt;- predict(model3, diamonds) - diamonds$price
+rmse3 &lt;- sqrt(mean(error3^2))
+rmse3 # In-sample error for caret+cut
+```
+
+```
+## [1] 1511.374
+```
+
+---
+
+## `price ~ carat + cut + color`
+.small[
+
+```r
+model4 &lt;- lm(price~carat+cut+color, diamonds)
+error4 &lt;- predict(model4, diamonds)-diamonds$price
+rmse4 &lt;- sqrt(mean(error4^2))
+summary(model4)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat + cut + color, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -17313.9   -751.2    -83.9    543.6  12273.0 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  -3760.05      41.32 -90.994  &lt; 2e-16
+## carat         8183.74      13.90 588.885  &lt; 2e-16
+## cutGood       1126.98      41.23  27.336  &lt; 2e-16
+## cutVery Good  1518.00      38.14  39.804  &lt; 2e-16
+## cutPremium    1442.73      37.78  38.189  &lt; 2e-16
+## cutIdeal      1808.04      37.29  48.486  &lt; 2e-16
+## colorE         -90.65      22.63  -4.005 6.20e-05
+## colorF         -71.72      22.78  -3.148  0.00164
+## colorG        -103.62      22.07  -4.694 2.68e-06
+## colorH        -732.17      23.71 -30.883  &lt; 2e-16
+## colorI       -1075.68      26.58 -40.464  &lt; 2e-16
+## colorJ       -1908.56      32.87 -58.055  &lt; 2e-16
+## 
+## Residual standard error: 1432 on 53928 degrees of freedom
+## Multiple R-squared:  0.8711,	Adjusted R-squared:  0.8711 
+## F-statistic: 3.315e+04 on 11 and 53928 DF,  p-value: &lt; 2.2e-16
+```
+]
+---
+
+## `price ~ carat + cut + color + clarity`
+
+.small[
+
+```r
+model5 &lt;- lm(price~carat+cut+color+clarity, diamonds)
+error5 &lt;- predict(model5, diamonds)-diamonds$price
+rmse5 &lt;- sqrt(mean(error5^2))
+summary(model5)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat + cut + color + clarity, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16813.5   -680.4   -197.6    466.4  10394.9 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  -7362.80      51.68 -142.46   &lt;2e-16
+## carat         8886.13      12.03  738.44   &lt;2e-16
+## cutGood        655.77      33.63   19.50   &lt;2e-16
+## cutVery Good   848.72      31.28   27.14   &lt;2e-16
+## cutPremium     869.40      30.93   28.11   &lt;2e-16
+## cutIdeal       998.25      30.66   32.56   &lt;2e-16
+## colorE        -211.68      18.32  -11.56   &lt;2e-16
+## colorF        -303.31      18.51  -16.39   &lt;2e-16
+## colorG        -506.20      18.12  -27.93   &lt;2e-16
+## colorH        -978.70      19.27  -50.78   &lt;2e-16
+## colorI       -1440.30      21.65  -66.54   &lt;2e-16
+## colorJ       -2325.22      26.72  -87.01   &lt;2e-16
+## claritySI2    2625.95      44.79   58.63   &lt;2e-16
+## claritySI1    3573.69      44.60   80.13   &lt;2e-16
+## clarityVS2    4217.83      44.84   94.06   &lt;2e-16
+## clarityVS1    4534.88      45.54   99.59   &lt;2e-16
+## clarityVVS2   4967.20      46.89  105.93   &lt;2e-16
+## clarityVVS1   5072.03      48.21  105.20   &lt;2e-16
+## clarityIF     5419.65      52.14  103.95   &lt;2e-16
+## 
+## Residual standard error: 1157 on 53921 degrees of freedom
+## Multiple R-squared:  0.9159,	Adjusted R-squared:  0.9159 
+## F-statistic: 3.264e+04 on 18 and 53921 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Error comparison
+.small[
+
+```r
+rmse
+```
+
+```
+## [1] 1548.533
+```
+
+```r
+rmse3
+```
+
+```
+## [1] 1511.374
+```
+
+```r
+rmse4
+```
+
+```
+## [1] 1432.024
+```
+
+```r
+rmse5
+```
+
+```
+## [1] 1156.648
+```
+]
+---
+
+## In-sample error vs. out-of-sample error
+
+.small[
+- We have used the same dataset for training and testing the model, which is cheating
+- Prone to over-fitting (Principal #3)
+  - Overfitted models won't work well on **new data**
+
+&lt;img src="img/under_good_overfit.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+- In-sample error: estimated errors from the data used for training
+- Out-of-sample error: estimated errors from the data never used for training
+]
+
+---
+
+## Split data for training and testing
+
+
+```r
+*set.seed(123)
+nrow &lt;- nrow(diamonds)
+rows &lt;- sample(nrow)
+shuffled_diamonds &lt;- diamonds[rows, ]
+
+split &lt;- round(nrow*0.8)
+
+train &lt;- shuffled_diamonds %&gt;% slice(1:split)
+test &lt;- shuffled_diamonds %&gt;% slice((split+1):nrow)
+```
+
+---
+
+## Split data for training and testing
+
+
+```r
+set.seed(123)
+*nrow &lt;- nrow(diamonds)
+*rows &lt;- sample(nrow)
+*shuffled_diamonds &lt;- diamonds[rows, ]
+
+split &lt;- round(nrow*0.8)
+
+train &lt;- shuffled_diamonds %&gt;% slice(1:split)
+test &lt;- shuffled_diamonds %&gt;% slice((split+1):nrow)
+```
+
+---
+
+## Split data for training and testing
+
+
+```r
+set.seed(123)
+nrow &lt;- nrow(diamonds)
+rows &lt;- sample(nrow)
+shuffled_diamonds &lt;- diamonds[rows, ]
+
+*split &lt;- round(nrow*0.8)
+
+*train &lt;- shuffled_diamonds %&gt;% slice(1:split)
+*test &lt;- shuffled_diamonds %&gt;% slice((split+1):nrow)
+```
+
+---
+
+## Split data for training and testing
+
+
+```r
+library(caret)
+
+splitratio &lt;- 0.8
+index &lt;- createDataPartition(diamonds$price, p=splitratio, list=FALSE)
+train &lt;- diamonds[index, ]
+test &lt;- diamonds[-index, ]
+```
+
+---
+
+## Compare in-sample and out-of-sample error
+
+
+```r
+*model2 &lt;- lm(price~carat, train)
+*error2 &lt;- predict(model2, test) - test$price
+rmse2 &lt;- sqrt(mean(error2^2))
+
+rmse2 # out-of-sample error
+```
+
+```
+## [1] 1591.197
+```
+
+```r
+rmse # in-sample error
+```
+
+```
+## [1] 1548.533
+```
+
+- Cross-validation for fitting models such that both in-sample and out-sample errors are minimized (more on that later)
+
+---
+
+## out-of-sample comparison
+
+
+
+.small[
+.pull-left[
+
+```r
+rmse
+```
+
+```
+## [1] 1548.533
+```
+
+```r
+rmse3
+```
+
+```
+## [1] 1511.374
+```
+
+```r
+rmse4
+```
+
+```
+## [1] 1432.024
+```
+
+```r
+rmse5
+```
+
+```
+## [1] 1156.648
+```
+]
+.pull-right[
+
+```r
+rmses[1]
+```
+
+```
+## [1] 1591.197
+```
+
+```r
+rmses[2]
+```
+
+```
+## [1] 1555.592
+```
+
+```r
+rmses[3]
+```
+
+```
+## [1] 1471.462
+```
+
+```r
+rmses[4]
+```
+
+```
+## [1] 1180.001
+```
+]
+]
+---
+
+class: center, middle
+
+# Tidy regression output using `broom`
+
+---
+
+## Not-so-tidy regression output (1)
+
+#### Option 1:
+
+
+```r
+model
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat, data = diamonds)
+## 
+## Coefficients:
+## (Intercept)        carat  
+##       -2256         7756
+```
+
+---
+
+## Not-so-tidy regression output (2)
+
+#### Option 2:
+
+
+```r
+summary(model)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -18585.3   -804.8    -18.9    537.4  12731.7 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16
+## carat        7756.43      14.07   551.4   &lt;2e-16
+## 
+## Residual standard error: 1549 on 53938 degrees of freedom
+## Multiple R-squared:  0.8493,	Adjusted R-squared:  0.8493 
+## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+## Tidy regression output
+
+Achieved with functions from the `broom` package:
+
+- `tidy`: Constructs a data frame that summarizes the model's statistical findings: coefficient estimates, *standard errors, test statistics, p-values*.
+- `glance`: Constructs a concise one-row summary of the model. This typically contains values such as `\(R^2\)`, adjusted `\(R^2\)`, *and residual standard error that are computed once for the entire model*.
+- `augment`: Adds columns to the original data that was modeled. This includes predictions and residuals.
+
+---
+
+## We've already seen...
+
+- Tidy your model's statistical findings
+
+.small[
+
+```r
+library(broom)
+tidy(model)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)   -2256.      13.1     -173.       0
+## 2 carat          7756.      14.1      551.       0
+```
+]
+
+- Glance to assess model fit
+
+.small[
+
+```r
+glance(model)
+```
+
+```
+## # A tibble: 1 x 12
+##   r.squared adj.r.squared sigma statistic p.value    df  logLik    AIC    BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     0.849         0.849 1549.   304051.       0     1 -4.73e5 9.45e5 9.45e5
+## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
+```
+]
+
+---
+
+## Augment data with model results
+
+New variables of note (for now):
+
+- `.fitted`: Predicted value of the response variable
+- `.resid`: Residuals
+
+.small[
+
+```r
+augment(model) %&gt;%
+  slice(1:5)
+```
+
+```
+## # A tibble: 5 x 8
+##   price carat .fitted .resid .std.resid      .hat .sigma     .cooksd
+##   &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+## 1   326 0.23  -472.     798.      0.516 0.0000452  1549. 0.00000600 
+## 2   326 0.21  -628.     954.      0.616 0.0000471  1549. 0.00000892 
+## 3   327 0.23  -472.     799.      0.516 0.0000452  1549. 0.00000602 
+## 4   334 0.290   -7.00   341.      0.220 0.0000398  1549. 0.000000966
+## 5   335 0.31   148.     187.      0.121 0.0000382  1549. 0.000000278
+```
+]
+
+---
+
+## Wrap-up
+
+- Linear regression
+- Analysis framework
+  - Problem
+  - EDA
+  - Modeling
+  - Prediction
+  - Validation (Training/Testing split)
+- In-sample vs. out-of-sample error
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
