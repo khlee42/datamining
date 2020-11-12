@@ -1,0 +1,214 @@
+---
+title: "Lab 09 - Logistic regression"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Prerequisite
+
+This lab uses, as always, `tidyverse` package along with `broom` and `caret` we used for the last lab. And there are some new packages to install, whichare `openintro` for the email dataset, and `caTools` for the `colAUC()` function. To install the new packages, use `install.packages()`.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+library(openintro)
+library(caret)
+library(caTools)
+```
+
+# Building spam filter
+
+There are some data wrangling we need to to first. `spam` and `re_subj` variables are numeric but needed to be factor as we are going to treat them as a binary or discrete variable. For that, simply use `factor()`:
+```{r echo=FALSE}
+email <- email %>%
+  mutate(
+    spam = factor(spam),
+    re_subj = factor(re_subj)
+    )
+```
+
+```{r}
+str(email)
+```
+]
+
+## Modeling spam with linear regression
+Here is the scatter plot of the number of characters and the spam label. See how the linear regression line is misguided in this particular context. The linear regression is not a good choice of method for binary outcome.
+
+```{r echo=FALSE, fig.height=2.25, out.width="75%"}
+means <- email %>%
+  group_by(spam) %>%
+  summarise(mean_num_char = mean(num_char)) %>%
+  mutate(group = 1)
+
+ggplot(email, aes(x = num_char, y = spam)) +
+  geom_jitter(alpha = 0.2) +
+  geom_line(data = means, aes(x = mean_num_char, y = spam, group = group), 
+            color = "cyan", size = 1.5) +
+  theme_minimal() +
+  labs(x = "Number of characters (in thousands)", y = "Spam")
+```
+
+
+## `glm()` for GLMs
+In R we fit a GLM in the same way as a linear model except we use `glm()` instead of `lm()`. We specify the type of GLM to fit using the `family` argument.
+We can even do the linear regression using `glm()`, by choosing the gaussian distribution in the `family` argument.
+
+```{r}
+mod_glm <- glm(as.numeric(spam) ~ num_char, data = email, family = "gaussian")
+tidy(mod_glm)
+```
+
+Compare this with the output from the `lm()`.
+
+Before we do the actual modeling, let's split the dataset for training and testing. I used the 80/20 split, but feel free to try other choices like 60/40 or 40/60, and see how the results change.
+
+```{r}
+set.seed(123)
+splitratio <- 0.8
+index <- createDataPartition(email$spam, p = splitratio, list = FALSE)
+train <- email[index, ]
+test <- email[-index, ]
+```
+
+
+Using the train set, I built a logistic regression model with the number of characters as the sole predictor. Notice that `binomial` is used in the `family` argument, instead of `gaussian`.
+```{r}
+spam_model <- glm(spam ~ num_char, data = train, family = "binomial")
+tidy(spam_model)
+```
+
+## Prediction
+
+To predict the probability, use `predict()` as we did with linear regression.
+
+```{r}
+eta <- predict(spam_model, data.frame(num_char = c(2, 15, 40)))
+p <- exp(eta) / (1 + exp(eta))
+p
+```
+
+Or, you could simply use `type` argument to replace the calculation.
+
+```{r}
+p <- predict(spam_model, data.frame(num_char = c(2, 15, 40)),
+    type = "response"
+)
+p
+```
+
+
+## Validation
+
+To validate the accuracy of a binary prediction model, we need the concept of sensitivity and specificity of model prediction. 
+Sensitivity is the extent to which positive outcomes labeled as positive, and specificity is the extent to which negative outcomes labeled as negative. 
+Here is the **confusion matrix** for those metrics. See the lecture video for detail.
+
+|                         | Email is spam                 | Email is not spam             |
+|-------------------------|-------------------------------|-------------------------------|
+| Email labelled spam     | True Positive                 | False Positive (Type 1 error) |
+| Email labelled not spam | False Negative (Type 2 error) | True Negative                 |
+
+
+
+- Accuracy = (TP + TN) / (TP + FP + FN + TN)
+- Sensitivity = P(Labelled spam | Email spam) = TP / (TP + FN)
+  - Sensitivity = 1 − False negative rate
+- Specificity = P(Labelled not spam | Email not spam) = TN / (FP + TN) 
+  - Specificity = 1 − False positive rate
+
+
+## Confusion matrix with p > 0.10
+
+Let's build a model with the cutoff probability of 10%. For that, use `ifelse()` to make the cutoff condition, and `factor()` convert the numeric to factor variable. `table()` is to tabulate the factor variable.
+```{r}
+p <- predict(spam_model, test, type = "response")
+summary(p)
+
+spam_or_not <- ifelse(p > 0.1, 1, 0)
+p_class <- factor(spam_or_not)
+table(p_class)
+
+```
+
+`confusionMatrix()` automatically calculates the statistics like accuracy, sensitivity, and speciticity. Review those numbers and see if the model is accurate.
+```{r}
+confusionMatrix(p_class, test[["spam"]])
+```
+
+## ROC curve
+
+The ROC curve allows you to automatically calculate these metrics for all possible cutoff values. 
+There are many other functions for drawing ROC curves, but I prefer to use `colAUC()` from `caTools` package.
+
+```{r}
+library(caTools)
+colAUC(p, test$spam, plotROC = TRUE)
+```
+
+If you change `plotROC` as `FALSE`, it will only give you AUC, with no graph.
+
+```{r}
+colAUC(p, test$spam, plotROC = FALSE)
+```
+
+Area under the curve, or AUC, is a single number that represents model accuracy. It literally represents the area under the ROC curve of a model. 
+The higher AUC, the more accurate the model. Given we're building a model for a binary outcome, 0.5 will be our minimal reference point as it equals to random guessing. 
+
+- AUC of 0.5 : random guessing
+- AUC of 1 : model always right
+
+  
+## Multivariate logistic regression
+
+Let's build more models so we can compare their accuracies. `spam_model2` uses the `re_subj` as additional predictor, 
+and `spam_model3` uses all the other variables available in the dataset as predictor.
+
+```{r}
+spam_model2 <- glm(spam ~ num_char + re_subj, data = train, family = "binomial")
+p2 <- predict(spam_model2, test, type = "response")
+spam_model3 <- glm(spam ~ ., data = train, family = "binomial")
+p3 <- predict(spam_model3, test, type = "response")
+colAUC(p2, test$spam)
+colAUC(p3, test$spam)
+```
+
+Clearly, `spam_model3` does better. It has higher AUC than `spam_model2`.
+
+# Exercise
+### Exercise 1.
+
+Split 50% of the data into training set (`train`), and the other 50% into testing set (`test`).
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 2.
+
+Using `train`, build a logistic model with `num_char`, `image`, and `attach` as predictor. Using `test`, compare AUC of the model with the models above. Does this model perform better or worse?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 3.
+
+Can you build a better model for the spam prediction? Feel free to use any combination of predictors to build a model and compare its AUC with the other models. What was the combination that results in the best outcome? Can you make sense of why?

@@ -1,0 +1,518 @@
+---
+title: "Logistic regression <br> `r emo::ji('paperclips')`"
+author: "Kyunghee Lee"
+output:
+  xaringan::moon_reader:
+    css: "../slides.css"
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+library(openintro)
+```
+
+class: center, middle
+
+# Predicting categorical data
+
+---
+
+## Model testing
+
+- Analysis framework
+  - Problem
+  - EDA
+  - Modeling
+  - Prediction
+  - Validation (Training/Testing split)
+
+---
+  
+# Spam filters
+
+We will examine a data set of emails where we are interested in identifying 
+spam messages. 
+
+- `openintro` package
+- Data from 3921 emails and 21 variables on them.
+- The outcome is whether the email is spam or not.
+
+.small[
+```{r echo=FALSE}
+email <- email %>%
+  mutate(
+    spam = factor(spam),
+    re_subj = factor(re_subj)
+    )
+```
+
+```{r}
+str(email)
+```
+]
+
+---
+
+.question[
+Would you expect longer or shorter emails to be spam?
+]
+
+--
+
+```{r echo=FALSE}
+email %>%
+  mutate(spam = if_else(spam == 1, "Yes", "No")) %>%
+  ggplot(aes(x = spam, y = num_char)) +
+  geom_bar(position = "dodge", stat = "summary", fun = "mean") +
+  theme_minimal() +
+  labs(
+    y = "Number of characters (in thousands)", 
+    x = "Spam",
+    title = "Spam vs. number of characters"
+    )
+```
+
+---
+
+# Modeling spam with linear regression
+
+```{r echo=FALSE, fig.height=2.25, out.width="75%"}
+means <- email %>%
+  group_by(spam) %>%
+  summarise(mean_num_char = mean(num_char)) %>%
+  mutate(group = 1)
+
+ggplot(email, aes(x = num_char, y = spam)) +
+  geom_jitter(alpha = 0.2) +
+  geom_line(data = means, aes(x = mean_num_char, y = spam, group = group), 
+            color = "cyan", size = 1.5) +
+  theme_minimal() +
+  labs(x = "Number of characters (in thousands)", y = "Spam")
+```
+
+---
+
+# Linear regression for binary outcome
+
+```{r out.width="80%", fig.align="center", echo=FALSE}
+knitr::include_graphics("img/linear-vs-logit.png")
+```
+
+---
+
+# Modeling binary outcome
+
+$$ y = a + b x $$
+
+- What distribution would fit better the outcome variable?
+
+$$ y \sim \text{dist}(p) $$
+
+- then, use a linear model to predict parameters of that distribution, not the outcome itself 
+
+$$ \eta(p) = a + b x $$
+
+---
+
+## Logistic regression
+
+- Model: $\beta_0 + \beta_1 numchar$
+- Distribution: $p$  
+  - Binomial: the probability of a random event with two outcome classess (i.e., spam or not)  
+- Target (link) function: $\eta(p)$  
+
+$$ \eta(p) = logit(p) = \log\left(\frac{p}{1-p}\right),\text{ for $0\le p \le 1$} $$
+
+$$ \log\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1 numchar $$
+
+---
+  
+## Generalized linear models
+
+- Logistic regression is a special case of Generalized Linear Models (GLMs)
+- used to model a binary categorical outcome using numerical and categorical predictors
+
+--
+  
+1. A linear model:
+$$ \eta = \beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k $$
+
+2.  A probability distribution describing a generative model for the 
+outcome variable
+
+3. A link function that relates the linear model to the parameter of the 
+outcome distribution
+  
+---
+
+## `glm()` for GLMs
+
+- In R we fit a GLM in the same way as a linear model except we use `glm()` instead of `lm()`. 
+- We specify the type of GLM to fit using the `family` argument.
+.small[
+.pull-left[
+```{r}
+mod_lm <- lm(as.numeric(spam) ~ num_char, data = email)
+tidy(mod_lm)
+```
+]
+.pull-right[
+```{r}
+mod_glm <- glm(as.numeric(spam) ~ num_char, data = email, family = "gaussian")
+tidy(mod_glm)
+```
+]
+]
+
+---
+
+## Modeling spam
+
+```{r}
+library(caret)
+
+set.seed(123)
+splitratio <- 0.8
+index <- createDataPartition(email$spam, p = splitratio, list = FALSE)
+train <- email[index, ]
+test <- email[-index, ]
+
+spam_model <- glm(spam ~ num_char, data = train, family = "binomial")
+
+```
+
+---
+
+## Spam model
+
+```{r}
+tidy(spam_model)
+```
+
+--
+  
+Model:
+$$\log\left(\frac{p}{1-p}\right) = -1.75-0.0702\times \text{num_char}$$
+
+---
+
+## P(spam) for an email with 2000 characters 
+
+$$\log\left(\frac{p}{1-p}\right) = -1.75-0.0702\times 2 = -1.8904$$
+--
+$$\frac{p}{1-p} = \exp(-1.8904) = 0.15$$
+--
+$$p = 0.15 \times (1 - p) \rightarrow p = 0.15 - 0.15p \rightarrow 1.15p = 0.15$$
+--
+$$p = 0.15 / 1.15 = 0.13$$
+
+---
+
+.question[
+What is the probability that an email with 15000 characters is spam? What about 
+an email with 40000 characters?
+]
+
+--
+.small[
+```{r}
+eta <- predict(spam_model, data.frame(num_char = c(2, 15, 40)))
+p <- exp(eta) / (1 + exp(eta))
+p
+```
+
+```{r eval=FALSE}
+predict(spam_model, data.frame(num_char = c(2, 15, 40)),
+  type = "response"
+)
+```
+]
+---
+
+```{r echo=FALSE}
+newdata <- tibble(
+  num_char = c(2, 15, 40),
+  color    = c("#E274A8", "#A7D5E8", "#1E5C65")
+  )
+newdata <- newdata %>%
+  mutate(
+    y_hat = predict(spam_model, newdata),
+    p_hat = exp(y_hat) / (1 + exp(y_hat))
+  )
+
+spam_model_aug <- augment(spam_model) %>%
+  mutate(prob = exp(.fitted) / (1 + exp(.fitted)))
+ggplot(spam_model_aug, aes(x = num_char)) +
+  geom_point(aes(y = as.numeric(spam)-1), alpha = 0.3, color = "darkgray") +
+  geom_line(aes(y = prob)) +
+  geom_point(data = newdata, aes(x = num_char, y = p_hat), 
+             color = newdata$color) +
+  geom_text(x = 25, y = 0.75, 
+            label = paste0(newdata$num_char[1], "K chars, P(spam) = ", round(newdata$p_hat[1], 2)), 
+            color = newdata$color[1], hjust = "left") +
+  geom_text(x = 25, y = 0.60,
+            label = paste0(newdata$num_char[2], "K chars, P(spam) = ", round(newdata$p_hat[2], 2)),
+            color = newdata$color[2], hjust = "left") +
+  geom_text(x = 25, y = 0.45, 
+            label = paste0(newdata$num_char[3], "K chars, P(spam) = ", round(newdata$p_hat[3], 2)),
+            color = newdata$color[3], hjust = "left") +
+  theme_minimal() +
+  labs(
+    x = "Number of characters (in thousands)",
+    y = "Spam", 
+    title = "Spam vs. number of characters"
+  )
+```
+
+---
+
+class: center, middle
+
+# Validation
+
+---
+
+.question[
+Would you prefer an email with the probability of 10% to be labeled as spam or not?
+]
+
+```{r echo=FALSE}
+newdata <- tibble(
+  num_char = c(2, 15, 40),
+  color    = c("#E274A8", "#A7D5E8", "#1E5C65")
+  )
+newdata <- newdata %>%
+  mutate(
+    y_hat = predict(spam_model, newdata),
+    p_hat = exp(y_hat) / (1 + exp(y_hat))
+  )
+
+spam_model_aug <- augment(spam_model) %>%
+  mutate(prob = exp(.fitted) / (1 + exp(.fitted)))
+ggplot(spam_model_aug, aes(x = num_char)) +
+  geom_point(aes(y = as.numeric(spam)-1), alpha = 0.3, color = "darkgray") +
+  geom_line(aes(y = prob)) +
+  geom_point(data = newdata, aes(x = num_char, y = p_hat), 
+             color = newdata$color) +
+  geom_text(x = 25, y = 0.75, 
+            label = paste0(newdata$num_char[1], "K chars, P(spam) = ", round(newdata$p_hat[1], 2)), 
+            color = newdata$color[1], hjust = "left") +
+  geom_text(x = 25, y = 0.60,
+            label = paste0(newdata$num_char[2], "K chars, P(spam) = ", round(newdata$p_hat[2], 2)),
+            color = newdata$color[2], hjust = "left") +
+  geom_text(x = 25, y = 0.45, 
+            label = paste0(newdata$num_char[3], "K chars, P(spam) = ", round(newdata$p_hat[3], 2)),
+            color = newdata$color[3], hjust = "left") +
+  theme_minimal() +
+  labs(
+    x = "Number of characters (in thousands)",
+    y = "Spam", 
+    title = "Spam vs. number of characters"
+  )
+```
+
+---
+  
+## Thresholds matter
+
+- The model estimates the probability of a email being a spam given its number of characters
+- The ourcome to predict is whether an email is spam or not
+- So, we need to set a threshold to decide which one should be considered as a spam
+  - if cutoff = 0.1, emails with the estimated probabilities over 0.1 will be considered as spam
+- What if the filter labels a regular email as spam?
+- What if the filter labels a spam email as regular?
+
+---
+
+## Sensitivity and specificity
+
+- Sensitivity: how many positive outcomes are predicted as positive?
+  - How many spam emails are labeled as spam?
+- Specificity: how many negative outcomes are predicted as negative?
+  - How many regular emails are labeled as regular?
+
+---
+
+## Which one is more important?
+
+- Cancer prediction (got cancer or not): sensitivity >> specificity
+  - sensitivity: how many patients with cancer are dignosed cancer?
+  - specificity: how many patients without cancer are dignosed not cancer?
+- Legal judgement (guilty or not guilty): sensitivity << specificity
+  - sensitivity: how many guilty suspects are found guilty?
+  - specificity: how many innocent suspects are found not guilty?
+
+---
+
+## Confusion matrix
+
+.small[
+|                         | Email is spam                 | Email is not spam             |
+|-------------------------|-------------------------------|-------------------------------|
+| Email labelled spam     | True Positive                 | False Positive (Type 1 error) |
+| Email labelled not spam | False Negative (Type 2 error) | True Negative                 |
+]
+
+.small[
+- Accuracy = (TP + TN) / (TP + FP + FN + TN)
+- Sensitivity = P(Labelled spam | Email spam) = TP / (TP + FN)
+  - Sensitivity = 1 − False negative rate
+- Specificity = P(Labelled not spam | Email not spam) = TN / (FP + TN) 
+  - Specificity = 1 − False positive rate
+]
+
+---
+
+## Confusion matrix with p > 0.10
+
+.small[
+```{r}
+p <- predict(spam_model, test, type = "response")
+summary(p)
+
+spam_or_not <- ifelse(p > 0.1, 1, 0)
+p_class <- factor(spam_or_not)
+table(p_class)
+
+```
+]
+
+---
+
+## Confusion matrix with p > 0.10
+.small[
+```{r}
+confusionMatrix(p_class, test[["spam"]])
+
+```
+]
+
+---
+
+## Confusion matrix with p > 0.14
+
+.small[
+.pull-left[
+```{r}
+spam_or_not <- ifelse(p > 0.14, 1, 0)
+p_class <- factor(spam_or_not)
+table(p_class)
+```
+]
+.pull-right[
+```{r}
+confusionMatrix(p_class, test[["spam"]])
+```
+]
+]
+
+---
+
+.question[
+If you were designing a spam filter, would you want sensitivity and specificity to be high or low? What are the tradeoffs associated with each decision? 
+]
+
+- Using logistic regression we can predict the probability an incoming message is spam.
+- We also need to design a decision rule about which emails get flagged as spam (e.g. what probability should we use as out cutoff?)
+- by considering the tradeoff between specificity vs. sensitivity
+
+---
+  
+## ROC curve
+
+```{r eval=FALSE}
+library(caTools)
+colAUC(p, test$spam, plotROC = TRUE)
+```
+
+---
+
+```{r echo=FALSE}
+library(caTools)
+colAUC(p, test$spam, plotROC = TRUE)
+```
+
+
+---
+
+## ROC curves for the best and worst
+
+```{r out.width="50%", fig.align="center", echo=FALSE}
+knitr::include_graphics("img/roc-curve-v2.png")
+```
+
+- Area under the curve (AUC) (from 0 to 1)
+  - 0.5 : random guessing
+  - 1 : model always right
+
+---
+
+## AUC curve = model accuracy
+
+```{r}
+colAUC(p, test$spam, plotROC = FALSE)
+```
+
+---
+
+.question[
+Would you expect emails that have subjects starting with "Re:", "RE:", "re:", or "rE:" to be more likely to be spam or not?
+]
+
+
+```{r echo=FALSE}
+email %>%
+  mutate(
+    re_subj = if_else(re_subj == 1, "Yes", "No"),
+    spam = if_else(spam == 1, "Yes", "No")
+    ) %>%
+  ggplot(aes(x = re_subj, fill = spam)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    x = 'Whether “re:”, "RE:", etc. was in the email subject.', 
+    fill = "Spam", 
+    y = "",
+    title = "Spam vs. re subject"
+    )
+```
+
+---
+  
+## Multivariate logistic regression
+.small[
+```{r}
+spam_model2 <- glm(spam ~ num_char + re_subj, data = train, family = "binomial")
+p2 <- predict(spam_model2, test, type = "response")
+colAUC(p2, test$spam)
+```
+]
+---
+  
+## Multivariate logistic regression
+
+```{r}
+spam_model3 <- glm(spam ~ ., data = train, family = "binomial")
+p3 <- predict(spam_model3, test, type = "response")
+colAUC(p3, test$spam)
+```
+
+---
+  
+## Wrap up
+
+- Logistic regression for binary outcome
+- Confusion matrix
+  - Specificity
+  - Sensitivity
+- ROC curve and AUC

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Logistic regression   🖇</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Logistic regression <br> 🖇
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+class: center, middle
+
+# Predicting categorical data
+
+---
+
+## Model testing
+
+- Analysis framework
+  - Problem
+  - EDA
+  - Modeling
+  - Prediction
+  - Validation (Training/Testing split)
+
+---
+  
+# Spam filters
+
+We will examine a data set of emails where we are interested in identifying 
+spam messages. 
+
+- `openintro` package
+- Data from 3921 emails and 21 variables on them.
+- The outcome is whether the email is spam or not.
+
+.small[
+
+
+
+```r
+str(email)
+```
+
+```
+## tibble [3,921 × 21] (S3: tbl_df/tbl/data.frame)
+##  $ spam        : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ to_multiple : num [1:3921] 0 0 0 0 0 0 1 1 0 0 ...
+##  $ from        : num [1:3921] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ cc          : int [1:3921] 0 0 0 0 0 0 0 1 0 0 ...
+##  $ sent_email  : num [1:3921] 0 0 0 0 0 0 1 1 0 0 ...
+##  $ time        : POSIXct[1:3921], format: "2012-01-01 01:16:41" "2012-01-01 02:03:59" ...
+##  $ image       : num [1:3921] 0 0 0 0 0 0 0 1 0 0 ...
+##  $ attach      : num [1:3921] 0 0 0 0 0 0 0 1 0 0 ...
+##  $ dollar      : num [1:3921] 0 0 4 0 0 0 0 0 0 0 ...
+##  $ winner      : Factor w/ 2 levels "no","yes": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ inherit     : num [1:3921] 0 0 1 0 0 0 0 0 0 0 ...
+##  $ viagra      : num [1:3921] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ password    : num [1:3921] 0 0 0 0 2 2 0 0 0 0 ...
+##  $ num_char    : num [1:3921] 11.37 10.5 7.77 13.26 1.23 ...
+##  $ line_breaks : int [1:3921] 202 202 192 255 29 25 193 237 69 68 ...
+##  $ format      : num [1:3921] 1 1 1 1 0 0 1 1 0 1 ...
+##  $ re_subj     : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ exclaim_subj: num [1:3921] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ urgent_subj : num [1:3921] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ exclaim_mess: num [1:3921] 0 1 6 48 1 1 1 18 1 0 ...
+##  $ number      : Factor w/ 3 levels "none","small",..: 3 2 2 2 1 1 3 2 2 2 ...
+```
+]
+
+---
+
+.question[
+Would you expect longer or shorter emails to be spam?
+]
+
+--
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-4-1.png" width="1500" /&gt;
+
+---
+
+# Modeling spam with linear regression
+
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-5-1.png" width="75%" /&gt;
+
+---
+
+# Linear regression for binary outcome
+
+&lt;img src="img/linear-vs-logit.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Modeling binary outcome
+
+$$ y = a + b x $$
+
+- What distribution would fit better the outcome variable?
+
+$$ y \sim \text{dist}(p) $$
+
+- then, use a linear model to predict parameters of that distribution, not the outcome itself 
+
+$$ \eta(p) = a + b x $$
+
+---
+
+## Logistic regression
+
+- Model: `\(\beta_0 + \beta_1 numchar\)`
+- Distribution: `\(p\)`  
+  - Binomial: the probability of a random event with two outcome classess (i.e., spam or not)  
+- Target (link) function: `\(\eta(p)\)`  
+
+$$ \eta(p) = logit(p) = \log\left(\frac{p}{1-p}\right),\text{ for `\(0\le p \le 1\)`} $$
+
+$$ \log\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1 numchar $$
+
+---
+  
+## Generalized linear models
+
+- Logistic regression is a special case of Generalized Linear Models (GLMs)
+- used to model a binary categorical outcome using numerical and categorical predictors
+
+--
+  
+1. A linear model:
+$$ \eta = \beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k $$
+
+2.  A probability distribution describing a generative model for the 
+outcome variable
+
+3. A link function that relates the linear model to the parameter of the 
+outcome distribution
+  
+---
+
+## `glm()` for GLMs
+
+- In R we fit a GLM in the same way as a linear model except we use `glm()` instead of `lm()`. 
+- We specify the type of GLM to fit using the `family` argument.
+.small[
+.pull-left[
+
+```r
+mod_lm &lt;- lm(as.numeric(spam) ~ num_char, data = email)
+tidy(mod_lm)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)  1.12     0.00573     195.   0.      
+## 2 num_char    -0.00230  0.000316     -7.28 3.87e-13
+```
+]
+.pull-right[
+
+```r
+mod_glm &lt;- glm(as.numeric(spam) ~ num_char, data = email, family = "gaussian")
+tidy(mod_glm)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)  1.12     0.00573     195.   0.      
+## 2 num_char    -0.00230  0.000316     -7.28 3.87e-13
+```
+]
+]
+
+---
+
+## Modeling spam
+
+
+```r
+library(caret)
+
+set.seed(123)
+splitratio &lt;- 0.8
+index &lt;- createDataPartition(email$spam, p = splitratio, list = FALSE)
+train &lt;- email[index, ]
+test &lt;- email[-index, ]
+
+spam_model &lt;- glm(spam ~ num_char, data = train, family = "binomial")
+```
+
+---
+
+## Spam model
+
+
+```r
+tidy(spam_model)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  -1.75     0.0801     -21.9  2.97e-106
+## 2 num_char     -0.0702   0.00951     -7.38 1.55e- 13
+```
+
+--
+  
+Model:
+`$$\log\left(\frac{p}{1-p}\right) = -1.75-0.0702\times \text{num_char}$$`
+
+---
+
+## P(spam) for an email with 2000 characters 
+
+`$$\log\left(\frac{p}{1-p}\right) = -1.75-0.0702\times 2 = -1.8904$$`
+--
+`$$\frac{p}{1-p} = \exp(-1.8904) = 0.15$$`
+--
+`$$p = 0.15 \times (1 - p) \rightarrow p = 0.15 - 0.15p \rightarrow 1.15p = 0.15$$`
+--
+`$$p = 0.15 / 1.15 = 0.13$$`
+
+---
+
+.question[
+What is the probability that an email with 15000 characters is spam? What about 
+an email with 40000 characters?
+]
+
+--
+.small[
+
+```r
+eta &lt;- predict(spam_model, data.frame(num_char = c(2, 15, 40)))
+p &lt;- exp(eta) / (1 + exp(eta))
+p
+```
+
+```
+##          1          2          3 
+## 0.13083222 0.05698299 0.01033792
+```
+
+
+```r
+predict(spam_model, data.frame(num_char = c(2, 15, 40)),
+  type = "response"
+)
+```
+]
+---
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-13-1.png" width="1500" /&gt;
+
+---
+
+class: center, middle
+
+# Validation
+
+---
+
+.question[
+Would you prefer an email with the probability of 10% to be labeled as spam or not?
+]
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-14-1.png" width="1500" /&gt;
+
+---
+  
+## Thresholds matter
+
+- The model estimates the probability of a email being a spam given its number of characters
+- The ourcome to predict is whether an email is spam or not
+- So, we need to set a threshold to decide which one should be considered as a spam
+  - if cutoff = 0.1, emails with the estimated probabilities over 0.1 will be considered as spam
+- What if the filter labels a regular email as spam?
+- What if the filter labels a spam email as regular?
+
+---
+
+## Sensitivity and specificity
+
+- Sensitivity: how many positive outcomes are predicted as positive?
+  - How many spam emails are labeled as spam?
+- Specificity: how many negative outcomes are predicted as negative?
+  - How many regular emails are labeled as regular?
+
+---
+
+## Which one is more important?
+
+- Cancer prediction (got cancer or not): sensitivity &gt;&gt; specificity
+  - sensitivity: how many patients with cancer are dignosed cancer?
+  - specificity: how many patients without cancer are dignosed not cancer?
+- Legal judgement (guilty or not guilty): sensitivity &lt;&lt; specificity
+  - sensitivity: how many guilty suspects are found guilty?
+  - specificity: how many innocent suspects are found not guilty?
+
+---
+
+## Confusion matrix
+
+.small[
+|                         | Email is spam                 | Email is not spam             |
+|-------------------------|-------------------------------|-------------------------------|
+| Email labelled spam     | True Positive                 | False Positive (Type 1 error) |
+| Email labelled not spam | False Negative (Type 2 error) | True Negative                 |
+]
+
+.small[
+- Accuracy = (TP + TN) / (TP + FP + FN + TN)
+- Sensitivity = P(Labelled spam | Email spam) = TP / (TP + FN)
+  - Sensitivity = 1 − False negative rate
+- Specificity = P(Labelled not spam | Email not spam) = TN / (FP + TN) 
+  - Specificity = 1 − False positive rate
+]
+
+---
+
+## Confusion matrix with p &gt; 0.10
+
+.small[
+
+```r
+p &lt;- predict(spam_model, test, type = "response")
+summary(p)
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 2.131e-05 5.990e-02 1.041e-01 9.358e-02 1.347e-01 1.475e-01
+```
+
+```r
+spam_or_not &lt;- ifelse(p &gt; 0.1, 1, 0)
+p_class &lt;- factor(spam_or_not)
+table(p_class)
+```
+
+```
+## p_class
+##   0   1 
+## 379 404
+```
+]
+
+---
+
+## Confusion matrix with p &gt; 0.10
+.small[
+
+```r
+confusionMatrix(p_class, test[["spam"]])
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 366  13
+##          1 344  60
+##                                           
+##                Accuracy : 0.5441          
+##                  95% CI : (0.5084, 0.5794)
+##     No Information Rate : 0.9068          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.1112          
+##                                           
+##  Mcnemar's Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.5155          
+##             Specificity : 0.8219          
+##          Pos Pred Value : 0.9657          
+##          Neg Pred Value : 0.1485          
+##              Prevalence : 0.9068          
+##          Detection Rate : 0.4674          
+##    Detection Prevalence : 0.4840          
+##       Balanced Accuracy : 0.6687          
+##                                           
+##        'Positive' Class : 0               
+## 
+```
+]
+
+---
+
+## Confusion matrix with p &gt; 0.14
+
+.small[
+.pull-left[
+
+```r
+spam_or_not &lt;- ifelse(p &gt; 0.14, 1, 0)
+p_class &lt;- factor(spam_or_not)
+table(p_class)
+```
+
+```
+## p_class
+##   0   1 
+## 655 128
+```
+]
+.pull-right[
+
+```r
+confusionMatrix(p_class, test[["spam"]])
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 611  44
+##          1  99  29
+##                                           
+##                Accuracy : 0.8174          
+##                  95% CI : (0.7885, 0.8438)
+##     No Information Rate : 0.9068          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : 0.1927          
+##                                           
+##  Mcnemar's Test P-Value : 6.311e-06       
+##                                           
+##             Sensitivity : 0.8606          
+##             Specificity : 0.3973          
+##          Pos Pred Value : 0.9328          
+##          Neg Pred Value : 0.2266          
+##              Prevalence : 0.9068          
+##          Detection Rate : 0.7803          
+##    Detection Prevalence : 0.8365          
+##       Balanced Accuracy : 0.6289          
+##                                           
+##        'Positive' Class : 0               
+## 
+```
+]
+]
+
+---
+
+.question[
+If you were designing a spam filter, would you want sensitivity and specificity to be high or low? What are the tradeoffs associated with each decision? 
+]
+
+- Using logistic regression we can predict the probability an incoming message is spam.
+- We also need to design a decision rule about which emails get flagged as spam (e.g. what probability should we use as out cutoff?)
+- by considering the tradeoff between specificity vs. sensitivity
+
+---
+  
+## ROC curve
+
+
+```r
+library(caTools)
+colAUC(p, test$spam, plotROC = TRUE)
+```
+
+---
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-20-1.png" width="1500" /&gt;
+
+```
+##              [,1]
+## 0 vs. 1 0.7243199
+```
+
+
+---
+
+## ROC curves for the best and worst
+
+&lt;img src="img/roc-curve-v2.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- Area under the curve (AUC) (from 0 to 1)
+  - 0.5 : random guessing
+  - 1 : model always right
+
+---
+
+## AUC curve = model accuracy
+
+
+```r
+colAUC(p, test$spam, plotROC = FALSE)
+```
+
+```
+##              [,1]
+## 0 vs. 1 0.7243199
+```
+
+---
+
+.question[
+Would you expect emails that have subjects starting with "Re:", "RE:", "re:", or "rE:" to be more likely to be spam or not?
+]
+
+
+&lt;img src="s2-3-logistic-reg_files/figure-html/unnamed-chunk-23-1.png" width="1500" /&gt;
+
+---
+  
+## Multivariate logistic regression
+.small[
+
+```r
+spam_model2 &lt;- glm(spam ~ num_char + re_subj, data = train, family = "binomial")
+p2 &lt;- predict(spam_model2, test, type = "response")
+colAUC(p2, test$spam)
+```
+
+```
+##              [,1]
+## 0 vs. 1 0.7714644
+```
+]
+---
+  
+## Multivariate logistic regression
+
+
+```r
+spam_model3 &lt;- glm(spam ~ ., data = train, family = "binomial")
+```
+
+```
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+```
+
+```r
+p3 &lt;- predict(spam_model3, test, type = "response")
+colAUC(p3, test$spam)
+```
+
+```
+##              [,1]
+## 0 vs. 1 0.8850473
+```
+
+---
+  
+## Wrap up
+
+- Logistic regression for binary outcome
+- Confusion matrix
+  - Specificity
+  - Sensitivity
+- ROC curve and AUC
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
