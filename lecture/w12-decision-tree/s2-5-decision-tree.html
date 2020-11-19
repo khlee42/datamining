@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Decision tree   🌲</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Decision tree <br> 🌲
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+
+&lt;img src="img/tree1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+.small[
+.footnote[https://medium.com/@ml.at.berkeley/machine-learning-crash-course-part-5-decision-trees-and-ensemble-models-dcc5a36af8cd]
+]
+---
+  
+&lt;img src="img/tree2.png" width="60%" style="display: block; margin: auto;" /&gt;
+.small[
+.footnote[https://medium.com/@ml.at.berkeley/machine-learning-crash-course-part-5-decision-trees-and-ensemble-models-dcc5a36af8cd]
+]
+---
+  
+## Who I am = Decision tree
+
+.pull-left[
+- The goal is to guess who the person is
+- Ask as many questions as you want
+- But whoever gets it first is the winner
+]
+
+.pull-right[
+- The goal is to classify samples
+- Put as many conditions as you want to perfectly classify (or separate) samples
+- But the fewer conditions the better
+
+]
+
+---
+  
+## Decition tree
+
+- Start from the root: "is it raining?"
+- Grow the tree
+  - branch: Yes or no
+  - leave: is it windy? is it extremely windy?
+- The goal is for all leaves to perfectly separate or classify samples
+  - classes: "stay home", "wear a rain jacket", "use an umbrella", "don't bring an umbrella"
+
+---
+
+&lt;img src="img/tree_spam.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+  
+## Spam filters
+
+We will examine a data set of emails where we are interested in identifying 
+spam messages. 
+
+- `openintro` package
+- Data from 3921 emails and 21 variables on them.
+- The outcome is whether the email is spam or not.
+
+
+```
+## 
+##   NS    S 
+## 3554  367
+```
+
+---
+
+## Let's grow some trees
+
+.small[
+
+```r
+set.seed(123)
+mod_tree &lt;- train(
+  spam ~ .,
+  data = email,
+* method = "rpart",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+mod_tree
+```
+
+```
+## CART 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3528, 3528, 3529, 3530, 3530, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   cp          Accuracy   Kappa     
+##   0.01089918  0.9280805  0.48127355
+##   0.01471390  0.9199238  0.39130066
+##   0.03405995  0.9084474  0.06322713
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was cp = 0.01089918.
+```
+]
+---
+
+## Plot the tree
+
+
+```r
+# plot the model
+plot(mod_tree$finalModel, uniform = TRUE)
+text(mod_tree$finalModel, cex = .8)
+```
+
+
+
+---
+
+&lt;img src="img/tree_best.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Split rules
+
+- Tree splits such that the resulting leaves can separate as many samples as possible 
+- Metrics
+  - Entropy
+  - Gini coefficient
+
+---
+
+class: center, middle
+
+# Improve prediction
+
+---
+
+## Too many branches
+
+.small[
+- Tree is too tall = Overfitting
+- Complexity Parameter or CP to measure the extent
+  - the higher the CP, the smaller the tree (less complex or overfitted)
+- `train()` grows three trees (three CPs) by default
+
+
+```r
+mod_tree
+```
+
+```
+## CART 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3528, 3528, 3529, 3530, 3530, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   cp          Accuracy   Kappa     
+##   0.01089918  0.9280805  0.48127355
+##   0.01471390  0.9199238  0.39130066
+##   0.03405995  0.9084474  0.06322713
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was cp = 0.01089918.
+```
+]
+
+---
+
+## Tree with CP = 0.03
+
+
+
+&lt;img src="img/tree_worst.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Compare accuracy across CPs
+
+- `tuneLength` to set the number of trees (or CPs) to grow
+  - the higher the CP, the smaller the tree
+  - the lower the CP, the taller the tree
+
+
+```r
+mod_trees &lt;- train(
+  spam ~ .,
+  data = email,
+  method = "rpart",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  ),
+* tuneLength = 10
+)
+```
+
+---
+.small[
+
+```r
+mod_trees
+```
+
+```
+## CART 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3529, 3529, 3528, 3529, 3529, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   cp           Accuracy   Kappa     
+##   0.001702997  0.9283345  0.51328032
+##   0.002724796  0.9283339  0.50763468
+##   0.003633061  0.9262930  0.48955582
+##   0.005449591  0.9273134  0.49275593
+##   0.007493188  0.9270590  0.48606634
+##   0.008174387  0.9265488  0.48553286
+##   0.009082652  0.9265488  0.48553286
+##   0.010899183  0.9270590  0.48056142
+##   0.014713896  0.9224704  0.42911548
+##   0.034059946  0.9092077  0.05188367
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was cp = 0.001702997.
+```
+]
+---
+.small[
+
+```r
+plot(mod_trees)
+```
+
+&lt;img src="s2-5-decision-tree_files/figure-html/unnamed-chunk-15-1.png" width="75%" /&gt;
+
+```r
+mod_trees$bestTune
+```
+
+```
+##            cp
+## 1 0.001702997
+```
+]
+---
+
+## Class imbalance
+
+- "needle in a haystack" problem
+- ML algorithms tend to ignore minority examples
+
+&lt;img src="s2-5-decision-tree_files/figure-html/unnamed-chunk-16-1.png" width="80%" /&gt;
+
+---
+
+## Rebalance it by re-sampling data set
+
+&lt;img src="img/sampling.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+- Up (or over): randomly replicate instances in the minority class
+- Down (or under): randomly remove instances in the majority class
+- and more ...
+
+---
+
+## e.g., Upsampling (Oversampling)
+
+- `sampling` to change the sampling method
+  - `up`, `down`
+
+
+```r
+set.seed(123)
+mod_tree_up &lt;- train(
+  spam ~ .,
+  data = email,
+  method = "rpart",
+  trControl = trainControl(
+    method = "cv",
+    number = 10,
+*   sampling = "up"
+  )
+)
+```
+
+
+
+
+---
+  
+## Wrap up
+
+- Decision tree classification
+- Complexity of tree
+- Sampling method
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

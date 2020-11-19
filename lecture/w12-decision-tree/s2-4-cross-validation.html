@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Cross validation   ⚔️</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Cross validation <br> ⚔️
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+## Validation
+
+- Analysis framework
+  - Problem
+  - EDA
+  - Modeling
+  - Prediction
+  - **Validation (Training/Testing split)**
+
+---
+
+## Train/Test split is expensive
+
+- Reserving 20% (or even more) of the data just for testing isn't efficient
+- Problematic especially for a small data set
+- Single validation: out-of-sample error measured only once
+  - What if the test set is outlier?
+
+---
+  
+## Cross validation (CV)
+
+- Multiple validations instead of one
+  - measure out-of-sample errors multiple times and average them out
+- Fully utilize data
+  - No split necessary
+
+---
+
+## k-fold Cross validation (CV)
+
+&lt;img src="img/cv.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## k-fold Cross validation (CV)
+
+&lt;img src="img/cv2.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+  
+## Other CVs
+
+.pull-left[
+- Repeated random subsampling (or bootstrap sampling)
+
+&lt;img src="img/repeatedcv.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+- Leave-one-out
+
+&lt;img src="img/leaveoneout.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## `train()` from `caret` package
+.small[
+.pull-left[
+
+```r
+lm(price ~ carat,
+  data = diamonds
+)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat, data = diamonds)
+## 
+## Coefficients:
+## (Intercept)        carat  
+##       -2256         7756
+```
+]
+.pull-right[
+
+```r
+dia_caret &lt;- train(
+  price ~ carat,
+  data = diamonds,
+  method = "lm"
+)
+dia_caret$finalModel
+```
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Coefficients:
+## (Intercept)        carat  
+##       -2256         7756
+```
+- **bootstrap sampling** is used by default
+]
+]
+---
+
+## pick out `train()` output
+
+.small[
+
+```r
+names(dia_caret)
+```
+
+```
+##  [1] "method"       "modelInfo"    "modelType"    "results"      "pred"        
+##  [6] "bestTune"     "call"         "dots"         "metric"       "control"     
+## [11] "finalModel"   "preProcess"   "trainingData" "resample"     "resampledCM" 
+## [16] "perfNames"    "maximize"     "yLimits"      "times"        "levels"      
+## [21] "terms"        "coefnames"    "xlevels"
+```
+
+```r
+dia_caret$finalModel # model result
+```
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Coefficients:
+## (Intercept)        carat  
+##       -2256         7756
+```
+
+```r
+dia_caret$results
+```
+
+```
+##   intercept     RMSE  Rsquared      MAE   RMSESD  RsquaredSD    MAESD
+## 1      TRUE 1547.099 0.8490506 1008.669 13.44819 0.002008544 7.695957
+```
+]
+
+---
+
+## 5-fold Cross validation
+
+
+```r
+dia_caret_cv5 &lt;- train(
+  price ~ carat,
+  data = diamonds,
+  method = "lm",
+* trControl = trainControl(
+    method = "cv",
+    number = 5
+  )
+)
+dia_caret_cv5
+```
+
+---
+
+## 5-fold Cross validation
+
+
+```r
+dia_caret_cv5 &lt;- train(
+  price ~ carat,
+  data = diamonds,
+  method = "lm",
+  trControl = trainControl(
+*   method = "cv",
+*   number = 5
+  )
+)
+dia_caret_cv5
+```
+
+---
+
+## 5-fold Cross validation
+
+
+```
+## Linear Regression 
+## 
+## 53940 samples
+##     1 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (5 fold) 
+## Summary of sample sizes: 43152, 43152, 43152, 43152, 43152 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   1548.576  0.8493422  1007.517
+## 
+## Tuning parameter 'intercept' was held constant at a value of TRUE
+```
+
+---
+  
+## 10-fold cross validation
+
+.small[
+
+```r
+dia_caret_cv10 &lt;- train(
+  price ~ carat,
+  data = diamonds,
+  method = "lm",
+  trControl = trainControl(
+    method = "cv",
+*   number = 10
+  )
+)
+dia_caret_cv10
+```
+
+```
+## Linear Regression 
+## 
+## 53940 samples
+##     1 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 48546, 48545, 48546, 48546, 48546, 48547, ... 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   1548.158  0.8493687  1007.501
+## 
+## Tuning parameter 'intercept' was held constant at a value of TRUE
+```
+]
+
+---
+
+## Leave one out CV
+
+- Warning: it's really time-consuming
+
+
+```r
+dia_caret_loo &lt;- train(
+  price ~ carat,
+  data = diamonds,
+  method = "lm",
+  trControl = trainControl(
+*   method = "LOOCV"
+  )
+)
+dia_caret_loo
+```
+
+---
+
+## Logistic regression using `train()`
+
+.small[
+.pull-left[
+
+```r
+glm(spam ~ num_char,
+  data = email,
+  family = "binomial"
+)
+```
+
+```
+## 
+## Call:  glm(formula = spam ~ num_char, family = "binomial", data = email)
+## 
+## Coefficients:
+## (Intercept)     num_char  
+##    -1.79874     -0.06207  
+## 
+## Degrees of Freedom: 3920 Total (i.e. Null);  3919 Residual
+## Null Deviance:	    2437 
+## Residual Deviance: 2346 	AIC: 2350
+```
+]
+
+.pull-right[
+
+```r
+spam_caret &lt;- train(
+  spam ~ num_char,
+  data = email,
+  method = "glm"
+)
+spam_caret$finalModel
+```
+
+```
+## 
+## Call:  NULL
+## 
+## Coefficients:
+## (Intercept)     num_char  
+##    -1.79874     -0.06207  
+## 
+## Degrees of Freedom: 3920 Total (i.e. Null);  3919 Residual
+## Null Deviance:	    2437 
+## Residual Deviance: 2346 	AIC: 2350
+```
+
+]
+
+]
+---
+
+## Logistic regression with CV
+.small[
+
+```r
+spam_caret_cv10 &lt;- train(
+  spam ~ .,
+  data = email,
+  method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+spam_caret_cv10
+```
+
+```
+## Generalized Linear Model 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3529, 3529, 3529, 3529, 3529, 3528, ... 
+## Resampling results:
+## 
+##   Accuracy   Kappa    
+##   0.9120169  0.2333156
+```
+]
+---
+
+## AUC as metric instead of accuracy
+.small[
+
+```r
+spam_caret_cv10_auc &lt;- train(
+  spam ~ .,
+  data = email,
+  method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10,
+*   summaryFunction = twoClassSummary,
+*   classProbs = TRUE
+  )
+)
+spam_caret_cv10_auc
+```
+
+```
+## Generalized Linear Model 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3529, 3529, 3530, 3528, 3528, 3528, ... 
+## Resampling results:
+## 
+##   ROC        Sens       Spec     
+##   0.8866467  0.9887435  0.1743994
+```
+]
+
+---
+
+## Wrap up
+
+- `train()`
+- Cross-validation
+  - k-fold
+  - random sampling
+  - leave one out
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

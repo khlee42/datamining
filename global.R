@@ -59,7 +59,7 @@ lecture_links <- c(
   NA,
   "./lecture/w10-linear-reg/w10-linear-reg.html",
   "./lecture/w11-logistic-reg/w11-logistic-reg.html",
-  "",
+  "./lecture/w12-decision-tree/w12-decision-tree.html",
   "",
   "",
   NA
@@ -77,7 +77,7 @@ lab_links <- c(
   NA,
   "./lab/lab-08/lab-08-linear-reg.html",
   "./lab/lab-09/lab-09-logistic-reg.html",
-  "",
+  "./lab/lab-10/lab-10-decision-tree.html",
   "",
   "",
   NA
@@ -113,7 +113,7 @@ hw_links <- c(
   NA,
   NA,
   NA,
-  "./homework/hw2.html",
+  "./homework/hw2/hw2.html",
   NA,
   NA,
   NA

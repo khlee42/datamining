@@ -1,0 +1,47 @@
+---
+title: "Lecture 12 - Decision tree"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(tidyverse)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/RUT6Rc4jJ6w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-4-cross-validation.html){target="_blank"}
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/O8115Vermso" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-5-decision-tree.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "IDS", "[Chapter 29 Cross validation](https://rafalab.github.io/dsbook/cross-validation.html){target=\"_blank\"}",
+  "IDS", "[Chapter 30 Caret package](https://rafalab.github.io/dsbook/caret.html){target=\"_blank\"}",
+  "IDS", "[Chapter 31 Examples of algorithms](https://rafalab.github.io/dsbook/examples-of-algorithms.html){target=\"_blank\"}",
+  "Ref", "[Caret package](https://daviddalpiaz.github.io/r4sl/the-caret-package.html){target=\"_blank\"}",
+  "Ref", "[Class imbalance](https://www.svds.com/learning-imbalanced-classes/){target=\"_blank\"}"
+)
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

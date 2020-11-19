@@ -1,0 +1,195 @@
+---
+title: "Lab 10 - Decision tree"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Prerequisite
+
+This lab uses, as always, `tidyverse` package along with `broom` and `caret` we used for the last lab. And there are some new packages to install, whichare `openintro` for the email dataset, and `caTools` for the `colAUC()` function. To install the new packages, use `install.packages()`.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(caret)
+```
+
+
+# Building spam filter
+
+There are some data wrangling we need to to first. `spam` and `re_subj` variables are numeric but needed to be factor as we are going to treat them as a binary or discrete variable. For that, simply use `factor()`:
+```{r echo=FALSE}
+email <- email %>%
+  mutate(
+    spam = factor(ifelse(spam == 1, "S", "NS")),
+    re_subj = factor(re_subj)
+  )
+```
+
+```{r}
+str(email)
+```
+
+
+## Getting used to `train()`
+`train()` is very powerful as it gives us a consistent framework for data analytics. 
+We can use most of the statisticsl techniques available out there just a matter of replacing a few arguments in the function. 
+It's definately worth your time getting used to as you might not need anything else when it comes to predictive modeling.  
+
+Let's use recap the previous lecture where we build a logistic model using `glm()`.
+
+```{r}
+glm(spam ~ num_char,
+  data = email,
+  family = "binomial"
+)
+```
+
+Using `train()` to build a logistic model is as simple as switching `method`.
+
+```{r}
+spam_caret <- train(
+  spam ~ num_char,
+  data = email,
+  method = "glm"
+)
+spam_caret$finalModel
+```
+
+The two models show exactly the same output. Plus, `train()` does way more than what `glm()` is capable of!
+
+Let's do the 10-fold cross validation using `train()`. Note that the arguments for cross validation go inside the `trainControl()`.
+```{r warning = FALSE}
+spam_caret_cv10 <- train(
+  spam ~ .,
+  data = email,
+  method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+spam_caret_cv10
+```
+
+
+To get AUC instead of accuracy, we need two additional lines inside `trainControl()`: `summaryFunction` and `classProbs`.
+This is to tell that we're dealing with a binary outcome, and want to use the secondary summary statstics (e.g., AUC, confusion matrix) from the probabilities calculated from `glm`
+
+```{r warning = FALSE}
+spam_caret_cv10_auc <- train(
+  spam ~ .,
+  data = email,
+  method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10,
+    summaryFunction = twoClassSummary, #<<
+    classProbs = TRUE #<<
+  )
+)
+spam_caret_cv10_auc
+```
+
+## Decision tree
+
+Decision tree tends to be more accurate than logistic regression because it is highly flexible, although it often comes as a weakness due to complexity. 
+To build a tree, we need to use `rpart` method as modeling technique. Switch `method` from `glm` to `rpart`, and `train()` will take care of the rest.
+
+```{r}
+mod_tree <- train(
+    spam ~ .,
+    data = email,
+    method = "rpart", # <<
+    trControl = trainControl(
+        method = "cv",
+        number = 10
+    )
+)
+mod_tree
+```
+
+`train()` by default grows three trees, and each of them has a different `cp` value. The results sugget the tree with the cp of 0.0108 has the highest accuracy of all three. Now, let's compare the accuracy between the logistic and tree model.
+```{r}
+spam_caret_cv10$results$Accuracy
+max(mod_tree$results$Accuracy)
+```
+
+Our tree model does slightly better than the logistic model, but not by far.  
+
+You can grow more trees by setting `tuneLength` to any number you want. Below is to grow 10 trees.
+```{r}
+set.seed(123)
+mod_trees <- train(
+    spam ~ .,
+    data = email,
+    method = "rpart", # <<
+    trControl = trainControl(
+        method = "cv",
+        number = 10
+    ),
+    tuneLength = 10
+)
+```
+
+```{r}
+plot(mod_trees)
+mod_trees$bestTune
+```
+
+We have 10 different trees, and one with the cp of 0.00363 is our best tree with the highest accuracy of 93.5%. You can use `plot` and `text` to plot out the tree for detail.
+
+```{r}
+plot(mod_trees$finalModel, uniform = TRUE)
+text(mod_trees$finalModel, cex = .8)
+```
+
+# Exercise
+### Exercise 1.
+
+Use these five variables (`num_char`, `image`, `attach`, `dollar`, `re_subj`) to build a spam filter. Use `train()` to build a logistic regression model with 20-fold cross validation. What is the model accuracy?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 2.
+
+Use the same variables to build a decision tree. Do 20-fold cross validation. What is the accuracy of the best model?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 3.
+
+Plot the tree using `plot()` and `text()` function. What is the first condition appearing at the root? What does it mean?
+
+```{r}
+
+```
+
+### Exercise 4.
+
+Change `tuneLength` option to grow 20 trees, and plot them out to see how the accuracy changes along with complexity parameter. Did you find a better model?
+
+```{r}
+
+```

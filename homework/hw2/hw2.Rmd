@@ -1,0 +1,139 @@
+---
+title: "Homework 2 - Prediction model"
+author: "Enter Your Name Here"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Release: 11/18/2020**  
+**Due: 12/02/2020**
+
+In this homework, you will write R codes to build models to predict customer churn rates. Before you start, please read the below instructions carefully as failure to follow the instructions may result in deductions in your score.
+
+# Before you start ...
+## Instructions
+
+- Download the source Rmd file from the `Code` tab at the upper-right corner of this document.
+- In the YAML header, change `author` to your name.
+- For each question, write your R code inside the R chunk, starting below the line `# write your code below this comment line`
+  - one answer for each question
+- You must write your code **inside** the R chunks. Do not change anything else (e.g., chunk options, order of question)
+- Do not add additional R chunks
+
+## Submission
+
+- Save your R markdown document as "lastname_firstname_WSUID.Rmd" (e.g., lee_kyunghee_gl3566.Rmd)
+- Submit your `Rmd` file on **Canvas**
+  - You only need to submit the `Rmd` file, not the output `html` document which is generated from the `Rmd` file. 
+
+## Grading
+
+- 8 questions in total, each accounts for 2 point except Q8 (1 point).
+- **To get the full score for each question, your code must be executable without generating any errors**
+- If your code doesn't run, partial credits will be given.
+
+
+## R markdown tutorial
+
+- The source RMD file is on `Code` tab on the top. 
+- You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. 
+- Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. 
+- See the instructions and video in [Lab 1](https://khlee42.github.io/datamining/lab/lab-01/lab-01-hello-r.html) for more
+
+# Package and Data
+For this assignment, we need three packages to load: `tidyverse`, `caret`, and `caTools`. You also need to download this data file "customer_churn.csv" ([click here](http://khlee42.github.io/datamining/homework/hw2/customer_churn.csv)) and save it in the same folder where this RMD file is. The below code chunk is to load these packages and the data.
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(caret)
+library(caTools)
+
+churn <- read.csv("customer_churn.csv") %>% 
+  select(-customerID) %>% 
+  drop_na()
+```
+
+
+# Question 1
+
+- Split `churn` data and save 80% into `train` and 20% into `test` datasets (Hint: `createDataPartition()`).
+```{r}
+set.seed(123) # # Do not change this line
+# write your code below this comment line
+
+
+```
+
+# Question 2
+
+- Using `glm()`, build a logistic regression model to predict customer churn (`Churn`) with all possible variables. Use `train` data set to fit the model. Save the model as `mod_glm`
+```{r}
+# write your code below this comment line
+
+```
+
+# Question 3
+
+- For `test` data, make prediction using the logistic regression trained in Question 2 (`mod_glm`) and save the prediction as `p` (Hint: `predict()`).
+
+```{r}
+# write your code below this comment line
+
+```
+
+# Question 4
+
+- Draw the ROC curve and calculate AUC of the prediction (`p`) using `colAUC()`
+```{r}
+# write your code below this comment line
+
+```
+
+
+# Question 5
+
+- For the full dataset (`churn`, not `train`), build a decision tree to predict customer churn (`Churn`) by using all possible variables. Use `train()` for building the model. Save the model as `mod_tree`.
+```{r}
+set.seed(123) # Do not change this line
+# write your code below this comment line
+
+
+```
+
+# Question 6
+
+- Build the same tree model as before, and use 10-fold cross validation to calculate accuracy. Save the model as `mod_tree_cv10`
+```{r}
+set.seed(123) # Do not change this line
+# write your code below this comment line
+
+
+```
+
+# Question 7
+
+- Build the same tree model, but grow 20 trees instead of 3. Save the model as `mod_trees`
+```{r}
+set.seed(123) # Do not change this line
+# write your code below this comment line
+
+
+```
+
+
+# Question 8
+
+- Plot the accuracy of the trees (`mod_trees`) against complexity parameter (cp). Use `plot()`
+```{r}
+# write your code below this comment line
+
+```
+

@@ -1,6 +1,6 @@
 ---
 title: "Homework 2 - Data analysis"
-author: "Kyunghee Lee"
+author: "Enter your name here"
 output: 
   html_document:
     theme: cosmo
@@ -13,16 +13,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r echo=FALSE}
-knitr::read_chunk('../global.R')
-```
-
-```{r global, echo=FALSE}
-```
-
-**Release: `r due_hw$release[2]`**  
-**Due: `r due_hw$due[2]`**
-
 In this homework, ...
 
 Change the author name to yours
@@ -30,8 +20,6 @@ Change the author name to yours
 
 ```{r warning=FALSE, message=FALSE}
 library(tidyverse)
-# library(dplyr)
-# library(tidyr)
 houses <- read.csv("Boston_house_prices.csv")
 ```
 
