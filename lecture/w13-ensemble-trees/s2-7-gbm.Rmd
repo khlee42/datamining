@@ -1,0 +1,197 @@
+---
+title: "Gradient boosting machine <br> `r emo::ji('christmas_tree')`"
+author: "Kyunghee Lee"
+output:
+  xaringan::moon_reader:
+    css: "../slides.css"
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(openintro)
+library(caret)
+library(caTools)
+
+email <- email %>%
+  mutate(
+    spam = factor(ifelse(spam == 1, "S", "NS")),
+    re_subj = factor(re_subj)
+  ) %>% 
+  drop_na()
+
+```
+
+  
+## Different ways to grow trees
+
+- Random forest: bagging + feature selection
+- **Gradient boosting machine: boosting**
+
+---
+
+```{r out.width="100%", fig.align="center", echo=FALSE}
+knitr::include_graphics("img/poker-table.jpg")
+```
+
+---
+
+## Boosting: sequantial learning
+.small[
+- Gradient descent
+  - Grow a tree
+  - Evaluate the tree
+  - Grow the next tree such that it lowers the error (loss) of the previous trees
+  - Repeat!
+]
+```{r out.width="50%", fig.align="center", echo=FALSE}
+knitr::include_graphics("img/gradient-descent.png")
+```
+
+---
+
+## Spam filter using GBM
+
+```{r cache = TRUE, warning = FALSE, message = FALSE}
+set.seed(123)
+mod_gbm <- train(
+  spam ~ .,
+  data = email,
+  method = "gbm", #<<
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  ),
+  verbose = FALSE #<<
+)
+```
+
+---
+
+.small[
+```{r}
+mod_gbm
+```
+]
+---
+
+## Tuning hyperparameter
+
+- `shrinkage`: learning rate: how quickly the algorithm adapts
+- `n.trees`: number of iterations (trees)
+- `interaction.depth`: complexity of the tree
+- `n.minobsinnode`: the minimum number of training set samples in a node to commence splitting
+
+---
+
+## Tuning hyperparameter (automatic)
+
+```{r cache = TRUE, warning = FALSE}
+set.seed(123)
+mod_gbms <- train(
+  spam ~ .,
+  data = email,
+  method = "gbm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  ),
+  tuneLength = 5, #<<
+  verbose = FALSE
+)
+```
+
+---
+
+## Tuning hyperparameter (manual)
+
+```{r eval = FALSE}
+mod_gbms <- train(
+  spam ~ .,
+  data = email,
+  method = "gbm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  ),
+  tuneGrid = expand.grid( #<<
+    n.trees = c(100, 500, 1000),
+    shrinkage = c(0.05, 0.1, 0.2, 0.5),
+    interaction.depth = 3,
+    n.minobsinnode = 10
+  ), 
+  verbose = FALSE
+)
+```
+
+---
+    
+.small[
+```{r}
+mod_gbms
+```
+]
+---
+  
+```{r}
+plot(mod_gbms)
+```
+
+---
+
+## Compare out-of-sample accuracy across models
+
+```{r echo = FALSE, warning = FALSE, cache = TRUE}
+spam_caret_cv10 <- train(
+  spam ~ .,
+  data = email,
+  method = "glm", # <<
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+mod_tree <- train(
+  spam ~ .,
+  data = email,
+  method = "rpart", # <<
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+set.seed(123)
+mod_forests <- train(
+  spam ~ .,
+  data = email,
+  tuneLength = 10, # <<
+  method = "ranger",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+```
+
+```{r}
+spam_caret_cv10$results$Accuracy # Logistic regression
+max(mod_tree$results$Accuracy) # Single tree
+max(mod_forests$results$Accuracy) # Random forest
+max(mod_gbms$results$Accuracy) # Gradient boosting machine
+```
+
+---
+## Wrap up
+
+- Gradient Boosting Machine
+- Boosting
+- Tuning hyperparameter

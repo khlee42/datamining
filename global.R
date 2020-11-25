@@ -33,8 +33,8 @@ topic = c(
   'Linear regression',
   'Logistic regression',
   'Decision tree',
-  'Clustering',
-  'Tidytext and sentiment analysis',
+  'Ensemble trees',
+  'TBA',
   'Final exam'
 )
 
@@ -60,7 +60,7 @@ lecture_links <- c(
   "./lecture/w10-linear-reg/w10-linear-reg.html",
   "./lecture/w11-logistic-reg/w11-logistic-reg.html",
   "./lecture/w12-decision-tree/w12-decision-tree.html",
-  "",
+  "./lecture/w13-ensemble-trees/w13-ensemble-trees.html",
   "",
   NA
 )
@@ -78,7 +78,7 @@ lab_links <- c(
   "./lab/lab-08/lab-08-linear-reg.html",
   "./lab/lab-09/lab-09-logistic-reg.html",
   "./lab/lab-10/lab-10-decision-tree.html",
-  "",
+  "./lab/lab-11/lab-11-ensemble-trees.html",
   "",
   NA
 )

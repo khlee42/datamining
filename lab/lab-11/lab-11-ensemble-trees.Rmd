@@ -1,0 +1,205 @@
+---
+title: "Lab 11 - Random forest & Gradient Boosting"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    toc: TRUE
+    toc_float: TRUE
+    code_download: TRUE
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below is the code we use from the lecture, plus some exercise questions. The RMD file is on `Code` tab on the top. You can either `Knit` the entire document to produce a html doc, `Run All` to only run R codes, or run one R chunk at a time by clicking the play button. Remember that your code must be inside **R chunks**. Otherwise, your computer would just treat your code as plain text and won't run it. If you're not sure what you should do, please refer to the instructions and video in [Lab 1](../lab-01/lab-01-hello-r.html).
+
+There is a couple of exercises you can play with. For each question, I put a R chunk and a line saying `# write your code below this comment line` in case you don't know where to start. You're welcome to create as many R chunks and do experiments as you like.
+
+# Prerequisite
+
+This lab uses, as always, `tidyverse` package along with `caret` we used for the last lab. And there are some new packages to install, whichare `openintro` for the email dataset, and `ranger` for the `ranger` method. To install the new packages, use `install.packages()`.
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(caret)
+```
+
+
+# Building spam filter
+
+There are some data wrangling we need to to first. `spam` and `re_subj` variables are numeric but needed to be factor as we are going to treat them as a binary or discrete variable. For that, simply use `factor()`:
+```{r echo=FALSE}
+email <- email %>%
+  mutate(
+    spam = factor(ifelse(spam == 1, "S", "NS")),
+    re_subj = factor(re_subj)
+  ) %>%
+  drop_na()
+```
+
+
+## Logistic regression and (single) Decision tree
+
+Let's recap quickly the last lab - building logistic regression and decision tree models using `train()`.
+Here is the code for logistic regression with 10-fold cross-validation using `train()`.
+
+```{r warning = FALSE}
+spam_caret_cv10 <- train(
+  spam ~ .,
+  data = email,
+  method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+spam_caret_cv10
+```
+
+Decision tree tends to be more accurate than logistic regression because it is highly flexible, although it often comes as a weakness due to complexity. 
+To build a tree, we need to use `rpart` method as modeling technique. Switch `method` from `glm` to `rpart`, and `train()` will take care of the rest.
+
+```{r}
+mod_tree <- train(
+    spam ~ .,
+    data = email,
+    method = "rpart", # <<
+    trControl = trainControl(
+        method = "cv",
+        number = 10
+    )
+)
+mod_tree
+```
+
+
+Since decision tree has a hyperparameter to tune, `mtry`, we can vary this value by setting `tuneLength` to any number you want. Below is to grow 10 trees.
+```{r}
+set.seed(123)
+mod_trees <- train(
+    spam ~ .,
+    data = email,
+    method = "rpart", # <<
+    trControl = trainControl(
+        method = "cv",
+        number = 10
+    ),
+    tuneLength = 10
+)
+```
+
+
+## Random forest
+
+Random forest shares the same idea with decision tree. It's just a bunch of decision trees, instead of one tree. You can change the method parameter to `ranger` to build a random forest model.
+
+```{r eval = FALSE}
+set.seed(123)
+mod_forest <- train(
+  spam ~ .,
+  data = email,
+  tuneLength = 1, #<<
+  method = "ranger", #<<
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+```
+
+Similar to the decision tree, we can change `tuneLength` to widen the model search. Let's set it to 10.
+```{r}
+set.seed(123)
+mod_forests <- train(
+  spam ~ .,
+  data = email,
+  tuneLength = 10,
+  method = "ranger",
+  trControl = trainControl( #<<
+    method = "cv", #<<
+    number = 10 #<<
+  )
+)
+plot(mod_forests)
+```
+
+The model accuracy grows up to 95% as `mtry` or the number of randomly selected parameters to the certain point, from which point it flats out and remains at the same level. It means the models can benefit from adding more complexity or decreasing randomness to closely fit the data only to a certain point, and it won't add much value after that.
+
+## Gradient Boosting Machine (GBM)
+
+Gradient Boosting Machine or GBM shares the same concept with random forest: growing a bunch of trees instead of one. The difference lies in how each of the methods grow trees. Random forest focuses on randomness of the decisions trees make while GBM focuses on sequantial learning of the trees where errors are corrected as iterating or growing more trees.
+
+```{r}
+set.seed(123)
+mod_gbms <- train(
+  spam ~ .,
+  data = email,
+  method = "gbm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  ),
+  tuneLength = 5,
+  verbose = FALSE
+)
+plot(mod_gbms)
+```
+
+This is the comparison of the out-of-sample accuracy across the models.
+
+```{r}
+spam_caret_cv10$results$Accuracy # Logistic regression
+max(mod_tree$results$Accuracy) # Single tree
+max(mod_forests$results$Accuracy) # Random forest
+max(mod_gbms$results$Accuracy) # Gradient boosting machine
+```
+
+Random forest products the best prediction accuracy, followed by GBM, single tree, and logistic regression. Tree-based models are known for its performance, and this is another example. Although the accuracy is not as impressive, the logistic regression model performs a lot better than I expected. Considering how simple and not demanding it is to implement a logistic model compared to the others, this performance level should be appreciated.
+
+# Exercise
+
+When tuning hyperparameters, you will be tempted to set a large number to `tuneLength`. It won't damage your computer but will take a really, really long time if you do that.
+Generally, it won't be neccessary to go over 20. You may want to quit the process by pushing "Control + C" or force-quit the program.
+
+### Exercise 1.
+
+Use these five variables (`num_char`, `image`, `attach`, `dollar`, `re_subj`) to build a spam filter. Use `train()` to build a random forest model with 5-fold cross validation. What is the model accuracy?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 2.
+
+Set `tuneLength` parameter to 15 to widen the model search. Is the best model still the same? Is there performance improvement?
+
+```{r}
+# write your code below this comment line
+
+
+```
+
+### Exercise 3.
+
+Use the same variables to build a gradient boosting machine (GBM). Do 20-fold cross validation. What is the accuracy of the best model?
+
+```{r}
+# write your code below this comment line
+
+```
+
+
+### Exercise 4.
+
+Set `tuneLength` parameter to any number you want to search for a better model. Plot them out to see how the accuracy changes along with complexity parameter. Did you find a better model? Compared to the random forest models, which method results in a better outcome?
+
+```{r}
+# write your code below this comment line
+
+```
+

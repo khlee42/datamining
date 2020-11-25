@@ -1,0 +1,45 @@
+---
+title: "Lecture 13 - Ensemble trees"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(fontawesome)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/9BPH33TsMFs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-6-random-forest.html){target="_blank"}
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/xyywAl-gwTU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-7-gbm.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "IDS", "[Chapter 31 Examples of algorithms](https://rafalab.github.io/dsbook/examples-of-algorithms.html){target=\"_blank\"}",
+  "IDS", "[Chapter 32 Machine learning in practice](https://rafalab.github.io/dsbook/machine-learning-in-practice.html){target=\"_blank\"}",
+  "Ref", "[Chapter 12 Gradient Boosting](https://bradleyboehmke.github.io/HOML/gbm.html){target=\"_blank\"}",
+  "Ref", "[Gradient Boosting Machines](http://uc-r.github.io/gbm_regression){target=\"_blank\"}"
+)
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Random forest   🌴</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Random forest <br> 🌴
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+
+
+.pull-left[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.small[
+.pull-right[
+- Start from the root: "is it raining?"
+- Grow the tree
+  - branch: Yes or no
+  - leave: is it windy? is it extremely windy?
+- The goal is for all leaves to perfectly separate or classify samples
+  - classes: "stay home", "wear a rain jacket", "use an umbrella", "don't bring an umbrella"
+]
+]
+.small[
+.footnote[https://medium.com/@ml.at.berkeley/machine-learning-crash-course-part-5-decision-trees-and-ensemble-models-dcc5a36af8cd]
+]
+
+---
+
+.pull-left[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+  
+## Random forest: Grow a bunch of trees!
+
+- Build (grow) more than one models (trees) and aggreate the predictions
+  - At the end, each model votes, and the majority of the votes becomes the collective prediction
+- Ensemble method: Combination of models (in this case trees)
+
+
+&lt;img src="img/trees-vote.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Wisdom of crowds
+
+.pull-left[
+&lt;img src="img/wisdom-of-crowds.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+&lt;img src="img/cow-weight.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+- Many weak guesses to come together to make a strong prediction
+- Only works when individual opinions are **independent**
+
+]
+
+
+
+---
+
+## Growing trees that are independent
+
+- Bagging (Bootstrap aggregation)
+  - grow each tree based on a random subsample of data
+- Random feature selection
+  - limit a subset of features of variables as possible candidates to split upon
+
+---
+
+## Bagging (Bootstrap aggregation)
+
+&lt;img src="img/bagging.jpeg" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[https://medium.com/machine-learning-through-visuals/machine-learning-through-visuals-part-1-what-is-bagging-ensemble-learning-432059568cc8]
+---
+
+## Random feature selection
+
+&lt;img src="img/feature-selection.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+
+.footnote[https://blog.quantinsti.com/random-forest-algorithm-in-python/]
+---
+  
+## Spam filters
+
+We will examine a data set of emails where we are interested in identifying 
+spam messages. 
+
+- `openintro` package
+- Data from 3921 emails and 21 variables on them.
+- The outcome is whether the email is spam or not.
+
+
+```
+## 
+##   NS    S 
+## 3554  367
+```
+
+---
+
+## Spam filter random forest
+
+- Install package `ranger`
+
+
+```r
+set.seed(123)
+mod_forest &lt;- train(
+  spam ~ .,
+  data = email,
+* tuneLength = 1,
+* method = "ranger",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+```
+
+---
+
+## Spam filter random forest
+
+- Install package `ranger`
+
+
+```r
+set.seed(123)
+mod_forest &lt;- train(
+  spam ~ .,
+  data = email,
+  tuneLength = 1,
+  method = "ranger",
+* trControl = trainControl(
+*   method = "cv",
+*   number = 10
+  )
+)
+```
+
+---
+
+## Spam filter random forest
+
+
+
+.small[
+
+```r
+mod_forest
+```
+
+```
+## Random Forest 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3528, 3528, 3529, 3530, 3530, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   splitrule   Accuracy   Kappa    
+##   gini        0.9487439  0.6478971
+##   extratrees  0.9472093  0.6331133
+## 
+## Tuning parameter 'mtry' was held constant at a value of 7
+## Tuning
+##  parameter 'min.node.size' was held constant at a value of 1
+## Accuracy was used to select the optimal model using the largest value.
+## The final values used for the model were mtry = 7, splitrule = gini
+##  and min.node.size = 1.
+```
+]
+
+---
+
+## Tuning hyperparameter
+
+- `mtry`: number of randomly selected features used at each split
+- Low `mtry`: more random
+- High `mtry`: less random
+- Set `tuneLength` to randomly search different values of `mtry`
+  
+
+```r
+set.seed(123)
+mod_forests &lt;- train(
+  spam ~ .,
+  data = email,
+  tuneLength = 10, # &lt;&lt;
+  method = "ranger",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+```
+
+---
+
+
+.small[
+
+```r
+mod_forests
+```
+
+```
+## Random Forest 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3528, 3528, 3529, 3530, 3530, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   mtry  splitrule   Accuracy   Kappa    
+##    2    gini        0.9140564  0.1612980
+##    2    extratrees  0.9064026  0.0000000
+##    4    gini        0.9438956  0.6008989
+##    4    extratrees  0.9262909  0.3694587
+##    6    gini        0.9479785  0.6414864
+##    6    extratrees  0.9433841  0.5929394
+##    8    gini        0.9472139  0.6409498
+##    8    extratrees  0.9489977  0.6542577
+##   10    gini        0.9479779  0.6491051
+##   10    extratrees  0.9489990  0.6609917
+##   12    gini        0.9464512  0.6409154
+##   12    extratrees  0.9500194  0.6706454
+##   14    gini        0.9456872  0.6359971
+##   14    extratrees  0.9500200  0.6720249
+##   16    gini        0.9461967  0.6419862
+##   16    extratrees  0.9495092  0.6706965
+##   18    gini        0.9472152  0.6463036
+##   18    extratrees  0.9500200  0.6737689
+##   21    gini        0.9464479  0.6415137
+##   21    extratrees  0.9492573  0.6693085
+## 
+## Tuning parameter 'min.node.size' was held constant at a value of 1
+## Accuracy was used to select the optimal model using the largest value.
+## The final values used for the model were mtry = 18, splitrule = extratrees
+##  and min.node.size = 1.
+```
+]
+---
+  
+
+```r
+plot(mod_forests)
+```
+
+&lt;img src="s2-6-random-forest_files/figure-html/unnamed-chunk-18-1.png" width="1500" /&gt;
+
+---
+
+## Logistic regression and single tree
+
+.small[
+.pull-left[
+
+```r
+# Logistic regression
+spam_caret_cv10 &lt;- train(
+  spam ~ .,
+  data = email,
+* method = "glm",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+spam_caret_cv10
+```
+
+```
+## Generalized Linear Model 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3529, 3528, 3529, 3530, 3528, 3529, ... 
+## Resampling results:
+## 
+##   Accuracy   Kappa    
+##   0.9125194  0.2355425
+```
+]
+
+.pull-right[
+
+```r
+# Decision tree
+set.seed(123)
+mod_tree &lt;- train(
+  spam ~ .,
+  data = email,
+* method = "rpart",
+  trControl = trainControl(
+    method = "cv",
+    number = 10
+  )
+)
+mod_tree
+```
+
+```
+## CART 
+## 
+## 3921 samples
+##   20 predictor
+##    2 classes: 'NS', 'S' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 3528, 3528, 3529, 3530, 3530, 3529, ... 
+## Resampling results across tuning parameters:
+## 
+##   cp          Accuracy   Kappa     
+##   0.01089918  0.9280805  0.48127355
+##   0.01471390  0.9199238  0.39130066
+##   0.03405995  0.9084474  0.06322713
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was cp = 0.01089918.
+```
+]
+]
+---
+
+## Compare out-of-sample accuracy across models
+
+
+```r
+spam_caret_cv10$results$Accuracy # Logistic regression
+```
+
+```
+## [1] 0.9125194
+```
+
+```r
+max(mod_tree$results$Accuracy) # Single tree
+```
+
+```
+## [1] 0.9280805
+```
+
+```r
+max(mod_forests$results$Accuracy) # Random forest
+```
+
+```
+## [1] 0.95002
+```
+
+---
+  
+## Wrap up
+
+- Random forest
+- Bagging
+- Random feature selection
+- Gradient Boosting Machine (GBM)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

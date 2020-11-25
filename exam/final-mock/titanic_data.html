@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html class="">
+  <head>
+    
+      <title>titanic package | R Documentation</title>
+    
+    
+    <base href="https://www.rdocumentation.org">
+
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv=Content-Type content=text/html; charset="UTF-8">
+    
+      <meta name="description" content="This data set provides information on the fate of passengers on
+the fatal maiden voyage of the ocean liner &quot;Titanic&quot;, summarized according
+to economic status (class), sex, age and survival. Whereas the base R
+Titanic data found by calling data(&quot;Titanic&quot;) is an array resulting from
+cross-tabulating 2201 observations, these data sets are the individual
+non-aggregated observations and formatted in a machine learning context
+with a training sample, a testing sample, and two additional data sets
+that can be used for deeper machine learning analysis. These data sets
+are also the data sets downloaded from the Kaggle competition and thus
+lowers the barrier to entry for users new to R or machine learing." />
+    
+    
+      <link href="/packages/titanic/versions/0.1.0" rel="canonical" />
+    
+
+    <!-- No index if not production -->
+    
+
+    <!--STYLES-->
+    <link rel="stylesheet" href="/min/production.min.702e152d1c072db370ae8520b7e2d417.css">
+    <!--STYLES END-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href='/css/nv.d3.min.css'>
+    <link rel="stylesheet" href='/css/bootstrap-treeview.css'>
+     <link rel="stylesheet" href='/css/bootstrap-glyphicons.css'>
+    <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css'>
+    <link href = "https://code.jquery.com/ui/1.12.0-rc.2/themes/smoothness/jquery-ui.css" rel = "stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WB38P87');</script>
+    <!-- End Google Tag Manager -->
+  </head>
+
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WB38P87"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div id="content">
+      
+  
+  
+  <section class="navbar navbar-color navbar-fixed-top">
+    <nav class="clearfix">
+      <div class="navbar--title">
+        <a href="/">
+          <div class="logo"></div>
+          <div class="logo-title"><span>RDocumentation</span></div>
+        </a>
+      </div>
+      <ul class="navbar--navigation largescreen">
+  <li><a href="https://www.datacamp.com/groups/business" class="btn btn-secondary-dark">R Enterprise Training</a></li>
+  
+    <li><a href="https://github.com/datacamp/Rdocumentation" class="btn btn-secondary">R package</a></li>
+    <li><a href="/trends" class="btn btn-secondary">Leaderboard</a></li>
+
+    
+      <li><a href="/login?rdr=%2Fpackages%2Ftitanic%2Fversions%2F0.1.0" class="btn btn-primary">Sign in</a></li>
+    
+  
+</ul>
+
+      <div class="navbar--search">
+        <form class="search" action="/search" method="get">
+          <input name="q" id = "searchbar" type="text" placeholder="Search for packages, functions, etc" autocomplete="off">
+          <input name="latest" id="hidden_latest" type="hidden" />
+          <div class="search--results"></div>
+        </form>
+      </div>
+    </nav>
+  </section>
+
+
+  <div class="page-wrap">
+      
+    
+  
+  
+  
+
+    
+
+<section
+  data-package-name="titanic"
+  data-type-id="1"
+  data-latest-version="0.1.0"
+  itemscope itemtype="http://schema.org/SoftwareApplication"
+  class="package packageData">
+
+  
+<header class="package-header">
+  <div class="package--header-content container">
+    <div class="ph-flex-position">
+      <div> <!-- Do not remove this div, needed for ph-flex-position -->
+        <div class='package--title--container'>
+          <h1 class= 'package--title' itemprop="name">titanic
+          <span title="Latest version" class='package--version--v'>v0.1.0</span></h1>
+
+
+          <div class="package--version--select">
+            <select id='packageVersionSelect'>
+              
+                <option data-uri="/packages/titanic/versions/0.1.0"
+                  value="0.1.0"
+                  selected disabled
+                  itemprop=&quot;softwareVersion&quot;
+                  >
+                  Other versions
+                </option>
+              
+            </select>
+          </div>
+
+        </div> <!-- /package-title-container -->
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
+
+      <div><!-- Do not remove this div, needed for ph-flex-position -->
+        
+        
+          <div class="downloads download-task" data-url="/api/packages/titanic/versions/0.1.0/downloads/splitted">
+            <span class="downloads-nr" >
+              <span class='indeps'>0</span>
+              <i class="fa fa-info-circle direct-downloads" aria-hidden="false"></i>
+            </span>
+            <p>Monthly downloads</p>
+          </div>
+        
+
+        
+          <div class="downloads" id = "percentile-arrow">
+            <i class="fa fa-chevron-right fa-2x" aria-hidden="false"></i>
+          </div>
+          
+          
+  <div class="percentile-widget percentile-task" data-url="/api/packages/titanic/versions/0.1.0/percentile">
+    <span class="percentile-th">
+      <span class='percentile'>0th</span>
+    </span>
+    <p>Percentile</p>
+  </div>
+
+
+        
+      </div> <!-- /Do not remove this div, needed for ph-flex-position -->
+    </div> <!-- /row -->
+    <div class="ph-flex-position">
+      
+        <span class='package--maintainer'>by <a itemprop="creator" href="/collaborators/name/Paul%20Hendricks">Paul Hendricks</a></span>
+      
+       
+        <span class='package--maintainer'><a href="/packages/titanic/versions/0.1.0/source">View Source</a></span>
+      
+
+      <div>
+        <div class="paste-link">
+          <i class="fa fa-link"
+            aria-hidden="true">
+          </i>
+          
+          <input id="canonical-link-input" type="text" size="47" readonly value="https://www.rdocumentation.org/packages/titanic">
+          <button title="Copied !" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#canonical-link-input">
+            Copy
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div> <!-- /container -->
+</header>
+
+
+  <div class="content container">
+    <section class="package--info">
+      <h2 itemprop="headline">Titanic Passenger Survival Data Set</h2>
+      <p itemprop="description">
+        This data set provides information on the fate of passengers on
+the fatal maiden voyage of the ocean liner &quot;Titanic&quot;, summarized according
+to economic status (class), sex, age and survival. Whereas the base R
+Titanic data found by calling data(&quot;Titanic&quot;) is an array resulting from
+cross-tabulating 2201 observations, these data sets are the individual
+non-aggregated observations and formatted in a machine learning context
+with a training sample, a testing sample, and two additional data sets
+that can be used for deeper machine learning analysis. These data sets
+are also the data sets downloaded from the Kaggle competition and thus
+lowers the barrier to entry for users new to R or machine learing.<br>
+      </p>
+    </section>
+
+    
+    <section class="package--readme">
+      <div class="anchor" id="readme"></div>
+      <h2>Readme</h2>
+        <div class="markdown-container">
+          <div class="markdown-body">
+            
+               <!-- README.md is generated from README.Rmd. Please edit that file -->
+<h1 id="titanic">titanic</h1>
+<p><a href="https://travis-ci.org/paulhendricks/titanic"><img src="https://travis-ci.org/paulhendricks/titanic.png?branch=master" alt="Build Status"></a> <a href="http://cran.r-project.org/package=titanic"><img src="http://www.r-pkg.org/badges/version/titanic" alt="CRAN\_Status\_Badge"></a> <a href="http://cran.rstudio.com/package=titanic"><img src="http://cranlogs.r-pkg.org/badges/titanic" alt="Downloads from the RStudio CRAN mirror"></a> <a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/0.1.0/active.svg" alt="Project Status: Active - The project has reached a stable, usable state and is being actively developed."></a></p>
+<p><code>titanic</code> is an R package containing data sets providing information on the fate of passengers on the fatal maiden voyage of the ocean liner &quot;Titanic&quot;, summarized according to economic status (class), sex, age and survival. These data sets are often used as an introduction to machine learning on <a href="https://www.kaggle.com/">Kaggle</a>. More details about the competition can be found <a href="https://www.kaggle.com/c/titanic">here</a>, and the original data sets can be found <a href="https://www.kaggle.com/c/titanic/data">here</a>.</p>
+<h2 id="installation">Installation</h2>
+<p>You can install:</p>
+<ul>
+<li><p>the latest released version from CRAN with</p>
+<pre><code class="lang-r">install.packages(&quot;titanic&quot;)
+</code></pre>
+</li>
+<li><p>the latest development version from github with</p>
+<pre><code class="lang-r">if (packageVersion(&quot;devtools&quot;) &lt; 1.6) {
+  install.packages(&quot;devtools&quot;)
+}
+devtools::install_github(&quot;paulhendricks/titanic&quot;)
+</code></pre>
+</li>
+</ul>
+<p>If you encounter a clear bug, please file a minimal reproducible example on <a href="https://github.com/paulhendricks/titanic/issues">github</a>.</p>
+<h2 id="api">API</h2>
+<pre><code class="lang-r">library(titanic)
+knitr::kable(head(titanic_train))
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">PassengerId</th>
+<th style="text-align:right">Survived</th>
+<th style="text-align:right">Pclass</th>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Sex</th>
+<th style="text-align:right">Age</th>
+<th style="text-align:right">SibSp</th>
+<th style="text-align:right">Parch</th>
+<th style="text-align:left">Ticket</th>
+<th style="text-align:right">Fare</th>
+<th style="text-align:left">Cabin</th>
+<th style="text-align:left">Embarked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">3</td>
+<td style="text-align:left">Braund, Mr. Owen Harris</td>
+<td style="text-align:left">male</td>
+<td style="text-align:right">22</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">A/5 21171</td>
+<td style="text-align:right">7.2500</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">S</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:left">Cumings, Mrs. John Bradley (Florence Briggs Thayer)</td>
+<td style="text-align:left">female</td>
+<td style="text-align:right">38</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">PC 17599</td>
+<td style="text-align:right">71.2833</td>
+<td style="text-align:left">C85</td>
+<td style="text-align:left">C</td>
+</tr>
+<tr>
+<td style="text-align:right">3</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">3</td>
+<td style="text-align:left">Heikkinen, Miss. Laina</td>
+<td style="text-align:left">female</td>
+<td style="text-align:right">26</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">STON/O2. 3101282</td>
+<td style="text-align:right">7.9250</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">S</td>
+</tr>
+<tr>
+<td style="text-align:right">4</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:left">Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+<td style="text-align:left">female</td>
+<td style="text-align:right">35</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">113803</td>
+<td style="text-align:right">53.1000</td>
+<td style="text-align:left">C123</td>
+<td style="text-align:left">S</td>
+</tr>
+<tr>
+<td style="text-align:right">5</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">3</td>
+<td style="text-align:left">Allen, Mr. William Henry</td>
+<td style="text-align:left">male</td>
+<td style="text-align:right">35</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">373450</td>
+<td style="text-align:right">8.0500</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">S</td>
+</tr>
+<tr>
+<td style="text-align:right">6</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">3</td>
+<td style="text-align:left">Moran, Mr. James</td>
+<td style="text-align:left">male</td>
+<td style="text-align:right">NA</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:left">330877</td>
+<td style="text-align:right">8.4583</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">Q</td>
+</tr>
+</tbody>
+</table>
+
+            
+            
+         </div>
+        </div>
+    </section>
+    
+
+    <section class="table-list">
+      <div class="anchor" id="functions"></div>
+      <h2 class="table-title">Functions in titanic  </h2>
+      <input id="filter" type="text" placeholder="Search">
+      <table class = "packagetable">
+        <thead>
+          <tr>
+            <td>Name <i class="fa fa-sort" aria-hidden="true"></i></td>
+            <td>Description <i class="fa fa-sort" aria-hidden="true"></i></td>
+          </tr>
+        </thead>
+        <tbody id="filterableItems">
+          
+            
+            <tr>
+              <td><a href="/packages/titanic/versions/0.1.0/topics/titanic_train">titanic_train</a></td>
+              <td>Titanic train data.</td>
+            </tr>
+          
+            
+            <tr>
+              <td><a href="/packages/titanic/versions/0.1.0/topics/titanic_test">titanic_test</a></td>
+              <td>Titanic test data.</td>
+            </tr>
+          
+            
+            <tr>
+              <td><a href="/packages/titanic/versions/0.1.0/topics/titanic">titanic</a></td>
+              <td>titanic: Titanic Passenger Survival Data Set</td>
+            </tr>
+          
+            
+            <tr>
+              <td><a href="/packages/titanic/versions/0.1.0/topics/titanic_gender_class_model">titanic_gender_class_model</a></td>
+              <td>Titanic gender class model data.</td>
+            </tr>
+          
+            
+            <tr>
+              <td><a href="/packages/titanic/versions/0.1.0/topics/titanic_gender_model">titanic_gender_model</a></td>
+              <td>Titanic gender model data.</td>
+            </tr>
+          
+          <tr class="no-results"><td colspan="3">No Results!</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    
+
+    
+<section class="package--downloads">
+  <div class="anchor" id="downloads"></div>
+  
+    <h2>Last month downloads</h2>
+    <div class="row">
+      <div class='col-md-12' id="chart" data-url="/api/packages/titanic/versions/0.1.0/downloads/per_day_last_month">
+        <svg></svg>
+      </div>
+    </div>
+  
+</section>
+<section class="package-description">
+  <div class="anchor" id="details"></div>
+  <h2>Details</h2>
+  <div class="row package--details-container">
+    <div class='col-md-5 package-details-info'>
+      <table>
+          
+            
+              <tr>
+                <td>URL</td>
+                <td><a href='https://github.com/paulhendricks/titanic' target='_blank'>https://github.com/paulhendricks/titanic</a></td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>BugReports</td>
+                <td><a href='https://github.com/paulhendricks/titanic/issues' target='_blank'>https://github.com/paulhendricks/titanic/issues</a></td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>License</td>
+                <td>CC0</td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>LazyData</td>
+                <td>true</td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>NeedsCompilation</td>
+                <td>no</td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>Packaged</td>
+                <td>2015-08-31 18:54:02 UTC; phendricks</td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>Repository</td>
+                <td>CRAN</td>
+              </tr>
+             
+          
+            
+              <tr>
+                <td>Date/Publication</td>
+                <td>2015-08-31 23:27:56</td>
+              </tr>
+             
+          
+      </table>
+    </div> <!-- /.package-details -->
+    <div class="col-md-7 package-details-dependencies">
+      <table>
+        
+        
+          <tr>
+            <td>depends</td>
+            <td>
+            
+              
+              <a itemprop="softwareRequirements" href="/packages/base">
+              base
+              
+                (&gt;= 3.1.2)
+              
+              </a>, 
+            
+              
+              <a itemprop="softwareRequirements" href="/packages/R">
+              R
+              
+                (&gt;= 3.1.2)
+              
+              </a>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td>suggests</td>
+            <td>
+            
+              
+              <a itemprop="softwareRequirements" href="/packages/dplyr">
+              dplyr
+              
+              </a>
+            
+            </td>
+          </tr>
+        
+        <tr>
+          <td>Contributors</td>
+          <td>
+            
+              <a href="/collaborators/name/Paul%20Hendricks">Paul Hendricks</a>
+            
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+    <section class="package--badge">
+      <h4>Include our badge in your README<h4>
+      <p><img src="/badges/version/titanic"></p>
+      <p>
+        <code class = "hljs">
+          [![Rdoc](http://www.rdocumentation.org/badges/version/titanic)](http://www.rdocumentation.org/packages/titanic)
+        </code>
+      </p>
+    </section>
+  </div>
+</section>
+
+  </div>
+
+  <div class="footer">
+  <a class="navbar--title apidoc btn btn-default js-external" target="_blank" href="/docs">
+      <i class="fa fa-cogs"></i>
+      API documentation
+  </a>
+  <div class="navbar--title footer-largescreen pull-right">
+  
+  	<a href=https://github.com/datacamp/rdocumentation class="js-external">
+  		<div class="github"></div>
+  		<div class="logo-title">R package</div>
+  	</a>
+  
+   </div>
+   <div class="navbar--title footer-largescreen pull-right">
+  	<a href = "https://github.com/datacamp/rdocumentation-app" class="js-external">
+  		<div class="github"></div>
+  		<div class="logo-title">Rdocumentation.org</div>
+  	</a>
+  </div>
+  <div class="footer--credits--title">
+	<p class="footer--credits">Created by <a href="https://www.datacamp.com" class="js-external">DataCamp.com</a></p>
+  </div>
+</div>
+
+
+
+    </div>
+    
+      
+<div class="dc-footer">
+  <span class="dc-footer--text">
+    Put your R skills to the test
+  </span>
+  <a class="dc-footer--link btn btn-primary ds-snowplow-btn-rdocs-signal" href="https://assessment.datacamp.com/r-programming?utm_source=rdocumentation.org&utm_medium=referral&utm_campaign=footer">Start Now</a>
+  <span class="dc-footer--cross"><i class="fa fa-times" aria-hidden="true"></i></span>
+</div>
+
+
+    
+
+    <!--TEMPLATES-->
+    
+    <!--TEMPLATES END-->
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.2/js/jquery.tablesorter.min.js"> </script>
+    <script src = "https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"> </script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.0/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script src = "https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [ ['$','$'], ['\\(','\\)']  ],
+          displayMath: [ ['$$','$$'] ],
+          processEscapes: true,
+          packages: ['base', 'ams', 'noerrors', 'noundefined']
+        },
+        options: {
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
+        },
+        loader: {
+          load: ['[tex]/noerrors']
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+    
+      <script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>
+    
+    <script type="text/javascript">
+      var $jq = jQuery.noConflict();
+    </script>
+    <!--SCRIPTS-->
+    <script src="/min/production.min.a1c36bb24ba63c84ff62414613ecdd8d.js"></script>
+    <!--SCRIPTS END-->
+
+    <!-- Snowplow starts plowing -->
+<script type="text/javascript">
+
+    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+    n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","//cdn.datacamp.com/sp/2.10.2.js","snowplow"));
+
+    var options = {
+      appId: 'rdocumentation',
+      platform: 'web',
+      post: true,
+      discoverRootDomain: true,
+      contexts: {
+        webPage: true,
+        performanceTiming: true
+      }
+    };
+
+    
+      options.forceSecureTracker = true;
+      options.postPath = '/spevent';
+    
+
+    window.snowplow('newTracker', 'co', "www.datacamp.com", options);
+    window.snowplow('enableActivityTracking', 10, 10); // Ping every 10 seconds after 10 seconds
+    window.snowplow('enableLinkClickTracking');
+
+    window.snowplow('trackPageView', null, [
+      {
+        schema: 'iglu:com.datacamp/user/jsonschema/1-0-0',
+        data: {
+          anonId: $jq.cookie('dc_aid'),
+        }
+      }
+    ]);
+
+    var config = {
+      forms: {
+        whitelist: ["snowplow_tracked"]
+      },
+      fields: {
+        blacklist: ['password', 'password_confirmation']
+      }
+    };
+
+    window.snowplow('enableFormTracking', config);
+</script>
+<!-- Snowplow stop plowing -->
+
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-41577880-1', 'rdocumentation.org');
+      ga('send', 'pageview');
+    </script>
+
+    <script async src="https://promo.datacamp.com/banner.js"></script>
+  </body>
+</html>
