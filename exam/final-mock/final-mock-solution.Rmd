@@ -1,0 +1,272 @@
+---
+title: "Data Mining - Mock Exam for final"
+output: 
+  learnr::tutorial: 
+    toc: TRUE
+    toc_float: FALSE
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(gradethis)
+library(titanic)
+library(caTools)
+library(caret)
+# a larger # observations causes pandoc error on shinyapps.
+titanic <- titanic_train %>% 
+  mutate(survived = factor(ifelse(Survived == 1, "S", "NS"))) %>% 
+  select(-Cabin, -Survived) %>% 
+  drop_na()
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Instruction
+
+- This is a mock exam. Use it to make sure everything is running on your machine.
+- This console is provided only for the testing purpose. You can write and test your code before submitting your answer, but what you enter into the console won't be recorded nor submitted.
+- **You must submit your answer to the below questions on Canvas.**
+- You can navigate through the "previous topic" and "next topic" buttons on the bottom, or the question list on the left.
+- Click the title if you don't see the question list.
+
+## Data
+This exam uses the data about the infamous shipwreck story - titanic. It contains information about passengers on the ship and whether or not they survived the wreck. The data is pre-loaded, so you don't need to load any packages. Below is the description of the data.
+
+```{r data_summary, exercise=TRUE, exercise.eval=TRUE}
+glimpse(titanic)
+```
+
+## Question 1
+
+What is the name of the passenger who bought the least expensive ticket?
+
+1. Leonard, Mr. Lionel
+2. ttalah, Mr. Sleiman
+3. Coleff, Mr. Satio
+4. Karlsson, Mr. Nils August
+
+```{r q1, exercise=TRUE}
+titanic %>% 
+  select(Name, Fare) %>% 
+  arrange(Fare)
+```
+
+```{r q1-hint}
+titanic %>% 
+  ...(..., ...) %>% 
+  ...(...)
+```
+
+## Question 2
+
+What is the name of the youngest passenger?
+
+1. Appleton, Mrs. Edward Dale (Charlotte Lamson)
+2. Hirvonen, Miss. Hildur E
+3. Thomas, Master. Assad Alexander
+4. Laroche, Miss. Simonne Marie Anne Andree
+
+```{r q2, exercise=TRUE}
+titanic %>% 
+  select(Name, Age) %>% 
+  arrange(Age)
+```
+
+```{r q2-hint}
+titanic %>% 
+  ...(..., Age) %>% 
+  ...(...)
+```
+
+## Question 3
+
+What is the average fare of the `Pclass` 1 tickets? Pick the closest one.
+
+1. 87
+2. 13
+3. 21	
+4. 11	
+
+```{r q3, exercise=TRUE}
+titanic %>% 
+  group_by(Pclass) %>% 
+  summarise(avgprice = mean(Fare))
+```
+
+```{r q3-hint}
+titanic %>% 
+  ...(Pclass) %>% 
+  ...(avgprice = ...(Fare))
+```
+
+## Question 4
+
+What is the average age of female passengers? Pick the closest one.
+
+1. 20
+2. 25
+3. 28
+4. 30
+
+```{r q4, exercise=TRUE}
+titanic %>% 
+  group_by(Sex) %>% 
+  summarise(avgage = mean(Age))
+```
+
+```{r q4-hint}
+titanic %>% 
+  ...(...) %>% 
+  ...(avgage = ...(Age))
+```
+
+## Question 5
+
+How many passengers from Pclass 2 were survived?
+
+1. 80
+2. 83
+3. 85
+4. 122
+
+```{r q5, exercise=TRUE}
+titanic %>% 
+  filter(survived=="S") %>% 
+  group_by(Pclass) %>% 
+  summarise(n())
+```
+
+```{r q5-hint}
+titanic %>% 
+  ...(survived=="S") %>% 
+  ...(...) %>% 
+  ...(n())
+```
+
+
+## Question 6
+
+Build a logistic regression model to predict the probability of survival using three variables - `Sex`, `Age`, and `Pclass.` 
+Given the estimated model, what is the probability of a passenger who is male and 30 years old with Pclass 2 surviving the shipwreck? Pick the closest one.
+
+1. 10%
+2. 20%
+3. 25%
+4. 30%
+
+```{r q6, exercise=TRUE}
+mod <- glm(survived~Sex+Age+Pclass, titanic, family = "binomial")
+predict(mod, data.frame(Sex = "male", Age = 30, Pclass = 2), type="response")
+```
+
+```{r q6-hint}
+mod <- ...(..., titanic, family = "...")
+...(mod, data.frame(Sex = "male", Age = 30, Pclass = 2), type="...")
+```
+
+
+## Question 7
+
+Build a logistic regression model to predict the probability of survival using three variables - `Sex`, `Age`, and `Pclass`. 
+Set the cutoff value at 50%; that is, passengers whose probability of survival is higher than 50% are considered survived.
+How many false positives does the model produce? (i.e., the number of passengers who did not survive but labeled as survived) (Hint: create a confusion matrix)
+
+1. 68
+2. 83
+3. 207
+4. 356
+
+```{r q7, exercise=TRUE}
+mod <- glm(survived~Sex+Age+Pclass, titanic, family = "binomial")
+p <- predict(mod, titanic, type="response")
+
+survival <- ifelse(p > 0.5, "S", "NS")
+p_class <- factor(survival)
+
+confusionMatrix(p_class, titanic$survived)
+```
+
+```{r q7-hint}
+mod <- ...(..., titanic, family = "...")
+p <- ...(mod, titanic, type="...")
+
+survival <- ...(p > 0.5, "S", "NS")
+p_class <- ...(survival)
+
+confusionMatrix(..., titanic$survived)
+```
+
+
+## Question 8
+
+Build a logistic regression model to predict the probability of survival using three variables - `Sex`, `Age`, and `Pclass`. 
+Set the cutoff value at 50%; that is, passengers whose probability of survival is higher than 50% are considered survived.
+What's the accuracy of the model? Pick the closest one.
+
+1. 70%
+2. 80%
+3. 90%
+4. 60%
+
+```{r q8, exercise=TRUE}
+mod <- glm(survived~Sex+Age+Pclass, titanic, family = "binomial")
+p <- predict(mod, titanic, type="response")
+
+survival <- ifelse(p > 0.5, "S", "NS")
+p_class <- factor(survival)
+
+confusionMatrix(p_class, titanic$survived)
+```
+
+```{r q8-hint}
+mod <- ...(..., titanic, family = "...")
+p <- ...(mod, titanic, type="...")
+
+survival <- ...(p > 0.5, "S", "NS")
+p_class <- ...(survival)
+
+confusionMatrix(..., titanic$survived)
+```
+
+
+## Question 9
+
+Build a random forest model to predict the probability of survival using three variables - `Sex`, `Age`, and `Pclass.` Do the 3-fold cross validation. 
+What's the highest accuracy? Pick the closest one.
+
+1. 71%
+2. 75%
+3. 77%
+4. 80%
+
+```{r q9, exercise=TRUE}
+set.seed(123) # Do not change this line
+
+mod_forest <- train(
+  survived ~ Sex + Age + Pclass,
+  titanic,
+  method = "ranger",
+  trControl = trainControl(
+    method = "cv",
+    number = 3
+  )
+)
+mod_forest
+```
+
+```{r q9-hint}
+set.seed(123) # Do not change this line
+
+mod_tree <- train(
+  ...,
+  titanic,
+  method = "...",
+  trControl = ...(
+    method = "...",
+    number = ...
+  )
+)
+mod_tree
+```

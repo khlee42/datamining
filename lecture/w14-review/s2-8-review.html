@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Review &amp; Remark   👋</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kyunghee Lee" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Review &amp; Remark <br> 👋
+### Kyunghee Lee
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;!-- &lt;div class="my-footer"&gt; --&gt;
+&lt;!-- &lt;span&gt; --&gt;
+&lt;!-- &lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt; --&gt;
+&lt;!-- &lt;/span&gt; --&gt;
+&lt;!-- &lt;/div&gt;  --&gt;
+
+---
+
+
+
+# Review
+
+- R essentials
+- Data wrangling
+- Data visualization
+- Data modeling
+- Before you go
+
+---
+
+class: middle, center
+
+# R essentials (Week 1, 2)
+
+---
+
+## Let's take a tour - RStudio
+
+&lt;img src="img/rstudio-anatomy.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Three essentials: Variable, function, package
+
+A short list (for now):
+
+- Variables or columns in data frames are accessed with `$`:
+
+.small[
+
+```r
+dataframe$var_name
+```
+]
+
+- Functions are (most often) verbs, followed by what they will be applied to in parantheses:
+
+.small[
+
+```r
+do_this(to_this)
+do_that(to_this, to_that, with_those)
+```
+]
+
+- Packages are installed with the `install.packages` function and loaded with the `library` function, once per session:
+
+.small[
+
+```r
+install.packages("package_name")
+library(package_name)
+```
+]
+---
+
+## Let's take a tour - R Markdown
+
+.center[
+![](./img/rmarkdown-anatomy.png)
+]
+
+---
+
+class: middle, center
+
+# Data wrangling (Week 4, 6, 7)
+
+---
+
+## A grammar of data wrangling...
+
+... based on the concepts of functions as verbs that **manipulate** data frames
+
+.pull-left[
+&lt;img src="img/dplyr-part-of-tidyverse.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+.midi[
+- `select`: pick columns by name
+- `arrange`: reorder rows
+- `slice`: pick rows using index(es)
+- `filter`: pick rows matching criteria
+- `distinct`: filter for unique rows
+- `mutate`: add new variables
+- `summarise`: reduce variables to values
+- `group_by`: for grouped operations
+- ... (many more)
+]
+]
+
+---
+
+## What is a pipe %&gt;%?
+
+In programming, a pipe is a technique for passing information from one process to another.
+
+.pull-left[
+- Start with the data frame `hotels`, and pass it to the `select()` function,
+- then we select the variables `hotel` and `lead_time`,
+- and then we arrange the data frame by `lead_time` in descending order.
+]
+.pull-right[
+.small[
+
+```r
+hotels %&gt;%
+  select(hotel, lead_time) %&gt;% 
+* arrange(desc(lead_time))
+```
+
+```
+## # A tibble: 119,390 x 2
+##    hotel        lead_time
+##    &lt;chr&gt;            &lt;dbl&gt;
+##  1 Resort Hotel       737
+##  2 Resort Hotel       709
+##  3 City Hotel         629
+##  4 City Hotel         629
+##  5 City Hotel         629
+##  6 City Hotel         629
+##  7 City Hotel         629
+##  8 City Hotel         629
+##  9 City Hotel         629
+## 10 City Hotel         629
+## # … with 119,380 more rows
+```
+]
+]
+
+---
+## Joining data frames
+
+```
+something_join(x, y)
+```
+
+- `inner_join()`: all rows from x where there are matching values in y, return 
+all combination of multiple matches in the case of multiple matches
+- `left_join()`: all rows from x
+- `right_join()`: all rows from y
+- `full_join()`: all rows from both x and y
+- `semi_join()`: all rows from x where there are matching values in y, keeping just columns from x.
+- `anti_join()`: return all rows from x where there are not matching values in y, never duplicate rows of x
+- ...
+
+---
+
+## `inner_join()`
+
+.pull-left[
+
+```r
+inner_join(x, y)
+```
+
+```
+## Joining, by = "value"
+```
+
+```
+## # A tibble: 2 x 1
+##   value
+##   &lt;dbl&gt;
+## 1     1
+## 2     2
+```
+]
+.pull-right[
+![](img/inner-join.gif)&lt;!-- --&gt;
+]
+
+---
+
+## `pivot_longer()`
+
+&lt;img src="img/tidy-pivot-long.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## `pivot_wider()` for the opposite
+
+&lt;img src="img/tidy-pivot-wide.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## readr
+
+- `read_csv()` - comma delimited files
+- `read_csv2()` - semicolon separated files (common in countries where , is used as the decimal place)
+- `read_tsv()` - tab delimited files
+- `read_delim()` - reads in files with any delimiter
+- `read_fwf()` - fixed width files
+- `read_table()` - common variation of fixed width files where columns are separated by white space
+- ...
+
+
+---
+
+class: middle, center
+
+# Data visualization (Week 3, 5)
+
+---
+
+## Hello ggplot2!
+
+- `ggplot()` is the main function in ggplot2 
+- Plots are constructed in layers
+- Structure of the code for plots can be summarized as
+
+```r
+ggplot(data = [dataset], 
+       mapping = aes(x = [x-variable], y = [y-variable])) +
+   geom_xxx() +
+   other options
+```
+- To use ggplot2 functions, first load tidyverse
+
+```r
+library(tidyverse)
+```
+- For help with the ggplot2, see [ggplot2.tidyverse.org](http://ggplot2.tidyverse.org/)
+
+---
+
+![](img/type_of_graph.png)
+.small[
+.footnote[[The R Graph Gallery](https://www.r-graph-gallery.com/index.html)]
+]
+
+---
+
+class: middle, center
+
+# Data modeling (Week 8, 10, 11, 12, 13)
+
+---
+
+## What's model?
+
+.pull-left[
+&lt;img src="img/cow_real.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="img/cow_model.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+
+## We want to explain `y` with `x`
+
+.large[
+$$ y = f(x) + e $$
+]
+
+- `y`: what we want to model
+- `x`: what we want to build a model with
+- `f(x)`: how x explains y (model)
+- `e`: what model can't explain (random error or noise); gap between model and reality
+
+---
+
+## Relationship between price and carat
+.small[
+
+```r
+model &lt;- lm(price~carat, data = diamonds)
+summary(model)
+```
+
+```
+## 
+## Call:
+## lm(formula = price ~ carat, data = diamonds)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -18585.3   -804.8    -18.9    537.4  12731.7 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -2256.36      13.06  -172.8   &lt;2e-16
+## carat        7756.43      14.07   551.4   &lt;2e-16
+## 
+## Residual standard error: 1549 on 53938 degrees of freedom
+## Multiple R-squared:  0.8493,	Adjusted R-squared:  0.8493 
+## F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16
+```
+]
+
+---
+
+## Spam model
+
+
+```r
+spam_model &lt;- glm(spam ~ num_char, data = train, family = "binomial")
+tidy(spam_model)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  -1.75     0.0801     -21.9  2.97e-106
+## 2 num_char     -0.0702   0.00951     -7.38 1.55e- 13
+```
+  
+Model:
+`$$\log\left(\frac{p}{1-p}\right) = -1.75-0.0702\times \text{num_char}$$`
+
+---
+
+## Confusion matrix
+
+.small[
+|                         | Email is spam                 | Email is not spam             |
+|-------------------------|-------------------------------|-------------------------------|
+| Email labelled spam     | True Positive                 | False Positive (Type 1 error) |
+| Email labelled not spam | False Negative (Type 2 error) | True Negative                 |
+]
+
+.small[
+- Accuracy = (TP + TN) / (TP + FP + FN + TN)
+- Sensitivity = P(Labelled spam | Email spam) = TP / (TP + FN)
+  - Sensitivity = 1 − False negative rate
+- Specificity = P(Labelled not spam | Email not spam) = TN / (FP + TN) 
+  - Specificity = 1 − False positive rate
+]
+
+---
+
+## ROC curves for the best and worst
+
+&lt;img src="img/roc-curve-v2.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- Area under the curve (AUC) (from 0 to 1)
+  - 0.5 : random guessing
+  - 1 : model always right
+
+---
+
+.pull-left[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.small[
+.pull-right[
+- Start from the root: "is it raining?"
+- Grow the tree
+  - branch: Yes or no
+  - leave: is it windy? is it extremely windy?
+- The goal is for all leaves to perfectly separate or classify samples
+  - classes: "stay home", "wear a rain jacket", "use an umbrella", "don't bring an umbrella"
+]
+]
+.small[
+.footnote[https://medium.com/@ml.at.berkeley/machine-learning-crash-course-part-5-decision-trees-and-ensemble-models-dcc5a36af8cd]
+]
+
+---
+
+.pull-left[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+&lt;img src="img/tree2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+---
+
+## In-sample error vs. out-of-sample error
+
+.small[
+- We have used the same dataset for training and testing the model, which is cheating
+- Prone to over-fitting (Principal #3)
+  - Overfitted models won't work well on **new data**
+
+&lt;img src="img/under_good_overfit.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+- In-sample error: estimated errors from the data used for training
+- Out-of-sample error: estimated errors from the data never used for training
+]
+
+---
+
+## k-fold Cross validation (CV)
+
+&lt;img src="img/cv2.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: middle, center
+
+# Before you go
+
+---
+
+## Types of Machine Learning Methods
+
+- **Supervised learning for labeled data**
+  - **Regression** (**Linear**, **Logistic**, glmnet)
+  - **Classification** (**Trees**, Support vector, Neural net)
+- Unsupervised learning for unlabeled data*
+  - Clustering (k-mean)
+  - Dimension reduction (Embedding, SVD, PCA)
+
+---
+
+## Math behind it
+
+- To look under the hood
+  - Linear algebra
+  - Optimization
+  - Statistic
+- ML = framework to model and solve problems that have no closed-form solutions.
+$$ y = x^2 $$
+$$ erf(a) = \frac{2}{\sqrt{\pi}} \int_0^{a} e^{-x^2} ~ dx $$
+- So instead, we use optimization techniques to find close-enough solutions
+---
+
+## Deep Learning
+
+.pull-left[
+- Multilayer Neural Network
+  - scalibility
+  - hierarchical learning (learning and abstraction)
+  - applicability (image, voice)
+
+&lt;img src="img/deep-learning.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+- Prominent applications
+  - Deep reinforcement learining (Alpha Go)
+  - Convolutional neural net (Image classification)
+  - Long Short-Term Memory Recurrent Neural Networks or LSTM (Stock market prediction)
+]
+
+---
+
+## [Tensorflow Playground](https://playground.tensorflow.org)
+
+&lt;img src="img/tf-playground.gif" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: center, middle
+
+# Thank you! 🎉 🎆
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

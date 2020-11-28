@@ -1,0 +1,42 @@
+---
+title: "Lecture 14 - Review & Remark"
+author: "Kyunghee Lee"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fontawesome)
+library(kableExtra)
+```
+
+<br>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/25MAsi1gGT0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Slide `r fa("file", fill = "steelblue")`](s2-8-review.html){target="_blank"}
+
+To download a pdf copy, 
+
+- click the slide link to open it on web browser, 
+- right-click and`print...`, and 
+- choose `save as pdf` option and click `save`.
+
+# `r fa("book", fill = "steelblue")` Readings
+
+``` {r echo=FALSE}
+df <- tribble(
+  ~text, ~chapter,
+  "Article", "[The unreasonable effectiveness of deep learning in artificial intelligence](https://www.pnas.org/content/early/2020/01/23/1907373117){target=\"_blank\"}",
+  "Article", "[An implant uses machine learning to give amputees control over prosthetic hands](https://www.technologyreview.com/2020/03/04/905530/implant-machine-learning-amputees-control-prosthetic-hands-ai/){target=\"_blank\"}",
+  "Video", "[Youtube - The age of AI](https://youtu.be/UwsrzCVZAb8){target=\"_blank\"}"
+)
+
+knitr::kable(df, escape = F, col.names=NULL) %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+

@@ -34,7 +34,7 @@ topic = c(
   'Logistic regression',
   'Decision tree',
   'Ensemble trees',
-  'TBA',
+  'Review & Mock exam',
   'Final exam'
 )
 
@@ -61,7 +61,7 @@ lecture_links <- c(
   "./lecture/w11-logistic-reg/w11-logistic-reg.html",
   "./lecture/w12-decision-tree/w12-decision-tree.html",
   "./lecture/w13-ensemble-trees/w13-ensemble-trees.html",
-  "",
+  "./lecture/w14-review/w14-review.html",
   NA
 )
 
@@ -79,7 +79,7 @@ lab_links <- c(
   "./lab/lab-09/lab-09-logistic-reg.html",
   "./lab/lab-10/lab-10-decision-tree.html",
   "./lab/lab-11/lab-11-ensemble-trees.html",
-  "",
+  NA,
   NA
 )
 
@@ -133,8 +133,8 @@ exam_links <- c(
   NA,
   NA,
   NA,
-  NA,
-  "./exam/final_instruction.html"
+  "https://canvas.wayne.edu/courses/134413/quizzes/344527",
+  "https://canvas.wayne.edu/courses/134413/quizzes/318578"
 )
 
 due_dc <- list(
