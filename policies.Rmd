@@ -1,10 +1,10 @@
 ---
 title: "Policies"
-output: 
+output:
   html_document:
     theme: cosmo
-    toc: TRUE
-    toc_float: TRUE
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -12,6 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(fontawesome)
 library(kableExtra)
+knitr::read_chunk('global.R')
+```
+
+```{r global, echo=FALSE}
 ```
 
 ## Evaluation
@@ -114,3 +118,15 @@ For more information of academic integrity, see the following book:
 ## Student Disabilities Services
 If you have a documented disability that requires accommodations, you will need to register with Student Disability Services for coordination of your academic accommodations. The Student Disability Services (SDS) office is located at 1600 David Adamany Undergraduate Library in the Student Academic Success Services department. The SDS telephone number is 313-577-1851 or 313-202-4216 for videophone use. Once you have your accommodations in place, I will be glad to meet with you privately during my office hours to discuss your special needs. Student Disability Services’ mission is to assist the university in creating an accessible community where students with disabilities have an equal opportunity to fully participate in their educational experience at Wayne State University. You can learn more about the disability office at www.studentdisability.wayne.edu
 To register with Student Disability Services, complete the online registration form at:  https://wayne-accommodate.symplicity.com/public_accommodation/
+
+## Schedule
+
+```{r echo=FALSE}
+df <- tibble(
+  Date=date,
+  Topic=topic
+)
+knitr::kable(df, escape = F) %>%
+  kable_styling(bootstrap_options = "striped", font_size = 18)
+```
+
