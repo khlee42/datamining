@@ -55,6 +55,9 @@ For this assignment, we have two packages to load: `tidyverse` and `nycflights13
 library(tidyverse)
 library(nycflights13)
 
+set.seed(123)
+flights <- flights %>% sample_n(1000)
+
 names(flights)
 head(flights)
 ```
