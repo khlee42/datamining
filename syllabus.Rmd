@@ -1,5 +1,5 @@
 ---
-title: "ISM 5570 Data Mining and Analytics - Fall 2020"
+title: "ISM 5570 Data Mining and Analytics - Winter 2021"
 output: 
   html_document:
     theme: cosmo
@@ -11,12 +11,13 @@ library(tidyverse)
 library(fontawesome)
 library(kableExtra)
 knitr::read_chunk('global.R')
+week <- 0
 ```
 
 ```{r global, echo=FALSE}
 ```
 
-This is an introductory data science course, presuming no prior experience of coding and data analytics. Students will learn essential skills for data-driven decision making, including data wrangling, modeling, visualization, and effective communication with data. Focusing on the R language, the course makes an extensive use of hands-on exercises. The access to a laptop/desktop is required for this course.
+This is an introductory data science course, presuming no prior experience of coding and data analytics. Students will learn essential skills for data-driven decision making, including data wrangling, visualization, modeling, basic machine learning algorithms, and effective communication with data. Focusing on the R language, the course makes an extensive use of hands-on exercises. **The access to a laptop/desktop is required in this course.**
 
 ```{r ddd, echo=FALSE}
 icon <- paste0("<a href=\"", "kyunghee.lee@wayne.edu", "\">", as.character(fa(name = "envelope", fill = "steelblue")), "</a>")
@@ -33,11 +34,11 @@ knitr::kable(df, escape = F, col.names=NULL) %>%
 * [Irizarry, Rafael, Introduction to Data Science, 1st Edition, Chapman and Hall/CRC](https://rafalab.github.io/dsbook/){target="_blank"}
 
 #### Tech
-* [DataCamp Tutorial](./lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial){target="_blank"}
+* [DataCamp Tutorial](./dc_tutorial.html){target="_blank"}
 * [R/Rstudio](./lab/lab-01/lab-01-hello-r.html){target="_blank"}
 * [Lockdown Browser & Respondus Monitor](./lockdown_browser.html){target="_blank"}
 
-#### Review [Course Policies](policies.html)
+#### Review [Course Policies](policies.html){target="_blank"}
 
 Each module starts at 6:00 pm on the date shown in the schedule. All the evaluations (exercise, homework, exam) must be submitted by 5:59 pm on their due dates before the next week module starts. The syllabus and policies are preliminary and always subject to change.
 
@@ -61,9 +62,8 @@ addicon <- function(i, img){
   }
 }
 
-week <- 15
 publish <- function(list){
-  for(i in 1:15){
+  for(i in n){
     if(i > week){
       list[i] <- NA
     }

@@ -1,0 +1,28 @@
+---
+title: "Datacamp Exercise 9"
+subtitle: "Classification models: fitting them and evaluating their performance"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_dc$release[9]`**  
+**Due: `r due_dc$due[9]`**
+
+In this chapter, you'll fit classification models with train() and evaluate their out-of-sample performance using cross-validation and area under the curve (AUC).
+
+* Go here to start: [https://learn.datacamp.com/courses/machine-learning-with-caret-in-r](https://learn.datacamp.com/courses/machine-learning-with-caret-in-r){target="_blank"}
+* Complete **Chapter 2 Classification models: fitting them and evaluating their performance**
+* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

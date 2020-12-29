@@ -5,9 +5,9 @@ account: kyunghee-lee
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3314031
-bundleId: 3914814
+bundleId: 3973330
 url: https://kyunghee-lee.shinyapps.io/final-mock/
-when: 1606536279.41751
+when: 1607648865.04126
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: final-mock-instruction.html|final-mock-instruction.Rmd|final-mock-solution.html|final-mock-solution.Rmd

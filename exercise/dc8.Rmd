@@ -23,5 +23,6 @@ knitr::read_chunk('../global.R')
 Linear regression and logistic regression are the two most widely used statistical models and act like master keys, unlocking the secrets hidden in datasets. In this course, you’ll gain the skills you need to fit simple linear and logistic regressions. Through hands-on exercises, you’ll explore the relationships between variables in real-world datasets, including motor insurance claims, Taiwan house prices, fish prices, and more. By the end of this course, you’ll know how to make predictions from your data, quantify model performance, and diagnose problems with model fit.
 
 * Go here to start: [https://learn.datacamp.com/courses/introduction-to-regression-in-r](https://learn.datacamp.com/courses/introduction-to-regression-in-r){target="_blank"}
+* Complete **the entire course**
 * If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

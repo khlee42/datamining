@@ -20,9 +20,9 @@ knitr::read_chunk('../global.R')
 **Release: `r due_dc$release[1]`**  
 **Due: `r due_dc$due[1]`**
 
-
 In Introduction to R, you will master the basics of this widely used open source language, including factors, lists, and data frames. With the knowledge gained in this course, you will be ready to undertake your first very own data analysis.
 
 * Go here to start: [https://learn.datacamp.com/courses/free-introduction-to-r](https://learn.datacamp.com/courses/free-introduction-to-r){target="_blank"}
+* Complete **the entire course**
 * If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

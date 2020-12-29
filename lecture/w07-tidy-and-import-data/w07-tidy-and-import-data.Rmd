@@ -17,11 +17,12 @@ library(kableExtra)
 <br>
 
 <iframe width="800" height="450" src="https://www.youtube.com/embed/iC9bSW1xczM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-[Slide `r fa("file", fill = "steelblue")`](s1-7-tidy-data.html){target="_blank"}
+
+# [`r fa("folder-open", fill = "steelblue")` Slide](s1-7-tidy-data.html){target="_blank"}
 
 <iframe width="800" height="450" src="https://www.youtube.com/embed/khSQhKUBMAE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-[Slide `r fa("file", fill = "steelblue")`](s1-8-import-data.html){target="_blank"}
+# [`r fa("folder-open", fill = "steelblue")` Slide](s1-8-import-data.html){target="_blank"}
 
 To download a pdf copy, 
 

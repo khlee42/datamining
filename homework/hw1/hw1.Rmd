@@ -13,8 +13,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**Release: 10/07/2020**  
-**Due: 10/21/2020**
+**Release: 2/17/2021**  
+**Due: 3/03/2021**
 
 In this homework, you will write R codes to answer the below questions regarding the flights that departed New York City in 2013. Each question involves some form of data wrangling and data visualization, which we've covered until this week. Before you start, please read the below instructions carefully as failure to follow the instructions may result in deductions in your score.
 

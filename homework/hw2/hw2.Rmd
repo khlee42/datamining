@@ -13,8 +13,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**Release: 11/18/2020**  
-**Due: 12/02/2020**
+**Release: 4/07/2021**  
+**Due: 04/21/2021**
 
 In this homework, you will write R codes to build models to predict customer churn rates. Before you start, please read the below instructions carefully as failure to follow the instructions may result in deductions in your score.
 

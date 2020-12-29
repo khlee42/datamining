@@ -1,0 +1,28 @@
+---
+title: "Datacamp Exercise 10"
+subtitle: "Tuning model parameters to improve performance"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+knitr::read_chunk('../global.R')
+```
+
+```{r global, echo=FALSE}
+```
+
+**Release: `r due_dc$release[10]`**  
+**Due: `r due_dc$due[10]`**
+
+In this chapter, you will use the train() function to tweak model parameters through cross-validation and grid search.
+
+* Go here to start: [https://learn.datacamp.com/courses/machine-learning-with-caret-in-r](https://learn.datacamp.com/courses/machine-learning-with-caret-in-r){target="_blank"}
+* Complete **Chapter 3 Tuning model parameters to improve performance**
+* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

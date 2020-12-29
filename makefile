@@ -1,4 +1,4 @@
-RMDS := $(wildcard *.Rmd) $(wildcard ./assignment/*.Rmd) $(wildcard ./exam/*.Rmd)
+RMDS := $(wildcard *.Rmd) $(wildcard ./exercise/*.Rmd) $(wildcard ./exam/final/*.Rmd) $(wildcard ./exam/midterm/*.Rmd)
 HTMLS:= $(RMDS:.Rmd=.html)
 
 all: $(HTMLS)

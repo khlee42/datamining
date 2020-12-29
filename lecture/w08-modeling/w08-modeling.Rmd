@@ -17,7 +17,8 @@ library(kableExtra)
 <br>
 
 <iframe width="800" height="450" src="https://www.youtube.com/embed/3ChQz4mosII" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-[Slide `r fa("file", fill = "steelblue")`](s2-1-modeling.html){target="_blank"}
+
+# [`r fa("folder-open", fill = "steelblue")` Slide](s2-1-modeling.html){target="_blank"}
 
 To download a pdf copy, 
 

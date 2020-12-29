@@ -1,26 +1,31 @@
 ## @knitr global
-start <- as.Date("2020-09-02")
+start <- as.Date("2021-01-13")
+offday <- "03/17"
 
 # Module start date generator
-week_after <- function(adv){
-  wdate <- start + 7*(adv-1)
-  wdate <- format(wdate, format="%m/%d")
+week_after <- function(adv) {
+  wdate <- start + 7 * (adv - 1)
+  wdate <- format(wdate, format = "%m/%d")
   wdate
 }
 
 # due date generator
-due_in <- function(adv, due){
-  tmp2 <- start + 7*(adv-1+due)
-  tmp2 <- format(tmp2, format="%m/%d")
+due_in <- function(adv, due) {
+  tmp2 <- start + 7 * (adv - 1 + due)
+  tmp2 <- format(tmp2, format = "%m/%d")
   tmp2
 }
 
 # Module detail
-n = 1:15
-date = week_after(n)
-date[9]=paste0(date[9],'*')
-date[15]=paste0(date[15],'*')
-topic = c(
+n <- 1:16
+date <- week_after(n)
+offday_idx <- match(offday, date) - 1
+midterm <- ifelse(offday_idx + 1 > 9, 9, 10)
+final <- 16
+date[midterm] <- paste0(date[midterm], "*")
+date[final] <- paste0(date[final], "*")
+
+topic <- c(
   'Introduction to Data Analytics',
   'R essentials',
   'Data visualization 1',
@@ -37,14 +42,6 @@ topic = c(
   'Review & Mock exam',
   'Final exam'
 )
-
-## extra topic
-# Predictive vs. confirmatory analysis
-# Causation vs. correlation
-# Hypothesis testing
-# Overfitting and cross-validation
-# Coding style
-# More on R data type: factor/String/Date
 
 # URL must include https or http
 lecture_links <- c(
@@ -94,8 +91,8 @@ dc_links <- c(
   "./exercise/dc7.html",
   NA,
   "./exercise/dc8.html",
-  NA,
-  NA,
+  "./exercise/dc9.html",
+  "./exercise/dc10.html",
   NA,
   NA,
   NA
@@ -127,30 +124,41 @@ exam_links <- c(
   NA,
   NA,
   NA,
-  "https://canvas.wayne.edu/courses/134413/quizzes/340763",
-  "https://canvas.wayne.edu/courses/134413/quizzes/318577",
+  "https://canvas.wayne.edu/courses/145170/quizzes/349483",
+  "https://canvas.wayne.edu/courses/145170/quizzes/349484",
   NA,
   NA,
   NA,
   NA,
-  "https://canvas.wayne.edu/courses/134413/quizzes/344527",
-  "https://canvas.wayne.edu/courses/134413/quizzes/318578"
+  "https://canvas.wayne.edu/courses/145170/quizzes/349485",
+  "https://canvas.wayne.edu/courses/145170/quizzes/349482"
 )
 
+# offday
+topic <- append(topic, "No Class", offday_idx)
+lecture_links <- append(lecture_links, NA, offday_idx)
+lab_links <- append(lab_links, NA, offday_idx)
+dc_links <- append(dc_links, NA, offday_idx)
+hw_links <- append(hw_links, NA, offday_idx)
+exam_links <- append(exam_links, NA, offday_idx)
+
+# due date
 due_dc <- list(
-  release=sapply(which(is.na(dc_links) %in% c(FALSE)), week_after),
-  due=sapply(which(is.na(dc_links) %in% c(FALSE)), due_in, due=1)
+  release = sapply(which(is.na(dc_links) %in% c(FALSE)), week_after),
+  due = sapply(which(is.na(dc_links) %in% c(FALSE)), due_in, due = 1)
 )
 due_hw <- list(
-  release=sapply(which(is.na(hw_links) %in% c(FALSE)), week_after),
-  due=sapply(which(is.na(hw_links) %in% c(FALSE)), due_in, due=2)
+  release = sapply(which(is.na(hw_links) %in% c(FALSE)), week_after),
+  due = sapply(which(is.na(hw_links) %in% c(FALSE)), due_in, due = 2)
 )
 
-exam_on_sat=1+(7*(which(is.na(exam_links) %in% c(FALSE))-1)+3)/7
+exam_on_sat <- 1 + (7 * (which(is.na(exam_links) %in% c(FALSE)) - 1) + 3) / 7
 due_ex <- list(
-  release=sapply(exam_on_sat, week_after),
-  due=sapply(exam_on_sat, due_in, due=1/7)
+  release = sapply(exam_on_sat, week_after),
+  due = sapply(exam_on_sat, due_in, due = 1 / 7)
 )
+
+
 
 
 

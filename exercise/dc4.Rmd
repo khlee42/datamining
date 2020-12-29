@@ -23,5 +23,6 @@ knitr::read_chunk('../global.R')
 In this chapter, you'll learn to do three things with a table: filter for particular observations, arrange the observations in a desired order, and mutate to add or change a column. You'll see how each of these steps allows you to answer questions about your data.
 
 * Go here to start: [https://campus.datacamp.com/courses/introduction-to-the-tidyverse/data-wrangling-1](https://campus.datacamp.com/courses/introduction-to-the-tidyverse/data-wrangling-1){target="_blank"}
+* Complete **Chapter 1 Data Wrangling**
 * If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

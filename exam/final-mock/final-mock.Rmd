@@ -14,6 +14,9 @@ library(gradethis)
 library(titanic)
 library(caTools)
 library(caret)
+library(ranger)
+library(e1071)
+library(gbm)
 # a larger # observations causes pandoc error on shinyapps.
 titanic <- titanic_train %>% 
   mutate(survived = factor(ifelse(Survived == 1, "S", "NS"))) %>% 

@@ -7,11 +7,14 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("../../global.R")
+```
+```{r global, echo=FALSE}
 ```
 
 # Before you start:
 
-- Date: next weekend (9:00 AM 12/12 ~ 11:59 PM 12/13)
+- Date: next weekend (9:00 AM `r due_ex$release[4]` ~ 11:59 PM `r due_ex$due[4]`)
 - Time: you can take any two-hour window during that period
 - Topics to cover: all modules from the beginning
 - Total 25 questions, one point per each
