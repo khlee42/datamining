@@ -12,7 +12,7 @@ library(fontawesome)
 
 # `r fa("dumbbell", fill = "steelblue")` DataCamp Tutorial
 
-Click [https://datacamp.com/groups/shared_links/b0d9298dc2e2b1a875975f0151835ef6022aeaea22fe9e96c5ee5eee55f89045](https://datacamp.com/groups/shared_links/b0d9298dc2e2b1a875975f0151835ef6022aeaea22fe9e96c5ee5eee55f89045){target="_blank"} to create your DataCamp account. You must use **the provided link** as well as **your wayne.edu email** to join.
+Click [https://www.datacamp.com/groups/shared_links/1ebdf45dbe8fdb11654d082c229389a16e3579f6d3c256ee6dd07010cb8cac39](https://www.datacamp.com/groups/shared_links/1ebdf45dbe8fdb11654d082c229389a16e3579f6d3c256ee6dd07010cb8cac39){target="_blank"} to create your DataCamp account. You must use **the provided link** as well as **your wayne.edu email** to join.
 
 When you log in, you will see `My Progress` on the left. That's your dashboard where you can track all the assignments and their due dates.  
 
