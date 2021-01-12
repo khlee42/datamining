@@ -24,7 +24,7 @@ First of all, we need to install both R and Rstudio. You can think of Rstudio as
 ### For Mac
 **To Install R**  
 
-- Click [here](https://repo.miserver.it.umich.edu/cran/bin/macosx/R-4.0.2.pkg) to download `R-4.0.2.pkg`.
+- Click [here](https://cran.r-project.org/bin/macosx/R-4.0.3.pkg) to download `R-4.0.3.pkg`.
 - Save the `.pkg` file on your computer, double-click it to open, and follow the installation instructions.
 
 **To Install RStudio**
@@ -35,7 +35,7 @@ First of all, we need to install both R and Rstudio. You can think of Rstudio as
 ### For Windows
 **To Install R**
 
-- Click [here](https://repo.miserver.it.umich.edu/cran/bin/windows/base/R-4.0.2-win.exe) to download `R-4.0.2-win.exe`.
+- Click [here](https://cran.r-project.org/bin/windows/base/R-4.0.3-win.exe) to download `R-4.0.3-win.exe`.
 - Save the `.exe` file on your computer, double-click it to open, and follow the installation instructions.
 
 **To Install RStudio**
