@@ -24,5 +24,5 @@ Linear regression and logistic regression are the two most widely used statistic
 
 * Go here to start: [https://learn.datacamp.com/courses/introduction-to-regression-in-r](https://learn.datacamp.com/courses/introduction-to-regression-in-r){target="_blank"}
 * Complete **the entire course**
-* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* If you haven't signed up, click [here](../dc_tutorial.html) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

@@ -27,5 +27,5 @@ Importing data into R should be the easiest step in your analysis. Unfortunately
 [https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-excel-data?ex=1](https://campus.datacamp.com/courses/introduction-to-importing-data-in-r/importing-excel-data?ex=1){target="_blank"}  
 
 * Complete **Chapter 1 Importing data from flat files with utils and Chapter 3 Importing excel data**
-* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* If you haven't signed up, click [here](.../dc_tutorial.html) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

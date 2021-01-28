@@ -26,24 +26,6 @@ To download a pdf copy,
 - right-click and`print...`, and 
 - choose `save as pdf` option and click `save`.
 
-
-# `r fa("dumbbell", fill = "steelblue")` DataCamp Tutorial
-
-Click [https://datacamp.com/groups/shared_links/b0d9298dc2e2b1a875975f0151835ef6022aeaea22fe9e96c5ee5eee55f89045](https://datacamp.com/groups/shared_links/b0d9298dc2e2b1a875975f0151835ef6022aeaea22fe9e96c5ee5eee55f89045){target="_blank"} to create your DataCamp account. You must use **the provided link** as well as **your wayne.edu email** to join.
-
-
-When you log in, you will see `My Progress` on the left. That's your dashboard where you can track all the assignments and their due dates.  
-
-```{r echo=FALSE, out.width="70%"}
-knitr::include_graphics("img/dc_my_progress.png")
-```
-
-The first assignment is `Introduction to R`. To start, you can either  
-
-- log into DataCamp, go to your `My_Progress`, and click the assignment you want to start, or
-- on the course syllabus, click `Ex.` icon for this week's module. You will find a direct link to the assignment page on DataCamp. Log in with your DataCamp account and enjoy!
-
-
 # `r fa("book", fill = "steelblue")` Readings
 
 ``` {r echo=FALSE}

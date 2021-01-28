@@ -24,5 +24,5 @@ Often a better way to understand and present data as a graph. In this chapter, y
 
 * Go here to start: [https://campus.datacamp.com/courses/introduction-to-the-tidyverse/data-visualization](https://campus.datacamp.com/courses/introduction-to-the-tidyverse/data-visualization){target="_blank"}
 * Complete **Chapter 2 Data Visualization**
-* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* If you haven't signed up, click [here](../dc_tutorial.html) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!

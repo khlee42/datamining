@@ -22,5 +22,5 @@ knitr::read_chunk('../global.R')
 
 * Go here to start: [https://campus.datacamp.com/courses/introduction-to-the-tidyverse/grouping-and-summarizing](https://campus.datacamp.com/courses/introduction-to-the-tidyverse/grouping-and-summarizing){target="_blank"}
 * Complete **Chapter 3 Grouping and Summarizing**
-* If you haven't signed up, click [here](../lecture/w01-welcome/w01-welcome.html#_DataCamp_Tutorial) to create an account (you must use `wayne.edu` email to join)
+* If you haven't signed up, click [here](../dc_tutorial.html) to create an account (you must use `wayne.edu` email to join)
 * **The due date** is specified in this page as well as your DataCamp dashboard. Be sure to make it in time!
