@@ -11,7 +11,7 @@ library(tidyverse)
 library(fontawesome)
 library(kableExtra)
 knitr::read_chunk('global.R')
-week <- 3
+week <- 4
 ```
 
 ```{r global, echo=FALSE}
