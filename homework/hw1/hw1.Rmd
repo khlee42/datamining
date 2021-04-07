@@ -65,28 +65,28 @@ head(flights)
 
 # Question 1 - Warm-up
 
-- Q1-1. Remove the columns `year` from your data frame (`flights`) [Hint: `select()`]
+- Q1-1. Use `select()` to remove the columns `year` from data frame `flights` (Do not overwrite `flights`!)
 ```{r label='q1-1'}
 # write your code below this comment line
 
 
 ```
 
-- Q1-2. Add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and sort your data frame in descending order of total_delay. Save the output as a new data frame `flights1`
+- Q1-2. Use `mutate()` to add a new variable, total_delay, which is the sum of `dep_delay` and `arr_delay`, and use `arrange()` to sort your data frame in descending order of total_delay. Save the output as a new data frame `flights1`
 ```{r label='q1-2'}
 # write your code below this comment line
 
 
 ```
 
-- Q1-3. Use `flights1` data frame to draw box plots of total delay separately by carriers
+- Q1-3. Use `ggplot()` and `flights1` data frame to draw box plots of total delay separately by carriers
 ```{r label='q1-3'}
 # write your code below this comment line
 
 
 ```
 
-- Q1-4. Use `flights1` data frame and visualize the relationship between total delay time and flight distance. [Hint: `ggplot` and `geom_point`]
+- Q1-4. Use `ggplot()` and `flights1` data frame and visualize the relationship between total delay time and flight distance. [Hint: `geom_point()`]
 ```{r label='q1-4'}
 # write your code below this comment line
 
@@ -96,21 +96,21 @@ head(flights)
 
 # Question 2 - Which airline carrier is the most frequently delayed?
 
-- Q2-1. Filter `flights` whose `dep_delay` or `arr_delay` is greater than 60, and save it as a new data `major_delay`
+- Q2-1. Use `filter()` to filter `flights` whose `dep_delay` or `arr_delay` is greater than 60, and save it as a new data `major_delay`
 ```{r label='q2-1'}
 # write your code below this comment line
 
 
 ```
 
-- Q2-2. Use `major_delay` data frame to create a frequency table of delayed flights by carrier, and save it as a new data frame `carrier_table` [Hint: `count()`]
+- Q2-2. Use `count()` and `major_delay` data frame to create a frequency table of delayed flights by carrier, and save it as a new data frame `carrier_table`
 ```{r label='q2-2'}
 # write your code below this comment line
 
 
 ```
 
-- Q2-3. Use `carrier_table` to draw a pie chart to examine the most frequently delayed carrier [Hint: set `x`="" and `y`=n]
+- Q2-3. Use `ggplot()` and `carrier_table` to draw a pie chart to examine the most frequently delayed carrier [Hint: set `x`="" and `y`=n]
 ```{r label='q2-3'}
 # write your code below this comment line
 
@@ -119,14 +119,14 @@ head(flights)
 
 # Question 3 - JFK-departed flights
 
-- Q3-1. Filter `flights` that departed from JFK airport and save it as `JFK_flights` 
+- Q3-1. Use `filter()` to filter `flights` that departed from JFK airport and save it as `JFK_flights` 
 ```{r label='q3-1'}
 # write your code below this comment line
 
 
 ```
 
-- Q3-2. Use `JFK_flights` to create the histogram of departure delay (`dep_delay`) of flights that departed from JFK.
+- Q3-2. Use `ggplot()` and `JFK_flights` to create the histogram of departure delay (`dep_delay`) of flights that departed from JFK.
 ```{r label='q3-2'}
 # write your code below this comment line
 
@@ -151,14 +151,14 @@ head(flights)
 
 # Question 4 - Which airline carrier is the most frequently departed from each of the NYC airports?
 
-- Q4-1. Group `flights` by ("origin", "carrier") and count the number of flights for each group [Hint: use `group_by()` and `summarize()`]
+- Q4-1. Use `group_by()` and `summarize()` to group `flights` by ("origin", "carrier") and count the number of flights for each group. Save the count column as `n`.
 ```{r label='q4-1'}
 # write your code below this comment line
 
 
 ```
 
-- Q4-2. Use `flights` to create a frequency table of the number of flights by ("origin", "carrier"), and save it as a new data frame `count_flights`[Hint: use `count()` this time. Q5-1 and Q5-2 have the same output!]
+- Q4-2. Use `count()` this time to create to generate the same table as Q4-1 and save it as a new data frame `count_flights`[Hint: Q4-1 and Q4-2 will have the same output!]
 ```{r label='q4-2'}
 # write your code below this comment line
 
